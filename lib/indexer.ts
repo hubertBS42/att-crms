@@ -19,7 +19,13 @@ export async function indexRecording(recording: CreateRecording) {
 			},
 		})
 		console.log(`Indexed: ${recording.filename}`)
-	} catch (error) {
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	} catch (error: any) {
+		// P2002 = unique constraint violation, file already indexed — safe to ignore
+		if (error?.code === 'P2002') {
+			console.log(`Already indexed, skipping: ${recording.filename}`)
+			return
+		}
 		console.error(`Failed to index ${recording.filename}:`, error)
 	}
 }
