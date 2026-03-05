@@ -40,7 +40,7 @@ export async function startWatcher() {
 		if (!recording) return
 
 		recordings.push(recording)
-		console.log(`Added: ${recording}`)
+		console.log(`Added: `, recording)
 	})
 
 	watcher.on('ready', () => {
