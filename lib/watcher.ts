@@ -1,8 +1,8 @@
-import { Recording } from '@/interfaces'
 import chokidar from 'chokidar'
 import path from 'path'
 import fs from 'fs'
 import { parseRecording } from './utils'
+import { indexRecording } from './indexer'
 
 let watcherStarted = false
 const processedFiles = new Set<string>()
@@ -23,8 +23,6 @@ export async function startWatcher() {
 		},
 	})
 
-	const recordings: Recording[] = []
-
 	watcher.on('add', async filePath => {
 		// Skip directories
 		if (fs.statSync(filePath).isDirectory()) return
@@ -39,13 +37,10 @@ export async function startWatcher() {
 		const recording = parseRecording(filePath)
 		if (!recording) return
 
-		recordings.push(recording)
-		console.log(`Added: `, recording)
+		await indexRecording(recording)
 	})
 
 	watcher.on('ready', () => {
-		console.log(`Found ${recordings.length} existing recordings:`, recordings)
+		console.log(`Watcher ready: monitoring ${RECORDINGS_ROOT}`)
 	})
-
-	console.log(`Watching for recordings in: ${RECORDINGS_ROOT}`)
 }

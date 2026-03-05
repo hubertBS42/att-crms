@@ -1,0 +1,24 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Recording {
+  id           String   @id @default(dbgenerated("gen_random_uuid()"))
+  filename     String   @unique // prevents duplicate indexing across restarts
+  filePath     String
+  callDate     String
+  callTime     String
+  datetime     DateTime
+  caller       String
+  calledNumber String
+  answeredBy   String
+  customer     String // derived from the parent folder name
+  createdAt    DateTime @default(now())
+
+  @@map("recording")
+}

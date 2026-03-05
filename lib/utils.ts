@@ -1,13 +1,13 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import path from 'path'
-import { Recording } from '@/interfaces'
+import { CreateRecording } from '@/interfaces'
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function parseRecording(filePath: string): Recording | null {
+export function parseRecording(filePath: string): CreateRecording | null {
 	const ext = path.extname(filePath)
 	const dirname = path.dirname(filePath)
 	const customer = path.basename(dirname)
