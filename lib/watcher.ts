@@ -12,7 +12,7 @@ export async function startWatcher() {
 	if (watcherStarted) return
 	watcherStarted = true
 
-	const RECORDINGS_ROOT = process.env.RECORDINGS_PATH || '/var/recordings'
+	const RECORDINGS_ROOT = process.env.RECORDINGS_PATH || '/home/hubert/call_recordings'
 
 	const watcher = chokidar.watch(RECORDINGS_ROOT, {
 		persistent: true,
@@ -40,6 +40,7 @@ export async function startWatcher() {
 		if (!recording) return
 
 		recordings.push(recording)
+		console.log(`Added: ${recording}`)
 	})
 
 	watcher.on('ready', () => {
