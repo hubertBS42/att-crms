@@ -19,7 +19,7 @@ export async function startWatcher() {
 	if (watcherStarted) return
 	watcherStarted = true
 
-	const RECORDINGS_ROOT = process.env.RECORDINGS_PATH || '/home/hubert/call_recordings'
+	const RECORDINGS_ROOT = process.env.RECORDINGS_PATH || '/var/recordings'
 	const pendingFiles: string[] = []
 	let isReady = false
 
