@@ -1,5 +1,7 @@
+import { Recording } from '@/interfaces'
 import chokidar from 'chokidar'
-import path from 'path'
+import { parseRecording } from './utils'
+// import path from 'path'
 
 let watcherStarted = false
 
@@ -18,18 +20,16 @@ export async function startWatcher() {
 		},
 	})
 
-	const titles: string[] = []
+	const recordings: Recording[] = []
 
 	watcher.on('add', async filePath => {
-		const customer = path.basename(path.dirname(filePath))
-		const title = path.basename(filePath)
-
-		titles.push(title)
-		console.log(customer)
+		const recording = parseRecording(filePath)
+		recordings.push(recording)
+		console.log(recording)
 	})
 
 	watcher.on('ready', () => {
-		console.log('All existing recordings:', titles)
+		console.log('All existing recordings:', recordings)
 	})
 
 	console.log(`Watching for recordings in: ${RECORDINGS_ROOT}`)
