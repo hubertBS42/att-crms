@@ -1,5 +1,4 @@
 import chokidar from 'chokidar'
-// import { indexRecording } from './indexer'
 import path from 'path'
 
 let watcherStarted = false
@@ -19,10 +18,18 @@ export async function startWatcher() {
 		},
 	})
 
+	const titles: string[] = []
+
 	watcher.on('add', async filePath => {
 		const customer = path.basename(path.dirname(filePath))
+		const title = path.basename(filePath)
+
+		titles.push(title)
 		console.log(customer)
-		// await indexRecording({ filePath, customer })
+	})
+
+	watcher.on('ready', () => {
+		console.log('All existing recordings:', titles)
 	})
 
 	console.log(`Watching for recordings in: ${RECORDINGS_ROOT}`)
