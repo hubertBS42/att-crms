@@ -25,7 +25,6 @@ export async function startWatcher() {
 	watcher.on('add', async filePath => {
 		const recording = parseRecording(filePath)
 		recordings.push(recording)
-		console.log(recording)
 	})
 
 	watcher.on('ready', () => {

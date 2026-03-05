@@ -12,13 +12,11 @@ export function parseRecording(filePath: string): Recording {
 	const filename = path.basename(filePath, path.extname(filePath))
 	// "record_2026-03-05_10-47-56_02030962222_147041007_147041007"
 
-	console.log('filename:', filename)
-	console.log('parts:', filename.split('_'))
-
 	const parts = filename.split('_')
 
 	const date = parts[1]
 	const rawTime = parts[2]
+	console.log('rawTime: ', rawTime)
 	const caller = parts[3]
 	const calledNumber = parts[4]
 	const answeredBy = parts[5]
