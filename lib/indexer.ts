@@ -1,6 +1,23 @@
 import { CreateRecording } from '@/interfaces'
 import prisma from './prisma'
 
+export async function indexRecordingBatch(recordings: CreateRecording[]) {
+	const results = await Promise.allSettled(
+		recordings.map(recording =>
+			prisma.recording.upsert({
+				where: { filename: recording.filename },
+				update: {},
+				create: { ...recording },
+			}),
+		),
+	)
+
+	const succeeded = results.filter(r => r.status === 'fulfilled').length
+	const failed = results.filter(r => r.status === 'rejected').length
+
+	if (failed > 0) console.warn(`Batch: ${succeeded} indexed, ${failed} skipped`)
+}
+
 export async function indexRecording(recording: CreateRecording) {
 	try {
 		await prisma.recording.upsert({
