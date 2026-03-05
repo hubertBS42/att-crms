@@ -7,16 +7,22 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function parseRecording(filePath: string): Recording {
-	const customer = path.basename(path.dirname(filePath))
-	const filename = path.basename(filePath, path.extname(filePath))
+export function parseRecording(filePath: string): Recording | null {
+	const ext = path.extname(filePath)
+	const dirname = path.dirname(filePath)
+	const customer = path.basename(dirname)
+	const filename = path.basename(filePath, ext)
 	// "record_2026-03-05_10-47-56_02030962222_147041007_147041007"
 
 	const parts = filename.split('_')
 
+	if (parts.length < 6) {
+		console.error(`Unexpected filename format: ${filename}`)
+		return null
+	}
+
 	const date = parts[1]
 	const rawTime = parts[2]
-	console.log('rawTime: ', rawTime)
 	const caller = parts[3]
 	const calledNumber = parts[4]
 	const answeredBy = parts[5]
