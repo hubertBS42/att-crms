@@ -51,8 +51,8 @@ export async function startWatcher() {
 			// Live detection after initial scan
 			const recording = parseRecording(filePath)
 			if (!recording) return
-			await indexRecording(recording)
 			console.log(`New recording detected: ${path.basename(filePath)}`)
+			await indexRecording(recording)
 		}
 	})
 
