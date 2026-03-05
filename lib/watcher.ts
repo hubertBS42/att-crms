@@ -21,6 +21,7 @@ export async function startWatcher() {
 
 	const RECORDINGS_ROOT = process.env.RECORDINGS_PATH || '/home/hubert/call_recordings'
 	const pendingFiles: string[] = []
+	let isReady = false
 
 	const watcher = chokidar.watch(RECORDINGS_ROOT, {
 		persistent: true,
@@ -42,7 +43,17 @@ export async function startWatcher() {
 		if (processedFiles.has(filePath)) return
 
 		processedFiles.add(filePath)
-		pendingFiles.push(filePath)
+
+		if (!isReady) {
+			// Still in initial scan - queue it
+			pendingFiles.push(filePath)
+		} else {
+			// Live detection after initial scan
+			const recording = parseRecording(filePath)
+			if (!recording) return
+			await indexRecording(recording)
+			console.log(`New recording detected: ${path.basename(filePath)}`)
+		}
 	})
 
 	watcher.on('ready', async () => {
@@ -56,26 +67,7 @@ export async function startWatcher() {
 		}
 
 		console.log('Initial indexing complete')
-
-		// After initial indexing, watch for NEW files only
-		watcher.on('add', async filePath => {
-			// Skip directories
-			if (fs.statSync(filePath).isDirectory()) return
-
-			// Skip non-audio files
-			if (!validExtensions.includes(path.extname(filePath).toLowerCase())) return
-
-			// Skip already processed files
-			if (processedFiles.has(filePath)) return
-
-			processedFiles.add(filePath)
-
-			const recording = parseRecording(filePath)
-			if (!recording) return
-
-			await indexRecording(recording)
-			console.log(`New recording detected: ${path.basename(filePath)}`)
-		})
+		isReady = true // from this point, new add events are live files
 	})
 
 	console.log(`Watching for recordings in: ${RECORDINGS_ROOT}`)
