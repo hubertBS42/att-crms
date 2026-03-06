@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs'
 import { parseRecording } from './utils'
 import { indexRecordingBatch, indexRecording } from './indexer'
-import { CreateRecording } from '@/interfaces'
+import { ParsedRecording } from '@/interfaces'
 
 let watcherStarted = false
 const processedFiles = new Set<string>()
@@ -11,7 +11,7 @@ const validExtensions = ['.mp3', '.wav', '.ogg', '.m4a']
 const BATCH_SIZE = 50
 
 async function processBatch(files: string[]) {
-	const recordings = files.map(parseRecording).filter(Boolean) as CreateRecording[]
+	const recordings = files.map(parseRecording).filter(Boolean) as ParsedRecording[]
 	await indexRecordingBatch(recordings)
 }
 

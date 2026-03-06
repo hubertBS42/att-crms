@@ -1,15 +1,21 @@
-import { CreateRecording } from '@/interfaces'
+import { ParsedRecording } from '@/interfaces'
 import prisma from './prisma'
 
-export async function indexRecordingBatch(recordings: CreateRecording[]) {
+export async function indexRecordingBatch(recordings: ParsedRecording[]) {
 	const results = await Promise.allSettled(
-		recordings.map(recording =>
-			prisma.recording.upsert({
+		recordings.map(recording => {
+			const { organizationSlug, ...data } = recording
+			return prisma.recording.upsert({
 				where: { filename: recording.filename },
 				update: {},
-				create: { ...recording },
-			}),
-		),
+				create: {
+					...data,
+					organization: {
+						connect: { slug: organizationSlug },
+					},
+				},
+			})
+		}),
 	)
 
 	const succeeded = results.filter(r => r.status === 'fulfilled').length
@@ -18,12 +24,18 @@ export async function indexRecordingBatch(recordings: CreateRecording[]) {
 	if (failed > 0) console.warn(`Batch: ${succeeded} indexed, ${failed} skipped`)
 }
 
-export async function indexRecording(recording: CreateRecording) {
+export async function indexRecording(recording: ParsedRecording) {
 	try {
+		const { organizationSlug, ...data } = recording
 		await prisma.recording.upsert({
 			where: { filename: recording.filename },
 			update: {}, // do nothing if it already exists
-			create: { ...recording },
+			create: {
+				...data,
+				organization: {
+					connect: { slug: organizationSlug },
+				},
+			},
 		})
 		console.log(`Indexed: ${recording.filename}`)
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Geist } from 'next/font/google'
 import './globals.css'
-import { APP_DESCRIPTION, APP_NAME, APP_URL } from '@/constants'
+import { APP_DESCRIPTION, APP_NAME } from '@/constants'
 import { Toaster } from '@/components/ui/sonner'
 import { ThemeProvider } from '@/components/theme-provider'
 

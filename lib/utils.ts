@@ -1,16 +1,16 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import path from 'path'
-import { CreateRecording } from '@/interfaces'
+import { ParsedRecording } from '@/interfaces'
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
 }
 
-export function parseRecording(filePath: string): CreateRecording | null {
+export function parseRecording(filePath: string): ParsedRecording | null {
 	const ext = path.extname(filePath)
 	const dirname = path.dirname(filePath)
-	const customer = path.basename(dirname)
+	const organizationSlug = path.basename(dirname)
 	const filename = path.basename(filePath, ext)
 	// "record_2026-03-05_10-47-56_02030962222_147041007_147041007"
 
@@ -31,7 +31,7 @@ export function parseRecording(filePath: string): CreateRecording | null {
 	const datetime = new Date(`${date}T${time}`)
 
 	return {
-		customer,
+		organizationSlug,
 		callDate: date,
 		callTime: time,
 		datetime,
@@ -41,4 +41,23 @@ export function parseRecording(filePath: string): CreateRecording | null {
 		filename: path.basename(filePath),
 		filePath,
 	}
+}
+
+// Random password generator
+export function generatePassword(options: { useSymbols?: boolean; useNumbers?: boolean; useLowerCase?: boolean; useUpperCase?: boolean; passwordLength: number }) {
+	const { useSymbols = true, useNumbers = true, useLowerCase = true, useUpperCase = true, passwordLength } = options
+
+	let charset = ''
+	let newPassword = ''
+
+	if (useSymbols) charset += '!@#$%^&*()'
+	if (useNumbers) charset += '0123456789'
+	if (useLowerCase) charset += 'abcdefghijklmnopqrstuvwxyz'
+	if (useUpperCase) charset += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+
+	for (let i = 0; i < passwordLength; i++) {
+		newPassword += charset.charAt(Math.floor(Math.random() * charset.length))
+	}
+
+	return newPassword
 }
