@@ -1,15 +1,15 @@
 'use client'
+import PasswordField from '@/components/password-field'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+import { Field, FieldDescription, FieldGroup } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { authClient } from '@/lib/auth-client'
 import { setPasswordFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import React from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
 
 export function SetPasswordForm({ token, action }: { token: string; action: string }) {
@@ -75,41 +75,21 @@ export function SetPasswordForm({ token, action }: { token: string; action: stri
 			<CardContent>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<FieldGroup>
-						<Controller
+						<PasswordField
 							control={form.control}
 							name='password'
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor='password'>Password</FieldLabel>
-									<Input
-										{...field}
-										id='password'
-										aria-invalid={fieldState.invalid}
-										type='password'
-										required
-										autoFocus
-									/>
-									{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-								</Field>
-							)}
+							label='Password'
+							disabled={isPending}
+							autoFocus
+							required
 						/>
 
-						<Controller
+						<PasswordField
 							control={form.control}
 							name='confirmPassword'
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor='confirmPassword'>Confirm password</FieldLabel>
-									<Input
-										{...field}
-										id='confirmPassword'
-										aria-invalid={fieldState.invalid}
-										type='password'
-										required
-									/>
-									{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-								</Field>
-							)}
+							label='Confirm password'
+							disabled={isPending}
+							required
 						/>
 
 						<Field>

@@ -1,5 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server'
 import { auth } from '@/lib/auth'
+import { routePermissions } from './lib/route-permissions'
+import { PlatformRole } from './lib/access-control'
+import prisma from './lib/prisma'
 
 const authPaths = [/^\/sign-in/, /^\/reset-password/, /^\/set-password/]
 
@@ -29,6 +32,35 @@ export async function proxy(request: NextRequest) {
 	// Redirect to homepage if on auth path but already signed in
 	if (isOnAuthPath && session) {
 		return NextResponse.redirect(new URL('/', request.url))
+	}
+
+	// Check route permissions
+	if (session) {
+		const matchedRoute = Object.keys(routePermissions).find(route => nextUrl.pathname === route || nextUrl.pathname.startsWith(route + '/'))
+
+		const permission = matchedRoute ? routePermissions[matchedRoute] : null
+
+		if (permission) {
+			const userRole = session.user.role as PlatformRole
+
+			const activeOrg = await prisma.organization.findUnique({
+				where: { id: session.session.activeOrganizationId ?? '' },
+				select: { slug: true },
+			})
+
+			const isGlobalWorkspace = activeOrg?.slug === 'global'
+			const currentContext = isGlobalWorkspace ? 'global' : 'org'
+
+			// Check role
+			if (!permission.role.includes(userRole)) {
+				return NextResponse.redirect(new URL('/', request.url))
+			}
+
+			// Check context
+			if (!permission.context.includes(currentContext)) {
+				return NextResponse.redirect(new URL('/', request.url))
+			}
+		}
 	}
 
 	return NextResponse.next()

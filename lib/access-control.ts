@@ -9,8 +9,7 @@ const statement = {
 
 export const ac = createAccessControl(statement)
 
-export const roles = {
-	// Platform-level roles
+export const platformRoles = {
 	user: ac.newRole({
 		recording: ['listen', 'share', 'download'],
 		organization: ['switch'],
@@ -26,8 +25,9 @@ export const roles = {
 		organization: ['create', 'delete', 'switch'],
 		...adminAc.statements,
 	}),
+} as const
 
-	// Organization-level roles
+export const organizationRoles = {
 	member: ac.newRole({
 		recording: ['listen', 'share'],
 	}),
@@ -39,3 +39,23 @@ export const roles = {
 		organization: ['delete', 'switch'],
 	}),
 } as const
+
+// Create the Role type from the keys
+export type PlatformRole = keyof typeof platformRoles
+export type OrganizationRole = keyof typeof organizationRoles
+
+// Create a literal tuple of role names
+export const PLATFORM_ROLE_NAMES = Object.keys(platformRoles) as [PlatformRole, ...Array<PlatformRole>]
+
+export const PLATFORM_ROLE_LEVELS: Record<PlatformRole, number> = {
+	user: 1,
+	admin: 2,
+	superadmin: 3,
+}
+
+export const getAllowedRoles = (userRole: PlatformRole): string[] => {
+	const currentRoleLevel = PLATFORM_ROLE_LEVELS[userRole] ?? -1
+	return Object.entries(PLATFORM_ROLE_LEVELS)
+		.filter(([_, level]) => level <= currentRoleLevel)
+		.map(([role]) => role)
+}

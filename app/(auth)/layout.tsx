@@ -1,6 +1,4 @@
 import { APP_NAME } from '@/constants'
-import { Database01Icon } from '@hugeicons/core-free-icons'
-import { HugeiconsIcon } from '@hugeicons/react'
 
 export default function AuthLayout({
 	children,
@@ -14,13 +12,6 @@ export default function AuthLayout({
 					href='#'
 					className='flex items-center gap-2 self-center font-medium'
 				>
-					<div className='flex size-6 items-center justify-center rounded-md bg-primary text-primary-foreground'>
-						<HugeiconsIcon
-							icon={Database01Icon}
-							strokeWidth={2}
-							className='size-4'
-						/>
-					</div>
 					{APP_NAME}
 				</a>
 				{children}

@@ -1,15 +1,15 @@
 'use client'
+import InputField from '@/components/input-field'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+import { Field, FieldDescription, FieldGroup } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
 import { authClient } from '@/lib/auth-client'
 import { resetPasswordFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
 import React from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
 
 export function ResetPasswordForm() {
@@ -69,26 +69,16 @@ export function ResetPasswordForm() {
 			<CardContent>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<FieldGroup>
-						<Controller
+						<InputField
 							control={form.control}
 							name='email'
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor='email'>Email</FieldLabel>
-									<Input
-										{...field}
-										id='email'
-										aria-invalid={fieldState.invalid}
-										type='email'
-										placeholder='m@example.com'
-										required
-										autoFocus
-									/>
-									{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-								</Field>
-							)}
+							label='Email'
+							placeholder='john@example.com'
+							type='email'
+							disabled={isPending}
+							autoFocus
+							required
 						/>
-
 						<Field>
 							<Button
 								type='submit'

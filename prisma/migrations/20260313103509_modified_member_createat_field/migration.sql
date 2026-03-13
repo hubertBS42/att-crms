@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "member" ALTER COLUMN "createdAt" SET DEFAULT CURRENT_TIMESTAMP;

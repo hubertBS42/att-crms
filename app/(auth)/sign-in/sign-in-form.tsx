@@ -1,18 +1,18 @@
 'use client'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field'
-import { Input } from '@/components/ui/input'
+import { FieldGroup } from '@/components/ui/field'
 import { signInFormSchema } from '@/lib/zod'
-import Link from 'next/link'
 import React from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authClient } from '@/lib/auth-client'
 import { APP_URL } from '@/constants'
 import { toast } from 'sonner'
 import { Spinner } from '@/components/ui/spinner'
+import InputField from '@/components/input-field'
+import PasswordField from '@/components/password-field'
 
 export function SignInForm({ callbackURL }: { callbackURL: string }) {
 	const [isPending, startTransition] = React.useTransition()
@@ -41,6 +41,19 @@ export function SignInForm({ callbackURL }: { callbackURL: string }) {
 							richColors: true,
 						})
 					},
+
+					onSuccess: async ctx => {
+						const { role } = ctx.data.user
+						if (role === 'superadmin' || role === 'admin') {
+							// Platform staff → Global workspace
+							await authClient.organization.setActive({ organizationSlug: 'global' })
+						} else {
+							// Regular users → their own org
+							const { data: orgs } = await authClient.organization.list()
+							if (!orgs || orgs.length === 0) return
+							await authClient.organization.setActive({ organizationId: orgs[0].id })
+						}
+					},
 				},
 			)
 		})
@@ -54,51 +67,24 @@ export function SignInForm({ callbackURL }: { callbackURL: string }) {
 			<CardContent>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<FieldGroup>
-						<Controller
+						<InputField
 							control={form.control}
 							name='email'
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<FieldLabel htmlFor='email'>Email</FieldLabel>
-									<Input
-										{...field}
-										id='email'
-										aria-invalid={fieldState.invalid}
-										type='email'
-										placeholder='m@example.com'
-										required
-										autoFocus
-									/>
-									{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-								</Field>
-							)}
+							label='Email'
+							placeholder='john@example.com'
+							type='email'
+							disabled={isPending}
+							autoFocus
+							required
 						/>
 
-						<Controller
+						<PasswordField
 							control={form.control}
 							name='password'
-							render={({ field, fieldState }) => (
-								<Field data-invalid={fieldState.invalid}>
-									<div className='flex items-center'>
-										<FieldLabel htmlFor='password'>Password</FieldLabel>
-										<Link
-											href='/reset-password'
-											className='ml-auto text-sm underline-offset-4 hover:underline'
-										>
-											Forgot your password?
-										</Link>
-									</div>
-
-									<Input
-										{...field}
-										id='password'
-										aria-invalid={fieldState.invalid}
-										type='password'
-										required
-									/>
-									{fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-								</Field>
-							)}
+							label='Password'
+							disabled={isPending}
+							resetPassword
+							required
 						/>
 
 						<Button
