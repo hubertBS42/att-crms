@@ -2,49 +2,33 @@
 
 import * as React from 'react'
 
-import { NavMain } from '@/components/nav-main'
-import { NavSecondary } from '@/components/nav-secondary'
 import { NavUserSkeleton } from '@/components/nav-user'
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader } from '@/components/ui/sidebar'
 import dynamic from 'next/dynamic'
-import { useSidebarData } from '@/hooks/use-sidebar-data'
 import { OrganizationSwitcherSkeleton } from '@/components/organization-switcher'
+import { NavMainSkeleton } from '@/components/nav-main'
+import { NavSecondarySkeleton } from '@/components/nav-secondary'
 
 const NavUser = dynamic(() => import('@/components/nav-user'), { ssr: false, loading: () => <NavUserSkeleton /> })
+const NavMain = dynamic(() => import('@/components/nav-main'), { ssr: false, loading: () => <NavMainSkeleton /> })
+const NavSecondary = dynamic(() => import('@/components/nav-secondary'), { ssr: false, loading: () => <NavSecondarySkeleton /> })
 const OrganizationSwitcher = dynamic(() => import('@/components/organization-switcher'), { ssr: false, loading: () => <OrganizationSwitcherSkeleton /> })
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-	const { activeOrganization, isGlobalWorkspace, organizations, isLoading, session } = useSidebarData()
 	return (
 		<Sidebar
 			collapsible='offcanvas'
 			{...props}
 		>
 			<SidebarHeader>
-				<OrganizationSwitcher
-					organizations={organizations}
-					activeOrganization={activeOrganization}
-					isLoading={isLoading}
-					session={session}
-				/>
+				<OrganizationSwitcher />
 			</SidebarHeader>
 			<SidebarContent>
-				<NavMain
-					session={session}
-					isGlobalWorkspace={isGlobalWorkspace}
-					isLoading={isLoading}
-				/>
-				<NavSecondary
-					session={session}
-					isGlobalWorkspace={isGlobalWorkspace}
-					isLoading={isLoading}
-				/>
+				<NavMain />
+				<NavSecondary />
 			</SidebarContent>
 			<SidebarFooter>
-				<NavUser
-					session={session}
-					isLoading={isLoading}
-				/>
+				<NavUser />
 			</SidebarFooter>
 		</Sidebar>
 	)

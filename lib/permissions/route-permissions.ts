@@ -1,29 +1,29 @@
-import { PlatformRole } from './access-control'
+import { SystemLevelRole } from './system-permissions'
 
 interface RoutePermission {
-	role: PlatformRole[]
+	role: SystemLevelRole[]
 	context: ('global' | 'org')[]
 }
 
 export const routePermissions: Record<string, RoutePermission> = {
 	'/': {
-		role: ['superadmin', 'admin', 'user'],
+		role: ['superAdmin', 'admin', 'user'],
 		context: ['global', 'org'],
 	},
 	'/organizations': {
-		role: ['superadmin', 'admin'],
+		role: ['superAdmin', 'admin'],
 		context: ['global'],
 	},
 	'/users': {
-		role: ['superadmin', 'admin'],
+		role: ['superAdmin', 'admin'],
 		context: ['global'],
 	},
 	'/recordings': {
-		role: ['superadmin', 'admin', 'user'],
+		role: ['superAdmin', 'admin', 'user'],
 		context: ['org'],
 	},
 	'/members': {
-		role: ['superadmin', 'admin'],
+		role: ['superAdmin', 'admin', 'user'],
 		context: ['org'],
 	},
 }

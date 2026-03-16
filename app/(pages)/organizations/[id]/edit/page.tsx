@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import EditOrganizationForm from './edit-organization-form'
-import { getOrganizationById } from '@/lib/data/organizations.server.data'
+import { getOrganizationById } from '@/lib/data/organizations.data'
 import { Suspense } from 'react'
 import Loader from '@/components/loader'
 

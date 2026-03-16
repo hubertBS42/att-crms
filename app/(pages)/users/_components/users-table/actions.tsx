@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
-import { PlatformRole } from '@/lib/access-control'
+import { SystemRole } from '@/lib/access-control'
 import { authClient } from '@/lib/auth-client'
 import { MoreVertical } from 'lucide-react'
 import Link from 'next/link'
@@ -33,7 +33,7 @@ const Actions = ({ userId }: { userId: string }) => {
 	if (sessionIsLoading || !data) return
 
 	const canDelete = authClient.admin.checkRolePermission({
-		role: data.user.role as PlatformRole,
+		role: data.user.role as SystemRole,
 		permissions: {
 			user: ['delete'],
 		},

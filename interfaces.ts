@@ -1,20 +1,20 @@
-import { Prisma, User } from '@/lib/generated/prisma/client'
+import { Member, Prisma, Session, User } from '@/lib/generated/prisma/client'
 import { authClient } from './lib/auth-client'
 import { type LucideIcon } from 'lucide-react'
-import { PlatformRole } from './lib/access-control'
+import { SystemLevelRole } from './lib/permissions/system-permissions'
 
 export type ParsedRecording = Omit<Prisma.RecordingCreateInput, 'organization'> & {
 	organizationSlug: string
 }
 
-export type Session = typeof authClient.$Infer.Session
+export type BetterAuthSession = typeof authClient.$Infer.Session
 export interface NavItem {
 	title: string
 	url: string
 	icon?: LucideIcon
 	isActive?: boolean
 	context: ('global' | 'org')[]
-	role: PlatformRole[]
+	role: SystemLevelRole[]
 	items?: NavItem[]
 }
 export interface BreadcrumbSegment {
@@ -46,3 +46,7 @@ export type FlatNode<T> = Omit<T, 'children'> & {
 export type TreeNode<T> = T & {
 	children?: TreeNode<T>[]
 }
+
+export type UserWithSessions = User & { sessions: Session[] }
+export type MemberWithUser = Member & { user: User }
+export type MemberWithUserWithSessions = Member & { user: UserWithSessions }

@@ -35,7 +35,7 @@ const ClientOnlySelect = ({ value, options, size = 'default', placeholder, loadi
 
 	// Normalize options
 	const normalizedOptions: SelectOption[] = options.map(option => {
-		if (typeof option === 'object' && 'lable' in option && 'value' in option) {
+		if (typeof option === 'object' && 'label' in option && 'value' in option) {
 			return option
 		}
 		// Primitive type (string or number)

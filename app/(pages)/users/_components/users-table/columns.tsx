@@ -6,12 +6,12 @@ import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/utils'
 import { ActionsSkeleton } from './actions'
-import { PlatformRole } from '@/lib/access-control'
 import { User } from '@/lib/generated/prisma/client'
+import { SystemLevelRole } from '@/lib/permissions/system-permissions'
 
-const genRoleBadge = (role: PlatformRole) => {
+const genRoleBadge = (role: SystemLevelRole) => {
 	const roleConfig = {
-		superadmin: { variant: 'default' as const, className: '' },
+		superAdmin: { variant: 'default' as const, className: '' },
 		admin: { variant: 'secondary' as const, className: '' },
 		user: { variant: 'outline' as const, className: '' },
 	}
@@ -95,7 +95,7 @@ export const columns: ColumnDef<User>[] = [
 				title='Role'
 			/>
 		),
-		cell: ({ row }) => genRoleBadge(row.original.role as PlatformRole),
+		cell: ({ row }) => genRoleBadge(row.original.role as SystemLevelRole),
 		filterFn: 'equals',
 	},
 	{

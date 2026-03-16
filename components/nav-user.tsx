@@ -11,23 +11,21 @@ import {
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar'
-import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon, LogOutIcon } from 'lucide-react'
+import { EllipsisVerticalIcon, CircleUserRoundIcon, CreditCardIcon, BellIcon } from 'lucide-react'
 import { Skeleton } from './ui/skeleton'
-import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { abbreviateName } from '@/lib/utils'
-import { Session } from '@/interfaces'
+import SignOutButton from './sign-out-button'
 
 export const NavUserSkeleton = () => {
 	return <Skeleton className='h-12 w-full rounded-lg' />
 }
 
-const NavUser = ({ session, isLoading }: { session: Session | null; isLoading: boolean }) => {
+const NavUser = () => {
 	const { isMobile } = useSidebar()
+	const { data: session, isPending } = authClient.useSession()
 
-	const router = useRouter()
-
-	if (!isLoading && session) {
+	if (!isPending && session) {
 		const { user } = session
 		return (
 			<SidebarMenu>
@@ -89,9 +87,11 @@ const NavUser = ({ session, isLoading }: { session: Session | null; isLoading: b
 								</DropdownMenuItem>
 							</DropdownMenuGroup>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={async () => await authClient.signOut({ fetchOptions: { onSuccess: () => router.push('/') } })}>
-								<LogOutIcon />
-								Log out
+							<DropdownMenuItem asChild>
+								<SignOutButton
+									variant='ghost'
+									className='w-full justify-start cursor-pointer'
+								/>
 							</DropdownMenuItem>
 						</DropdownMenuContent>
 					</DropdownMenu>

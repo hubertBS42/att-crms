@@ -1,11 +1,13 @@
 'use client'
+import BackButton from '@/components/back-button'
 import DiscardButton from '@/components/discard-button'
 import InputField from '@/components/input-field'
 import SaveButton from '@/components/save-button'
 import SelectField from '@/components/select-field'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FieldGroup } from '@/components/ui/field'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { ORGANIZATION_PLAN_OPTIONS, ORGANIZATION_STATUS_OPTIONS } from '@/constants'
 import { DataResponse } from '@/interfaces'
 import { authClient } from '@/lib/auth-client'
@@ -28,6 +30,7 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 
 	const router = useRouter()
 	const [isPending, startTransition] = React.useTransition()
+	const [autoGenSlug, setAutoGenSlug] = React.useState(false)
 
 	const form = useForm<z.infer<typeof updateOrganizationFormSchema>>({
 		resolver: zodResolver(updateOrganizationFormSchema),
@@ -35,7 +38,7 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 			id: organization.id,
 			name: organization.name,
 			slug: organization.slug,
-			logo: organization.logo ?? '',
+			logo: organization.logo,
 			plan: organization.plan as OrganizationPlan,
 			status: organization.status as OrganizationStatus,
 		},
@@ -45,15 +48,20 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 	const nameValue = form.watch('name')
 
 	React.useEffect(() => {
-		// Don't auto-populate if slug already exists (edit mode)
-		if (organization.slug) return
+		if (!autoGenSlug) return
 
-		// Only auto-populate if the user hasn't manually edited the slug
-		if (!form.getFieldState('slug').isDirty) {
+		const slugified = slugify(nameValue, { lower: true, strict: true, remove: /\./g })
+		form.setValue('slug', slugified, { shouldDirty: false })
+	}, [nameValue, autoGenSlug, form])
+
+	const handleAutoGenSlug = (checked: boolean) => {
+		setAutoGenSlug(checked)
+		if (checked) {
+			// Re-generate slug from current name when re-enabling
 			const slugified = slugify(nameValue, { lower: true, strict: true, remove: /\./g })
-			form.setValue('slug', slugified)
+			form.setValue('slug', slugified, { shouldDirty: false })
 		}
-	}, [nameValue, form, organization.slug])
+	}
 
 	const onSubmit: SubmitHandler<z.infer<typeof updateOrganizationFormSchema>> = async orgData => {
 		startTransition(async () => {
@@ -75,9 +83,8 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 				data: {
 					name: orgData.name,
 					slug: orgData.slug,
-					logo: orgData.logo,
-					plan: orgData.plan,
-					status: orgData.status,
+					logo: !orgData.logo ? undefined : orgData.logo,
+					metadata: organization.slug !== orgData.slug ? { previousSlug: organization.slug } : undefined,
 				},
 				organizationId: organization.id,
 			})
@@ -110,15 +117,10 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 								handleDiscard={handleDiscard}
 							/>
 						) : (
-							<Button
-								variant={'outline'}
-								size={'sm'}
-								disabled={isPending}
-								onClick={() => router.push('/organizations')}
-								type='button'
-							>
-								Back
-							</Button>
+							<BackButton
+								link='/organizations'
+								isLoading={isPending}
+							/>
 						)}
 						<SaveButton
 							isLoading={isPending}
@@ -145,12 +147,27 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 											disabled={isPending}
 											autoFocus
 										/>
-										<InputField
-											control={form.control}
-											label='Slug'
-											name='slug'
-											disabled={isPending}
-										/>
+										<Field>
+											<InputField
+												control={form.control}
+												label='Slug'
+												name='slug'
+												disabled={autoGenSlug || isPending}
+											/>
+											<Field orientation='horizontal'>
+												<Checkbox
+													id='autoGenSlug'
+													checked={autoGenSlug}
+													onCheckedChange={checked => handleAutoGenSlug(Boolean(checked))}
+												/>
+												<FieldLabel
+													htmlFor='autoGenSlug'
+													className='font-light'
+												>
+													Auto generate slug
+												</FieldLabel>
+											</Field>
+										</Field>
 										<SelectField
 											control={form.control}
 											label='Plan'

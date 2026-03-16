@@ -4,6 +4,7 @@ import fs from 'fs'
 import { parseRecording } from './utils'
 import { indexRecordingBatch, indexRecording } from './indexer'
 import { ParsedRecording } from '@/interfaces'
+import { RECORDINGS_PATH } from '@/constants'
 
 let watcherStarted = false
 const processedFiles = new Set<string>()
@@ -19,11 +20,10 @@ export async function startWatcher() {
 	if (watcherStarted) return
 	watcherStarted = true
 
-	const RECORDINGS_ROOT = process.env.RECORDINGS_PATH || '/var/recordings'
 	const pendingFiles: string[] = []
 	let isReady = false
 
-	const watcher = chokidar.watch(RECORDINGS_ROOT, {
+	const watcher = chokidar.watch(RECORDINGS_PATH, {
 		persistent: true,
 		ignoreInitial: false,
 		awaitWriteFinish: {
@@ -70,5 +70,5 @@ export async function startWatcher() {
 		isReady = true // from this point, new add events are live files
 	})
 
-	console.log(`Watching for recordings in: ${RECORDINGS_ROOT}`)
+	console.log(`Watching for recordings in: ${RECORDINGS_PATH}`)
 }

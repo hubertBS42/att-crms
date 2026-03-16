@@ -1,11 +1,20 @@
-import { LayoutDashboardIcon, Building2, UsersIcon, Settings2Icon, CircleHelpIcon, SearchIcon } from 'lucide-react'
+import { LayoutDashboardIcon, Building2, UsersIcon, Settings2Icon, CircleHelpIcon, SearchIcon, AudioLines } from 'lucide-react'
 import { BreadcrumbConfig, NavItem } from './interfaces'
 import { OrganizationPlan, OrganizationStatus } from './lib/generated/prisma/enums'
 import { capitalizeFirstLetter } from './lib/utils'
+import os from 'os'
+import path from 'path'
 
-export const APP_NAME = 'CRMS'
+export const APP_NAME = 'ATT CRMS'
 export const APP_DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-export const APP_URL = 'http://localhost:3000'
+export const APP_URL = process.env.SERVER_URL || 'http://localhost:3000'
+export const APP_LOGO = 'https://www.attelecoms.co.uk/templates/att/images/logo.png'
+export const RECORDINGS_PATH = path.join(os.homedir(), process.env.RECORDINGS_DIR ?? 'call_recordings')
+
+export const RESET_PASSWORD_TOKEN_EXPIRATON = 1800 // 30 minutes
+export const INVITATION_EXPIRATON = 1800 // 30 minutes
+export const SESSION_CACHE_EXPIRATION = 300 // 5 minutes
+
 export const NAV_ITEMS: { main: NavItem[]; secondary: NavItem[] } = {
 	main: [
 		{
@@ -13,21 +22,35 @@ export const NAV_ITEMS: { main: NavItem[]; secondary: NavItem[] } = {
 			url: '/',
 			icon: LayoutDashboardIcon,
 			context: ['global', 'org'],
-			role: ['superadmin', 'admin', 'user'],
+			role: ['superAdmin', 'admin', 'user'],
 		},
 		{
 			title: 'Organizations',
 			url: '/organizations',
 			icon: Building2,
 			context: ['global'],
-			role: ['superadmin', 'admin'],
+			role: ['superAdmin', 'admin'],
 		},
 		{
 			title: 'Users',
 			url: '/users',
 			icon: UsersIcon,
 			context: ['global'],
-			role: ['superadmin', 'admin'],
+			role: ['superAdmin', 'admin'],
+		},
+		{
+			title: 'Recordings',
+			url: '/recordings',
+			icon: AudioLines,
+			context: ['org'],
+			role: ['superAdmin', 'admin', 'user'],
+		},
+		{
+			title: 'Members',
+			url: '/members',
+			icon: UsersIcon,
+			context: ['org'],
+			role: ['superAdmin', 'admin', 'user'],
 		},
 	],
 	secondary: [
@@ -36,21 +59,21 @@ export const NAV_ITEMS: { main: NavItem[]; secondary: NavItem[] } = {
 			url: '/settings',
 			icon: Settings2Icon,
 			context: ['global'],
-			role: ['superadmin', 'admin'],
+			role: ['superAdmin', 'admin'],
 		},
 		{
 			title: 'Get Help',
 			url: '#',
 			icon: CircleHelpIcon,
 			context: ['global'],
-			role: ['superadmin', 'admin'],
+			role: ['superAdmin', 'admin'],
 		},
 		{
 			title: 'Search',
 			url: '#',
 			icon: SearchIcon,
 			context: ['global'],
-			role: ['superadmin', 'admin'],
+			role: ['superAdmin', 'admin'],
 		},
 	],
 }
@@ -108,6 +131,28 @@ export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 			{ text: 'Dashboard', href: '/' },
 			{ text: 'Users', href: '/users' },
 			{ text: 'Edit user', href: '#' },
+		],
+	},
+	{
+		pathname: '/recordings',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Recordings', href: '#' },
+		],
+	},
+	{
+		pathname: '/members',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Members', href: '#' },
+		],
+	},
+	{
+		pathname: '/members/[id]/details',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Members', href: '/members' },
+			{ text: 'Member details', href: '#' },
 		],
 	},
 	{

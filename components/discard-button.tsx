@@ -1,5 +1,6 @@
 'use client'
 
+import { Trash } from 'lucide-react'
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -18,12 +19,12 @@ const DiscardButton = ({ isLoading, isDisabled, handleDiscard }: { isLoading?: b
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
 				<Button
-					variant={'outline'}
+					variant={'destructive'}
 					size={'sm'}
 					disabled={isLoading || isDisabled}
 					type='button'
 				>
-					Discard
+					<Trash /> Discard
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

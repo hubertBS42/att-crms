@@ -4,9 +4,28 @@ import path from 'path'
 import { FlatNode, ParsedRecording } from '@/interfaces'
 import { ZodError } from 'zod'
 import { APIError } from 'better-auth'
+import { promisify } from 'util'
+import { randomBytes, scrypt, timingSafeEqual } from 'crypto'
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs))
+}
+
+export const hashPasswordWithScrypt = async (password: string) => {
+	const scryptAsync = promisify(scrypt)
+	const salt = randomBytes(16).toString('hex')
+	const derivedKey = (await scryptAsync(password, salt, 64)) as Buffer
+	return `${salt}:${derivedKey.toString('hex')}`
+}
+
+export const verifyPasswordWithScrypt = async (hashedPassword: string, password: string) => {
+	const scryptAsync = promisify(scrypt)
+	const [salt, storedKeyHex] = hashedPassword.split(':')
+	const storedKey = Buffer.from(storedKeyHex, 'hex')
+	const derivedKey = (await scryptAsync(password, salt, 64)) as Buffer
+
+	// Use timingSafeEqual to prevent timing attacks
+	return timingSafeEqual(storedKey, derivedKey)
 }
 
 export function parseRecording(filePath: string): ParsedRecording | null {
@@ -117,3 +136,31 @@ export const flattenNodeTree = <T extends { id: string; children?: T[] }>(tree: 
 }
 
 export const capitalizeFirstLetter = (value: string) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
+
+export const formatDuration = (seconds: number): string => {
+	// Handle less than 1 minute
+	if (seconds < 60) {
+		return `${seconds} second${seconds !== 1 ? 's' : ''}`
+	}
+
+	const minutes = seconds / 60
+
+	// Handle less than 1 hour (show minutes)
+	if (minutes < 60) {
+		// Round to nearest whole number for minutes in emails
+		const roundedMinutes = Math.round(minutes)
+		return `${roundedMinutes} minute${roundedMinutes !== 1 ? 's' : ''}`
+	}
+
+	// Handle hours (show decimal only if needed)
+	const hours = minutes / 60
+
+	// For exact hours, show whole number
+	if (hours % 1 === 0) {
+		return `${hours} hour${hours !== 1 ? 's' : ''}`
+	}
+
+	// For fractional hours, round to 1 decimal
+	const roundedHours = Math.round(hours * 10) / 10
+	return `${roundedHours} hour${roundedHours !== 1 ? 's' : ''}`
+}

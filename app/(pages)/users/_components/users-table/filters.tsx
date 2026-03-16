@@ -1,7 +1,7 @@
 import { FilterConfig } from '@/components/data-table'
-import { PLATFORM_ROLE_NAMES } from '@/lib/access-control'
+// import { SYSTEM_ROLE_NAMES } from '@/lib/access-control'
 import { User } from '@/lib/generated/prisma/client'
-import { capitalizeFirstLetter } from '@/lib/utils'
+// import { capitalizeFirstLetter } from '@/lib/utils'
 
 export const filters: FilterConfig<User>[] = [
 	{
@@ -10,33 +10,33 @@ export const filters: FilterConfig<User>[] = [
 		type: 'text',
 		placeholder: 'Search by name',
 	},
-	{
-		columnId: 'email',
-		label: 'Email',
-		type: 'text',
-		placeholder: 'Search by email...',
-	},
-	{
-		columnId: 'role',
-		label: 'Role',
-		type: 'select',
-		placeholder: 'Filter by role',
-		options: [{ label: 'All', value: 'all' }, ...PLATFORM_ROLE_NAMES.map(role => ({ label: capitalizeFirstLetter(role), value: role }))],
-	},
-	{
-		columnId: 'banned',
-		label: 'Status',
-		type: 'select',
-		placeholder: 'Filter by status',
-		options: [
-			{ label: 'All', value: 'all' },
-			{ label: 'Active', value: 'false' },
-			{ label: 'Banned', value: 'true' },
-		],
-	},
-	{
-		columnId: 'createdAt',
-		label: 'Created on',
-		type: 'dateRange',
-	},
+	// {
+	// 	columnId: 'email',
+	// 	label: 'Email',
+	// 	type: 'text',
+	// 	placeholder: 'Search by email...',
+	// },
+	// {
+	// 	columnId: 'role',
+	// 	label: 'Role',
+	// 	type: 'select',
+	// 	placeholder: 'Filter by role',
+	// 	options: [{ label: 'All', value: 'all' }, ...SYSTEM_ROLE_NAMES.map(role => ({ label: capitalizeFirstLetter(role), value: role }))],
+	// },
+	// {
+	// 	columnId: 'banned',
+	// 	label: 'Status',
+	// 	type: 'select',
+	// 	placeholder: 'Filter by status',
+	// 	options: [
+	// 		{ label: 'All', value: 'all' },
+	// 		{ label: 'Active', value: 'false' },
+	// 		{ label: 'Banned', value: 'true' },
+	// 	],
+	// },
+	// {
+	// 	columnId: 'createdAt',
+	// 	label: 'Created on',
+	// 	type: 'dateRange',
+	// },
 ]

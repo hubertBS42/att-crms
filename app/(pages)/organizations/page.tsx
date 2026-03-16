@@ -5,7 +5,7 @@ import Link from 'next/link'
 import OrganizationsTable from './_components/organizations-table'
 import { Suspense } from 'react'
 import Loader from '@/components/loader'
-import { fetchOrganizations } from '@/lib/data/organizations.server.data'
+import { fetchOrganizations } from '@/lib/data/organizations.data'
 
 export const metadata: Metadata = {
 	title: 'Manage organizations',

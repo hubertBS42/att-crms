@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/alert-dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { Spinner } from '@/components/ui/spinner'
-import { useOrganizationSwitcher } from '@/hooks/use-org-switch'
 import { authClient } from '@/lib/auth-client'
 import { MoreVertical } from 'lucide-react'
 import Link from 'next/link'
@@ -27,7 +26,6 @@ const Actions = ({ organizationId }: { organizationId: string }) => {
 	const [dropdownMenuIsOpen, setDropdownMenuIsOpen] = React.useState(false)
 	const [alertDialogIsOpen, setAlertDialogIsOpen] = React.useState(false)
 	const [isPending, startTransition] = React.useTransition()
-	const { switchOrganization } = useOrganizationSwitcher()
 	const router = useRouter()
 
 	const handleDelete = async () => {
@@ -68,15 +66,6 @@ const Actions = ({ organizationId }: { organizationId: string }) => {
 					<DropdownMenuLabel>Actions</DropdownMenuLabel>
 					<DropdownMenuItem asChild>
 						<Link href={`/organizations/${organizationId}/edit`}>View</Link>
-					</DropdownMenuItem>
-					<DropdownMenuItem
-						onSelect={e => {
-							e.preventDefault()
-							setDropdownMenuIsOpen(false)
-							switchOrganization({ organizationId })
-						}}
-					>
-						Switch
 					</DropdownMenuItem>
 					<DropdownMenuItem
 						variant='destructive'

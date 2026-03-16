@@ -26,13 +26,13 @@ async function main() {
 	const yourCompany = await prisma.organization.create({
 		data: {
 			name: 'AT Telecommunications',
-			slug: 'att', // must match FTP folder
+			slug: 'at-telecommunications', // must match FTP folder
 			plan: OrganizationPlan.ENTERPRISE,
 		},
 	})
 
-	// Create superadmin (you)
-	const superadmin = await auth.api.signUpEmail({
+	// Create superAdmin (you)
+	const superAdmin = await auth.api.signUpEmail({
 		body: {
 			name: process.env.SEED_SUPERADMIN_NAME!,
 			email: process.env.SEED_SUPERADMIN_EMAIL!,
@@ -40,25 +40,25 @@ async function main() {
 		},
 	})
 
-	// Promote to superadmin role
+	// Promote to superAdmin role
 	await prisma.user.update({
 		where: { email: process.env.SEED_SUPERADMIN_EMAIL! },
-		data: { role: 'superadmin' },
+		data: { role: 'superAdmin' },
 	})
 
-	// Superadmin is owner of Global workspace
+	// SuperAdmin is member of Global workspace
 	await prisma.member.create({
 		data: {
-			userId: superadmin.user.id,
+			userId: superAdmin.user.id,
 			organizationId: globalWorkspace.id,
 			role: 'owner',
 		},
 	})
 
-	// Superadmin is also owner of your company's org
+	// SuperAdmin is also member of your company's org
 	await prisma.member.create({
 		data: {
-			userId: superadmin.user.id,
+			userId: superAdmin.user.id,
 			organizationId: yourCompany.id,
 			role: 'owner',
 		},
@@ -73,10 +73,6 @@ async function main() {
 		{ name: 'Globex', slug: 'globex', ownerEmail: 'admin@globex.com', ownerName: 'Globex Admin', plan: OrganizationPlan.BASIC },
 	]
 
-	const platformStaff = await prisma.user.findMany({
-		where: { role: { in: ['superadmin', 'admin'] } },
-	})
-
 	for (const client of clients) {
 		// Create client organization
 		const org = await prisma.organization.create({
@@ -87,8 +83,16 @@ async function main() {
 			},
 		})
 
-		// Create org owner for each client
-		const owner = await auth.api.signUpEmail({
+		// Add superAdmin as an owner of client org
+		await prisma.member.create({
+			data: {
+				userId: superAdmin.user.id,
+				organizationId: org.id,
+				role: 'owner',
+			},
+		})
+		// Create account for each client
+		const clientAccount = await auth.api.signUpEmail({
 			body: {
 				name: client.ownerName,
 				email: client.ownerEmail,
@@ -96,18 +100,10 @@ async function main() {
 			},
 		})
 
-		await prisma.member.createMany({
-			data: platformStaff.map(staff => ({
-				userId: staff.id,
-				organizationId: org.id,
-				role: staff.role === 'superadmin' ? 'owner' : 'admin',
-			})),
-		})
-
-		// Add owner as member of their org
+		// Add client as owner of their org
 		await prisma.member.create({
 			data: {
-				userId: owner.user.id,
+				userId: clientAccount.user.id,
 				organizationId: org.id,
 				role: 'owner',
 			},

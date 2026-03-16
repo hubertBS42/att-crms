@@ -1,6 +1,7 @@
 import { createAuthClient } from 'better-auth/react'
 import { adminClient, inferOrgAdditionalFields, organizationClient } from 'better-auth/client/plugins'
-import { ac, platformRoles } from '@/lib/access-control'
+import { systemAccessController, systemLevelRoles } from './permissions/system-permissions'
+import { orgAccessController, organizationLevelRoles } from './permissions/org-permissions'
 
 export const authClient = createAuthClient({
 	plugins: [
@@ -11,20 +12,24 @@ export const authClient = createAuthClient({
 						plan: {
 							type: 'string',
 							input: true,
-							required: false,
+							required: true,
 						},
 						status: {
 							type: 'string',
 							input: true,
-							required: false,
+							required: true,
 						},
 					},
 				},
 			}),
 		}),
 		adminClient({
-			ac,
-			roles: platformRoles,
+			ac: systemAccessController,
+			roles: systemLevelRoles,
+		}),
+		organizationClient({
+			ac: orgAccessController,
+			roles: organizationLevelRoles,
 		}),
 	],
 })

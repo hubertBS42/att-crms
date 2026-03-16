@@ -5,7 +5,7 @@ import SaveButton from '@/components/save-button'
 import SelectField from '@/components/select-field'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { FieldGroup } from '@/components/ui/field'
+import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { ORGANIZATION_PLAN_OPTIONS, ORGANIZATION_STATUS_OPTIONS } from '@/constants'
 import { authClient } from '@/lib/auth-client'
 import { OrganizationPlan, OrganizationStatus } from '@/lib/generated/prisma/enums'
@@ -17,17 +17,20 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import slugify from 'slugify'
 import { toast } from 'sonner'
+import { Checkbox } from '@/components/ui/checkbox'
+import BackButton from '@/components/back-button'
 
 const AddOrganizationForm = () => {
 	const router = useRouter()
 	const [isPending, startTransition] = React.useTransition()
+	const [autoGenSlug, setAutoGenSlug] = React.useState(true)
 
 	const form = useForm<z.infer<typeof addOrganizationFormSchema>>({
 		resolver: zodResolver(addOrganizationFormSchema),
 		defaultValues: {
 			name: '',
 			slug: '',
-			logo: '',
+			logo: null,
 			plan: OrganizationPlan.BASIC,
 			status: OrganizationStatus.ACTIVE,
 		},
@@ -37,12 +40,20 @@ const AddOrganizationForm = () => {
 	const nameValue = form.watch('name')
 
 	React.useEffect(() => {
-		// Only auto-populate if the user hasn't manually edited the slug
-		if (!form.getFieldState('slug').isDirty) {
+		if (!autoGenSlug) return
+
+		const slugified = slugify(nameValue, { lower: true, strict: true, remove: /\./g })
+		form.setValue('slug', slugified, { shouldDirty: false }) // keep dirty state clean
+	}, [nameValue, autoGenSlug, form])
+
+	const handleAutoGenSlug = (checked: boolean) => {
+		setAutoGenSlug(checked)
+		if (checked) {
+			// Re-generate slug from current name when re-enabling
 			const slugified = slugify(nameValue, { lower: true, strict: true, remove: /\./g })
-			form.setValue('slug', slugified)
+			form.setValue('slug', slugified, { shouldDirty: false })
 		}
-	}, [nameValue, form])
+	}
 
 	const onSubmit: SubmitHandler<z.infer<typeof addOrganizationFormSchema>> = async orgData => {
 		startTransition(async () => {
@@ -60,9 +71,9 @@ const AddOrganizationForm = () => {
 			const { error: createOrgErr } = await authClient.organization.create({
 				name: orgData.name,
 				slug: orgData.slug,
-				logo: orgData.logo,
-				plan: orgData.plan,
-				status: orgData.status,
+				logo: !orgData.logo ? undefined : orgData.logo,
+
+				keepCurrentActiveOrganization: true,
 			})
 
 			if (createOrgErr) {
@@ -94,15 +105,10 @@ const AddOrganizationForm = () => {
 								handleDiscard={handleDiscard}
 							/>
 						) : (
-							<Button
-								variant={'outline'}
-								size={'sm'}
-								disabled={isPending}
-								onClick={() => router.push('/organizations')}
-								type='button'
-							>
-								Back
-							</Button>
+							<BackButton
+								link='/organizations'
+								isLoading={isPending}
+							/>
 						)}
 						<SaveButton
 							isLoading={isPending}
@@ -129,12 +135,28 @@ const AddOrganizationForm = () => {
 											disabled={isPending}
 											autoFocus
 										/>
-										<InputField
-											control={form.control}
-											label='Slug'
-											name='slug'
-											disabled={isPending}
-										/>
+
+										<Field>
+											<InputField
+												control={form.control}
+												label='Slug'
+												name='slug'
+												disabled={autoGenSlug || isPending}
+											/>
+											<Field orientation='horizontal'>
+												<Checkbox
+													id='autoGenSlug'
+													checked={autoGenSlug}
+													onCheckedChange={checked => handleAutoGenSlug(Boolean(checked))}
+												/>
+												<FieldLabel
+													htmlFor='autoGenSlug'
+													className='font-light'
+												>
+													Auto generate slug
+												</FieldLabel>
+											</Field>
+										</Field>
 										<SelectField
 											control={form.control}
 											label='Plan'

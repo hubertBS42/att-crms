@@ -1,5 +1,6 @@
 'use client'
 
+import { Save } from 'lucide-react'
 import { Button } from './ui/button'
 import { Spinner } from './ui/spinner'
 
@@ -10,7 +11,13 @@ const SaveButton = ({ isLoading, isDisabled }: { isLoading?: boolean; isDisabled
 			type='submit'
 			disabled={isLoading || isDisabled}
 		>
-			{isLoading ? <Spinner /> : 'Save'}
+			{isLoading ? (
+				<Spinner />
+			) : (
+				<>
+					<Save /> Save
+				</>
+			)}
 		</Button>
 	)
 }

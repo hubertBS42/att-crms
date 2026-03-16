@@ -44,7 +44,7 @@ export function SignInForm({ callbackURL }: { callbackURL: string }) {
 
 					onSuccess: async ctx => {
 						const { role } = ctx.data.user
-						if (role === 'superadmin' || role === 'admin') {
+						if (role === 'superAdmin' || role === 'admin') {
 							// Platform staff → Global workspace
 							await authClient.organization.setActive({ organizationSlug: 'global' })
 						} else {

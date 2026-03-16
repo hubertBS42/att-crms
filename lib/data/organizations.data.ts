@@ -12,10 +12,10 @@ export const fetchOrganizations = async (): Promise<DataResponse<Organization[]>
 		if (!session) return { success: false, error: 'Unauthorized' }
 
 		const { role } = session.user
-		const isPlatformStaff = role === 'superadmin' || role === 'admin'
+		const isSystemAdmin = role === 'superAdmin' || role === 'admin'
 
 		const data = await prisma.organization.findMany({
-			where: isPlatformStaff
+			where: isSystemAdmin
 				? undefined
 				: {
 						members: { some: { userId: session.user.id } },
@@ -34,9 +34,9 @@ export const getOrganizationById = async (organizationId: string): Promise<DataR
 		if (!session) return { success: false, error: 'Unauthorized' }
 
 		const { role } = session.user
-		const isPlatformStaff = role === 'superadmin' || role === 'admin'
+		const isSystemAdmin = role === 'superAdmin' || role === 'admin'
 
-		if (!isPlatformStaff) return { success: false, error: 'Forbidden' }
+		if (!isSystemAdmin) return { success: false, error: 'Forbidden' }
 
 		const organization = await prisma.organization.findUnique({
 			where: { id: organizationId },
