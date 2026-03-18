@@ -1,5 +1,5 @@
-import { LayoutDashboardIcon, Building2, UsersIcon, Settings2Icon, CircleHelpIcon, SearchIcon, AudioLines } from 'lucide-react'
-import { BreadcrumbConfig, NavItem } from './interfaces'
+// import { LayoutDashboardIcon, Building2, UsersIcon, Settings2Icon, CircleHelpIcon, SearchIcon, AudioLines } from 'lucide-react'
+import { BreadcrumbConfig } from './interfaces'
 import { OrganizationPlan, OrganizationStatus } from './lib/generated/prisma/enums'
 import { capitalizeFirstLetter } from './lib/utils'
 import os from 'os'
@@ -15,68 +15,68 @@ export const RESET_PASSWORD_TOKEN_EXPIRATON = 1800 // 30 minutes
 export const INVITATION_EXPIRATON = 1800 // 30 minutes
 export const SESSION_CACHE_EXPIRATION = 300 // 5 minutes
 
-export const NAV_ITEMS: { main: NavItem[]; secondary: NavItem[] } = {
-	main: [
-		{
-			title: 'Dashboard',
-			url: '/',
-			icon: LayoutDashboardIcon,
-			context: ['global', 'org'],
-			role: ['superAdmin', 'admin', 'user'],
-		},
-		{
-			title: 'Organizations',
-			url: '/organizations',
-			icon: Building2,
-			context: ['global'],
-			role: ['superAdmin', 'admin'],
-		},
-		{
-			title: 'Users',
-			url: '/users',
-			icon: UsersIcon,
-			context: ['global'],
-			role: ['superAdmin', 'admin'],
-		},
-		{
-			title: 'Recordings',
-			url: '/recordings',
-			icon: AudioLines,
-			context: ['org'],
-			role: ['superAdmin', 'admin', 'user'],
-		},
-		{
-			title: 'Members',
-			url: '/members',
-			icon: UsersIcon,
-			context: ['org'],
-			role: ['superAdmin', 'admin', 'user'],
-		},
-	],
-	secondary: [
-		{
-			title: 'Settings',
-			url: '/settings',
-			icon: Settings2Icon,
-			context: ['global'],
-			role: ['superAdmin', 'admin'],
-		},
-		{
-			title: 'Get Help',
-			url: '#',
-			icon: CircleHelpIcon,
-			context: ['global'],
-			role: ['superAdmin', 'admin'],
-		},
-		{
-			title: 'Search',
-			url: '#',
-			icon: SearchIcon,
-			context: ['global'],
-			role: ['superAdmin', 'admin'],
-		},
-	],
-}
+// export const NAV_ITEMS: { main: NavItem[]; secondary: NavItem[] } = {
+// 	main: [
+// 		{
+// 			title: 'Dashboard',
+// 			url: '/',
+// 			icon: LayoutDashboardIcon,
+// 			context: ['global', 'org'],
+// 			role: ['superAdmin', 'admin', 'user'],
+// 		},
+// 		{
+// 			title: 'Organizations',
+// 			url: '/organizations',
+// 			icon: Building2,
+// 			context: ['global'],
+// 			role: ['superAdmin', 'admin'],
+// 		},
+// 		{
+// 			title: 'Users',
+// 			url: '/users',
+// 			icon: UsersIcon,
+// 			context: ['global'],
+// 			role: ['superAdmin', 'admin'],
+// 		},
+// 		{
+// 			title: 'Recordings',
+// 			url: '/recordings',
+// 			icon: AudioLines,
+// 			context: ['org'],
+// 			role: ['superAdmin', 'admin', 'user'],
+// 		},
+// 		{
+// 			title: 'Members',
+// 			url: '/members',
+// 			icon: UsersIcon,
+// 			context: ['org'],
+// 			role: ['superAdmin', 'admin', 'user'],
+// 		},
+// 	],
+// 	secondary: [
+// 		{
+// 			title: 'Settings',
+// 			url: '/settings',
+// 			icon: Settings2Icon,
+// 			context: ['global'],
+// 			role: ['superAdmin', 'admin'],
+// 		},
+// 		{
+// 			title: 'Get Help',
+// 			url: '#',
+// 			icon: CircleHelpIcon,
+// 			context: ['global'],
+// 			role: ['superAdmin', 'admin'],
+// 		},
+// 		{
+// 			title: 'Search',
+// 			url: '#',
+// 			icon: SearchIcon,
+// 			context: ['global'],
+// 			role: ['superAdmin', 'admin'],
+// 		},
+// 	],
+// }
 export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 	{
 		pathname: '/',

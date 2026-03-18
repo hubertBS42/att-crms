@@ -4,10 +4,10 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import prisma from '@/lib/prisma'
 import { formatError } from '../utils'
-import { editUserFormSchema } from '../zod'
-import z from 'zod'
+import { OrganizationLevelRole } from '../permissions/org-permissions'
+import { SystemLevelRole } from '../permissions/system-permissions'
 
-export async function addUserToAllOrganizations(userId: string, role: string) {
+export async function addUserToAllOrganizations({ userId, systemRole }: { userId: string; systemRole: SystemLevelRole }) {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		if (!session) return { success: false, error: 'Unauthorized' }
@@ -25,7 +25,7 @@ export async function addUserToAllOrganizations(userId: string, role: string) {
 			data: organizations.map(org => ({
 				userId,
 				organizationId: org.id,
-				role: role === 'superAdmin' ? 'owner' : 'admin',
+				role: systemRole === 'superAdmin' ? 'owner' : 'admin',
 			})),
 			skipDuplicates: true,
 		})
@@ -36,7 +36,78 @@ export async function addUserToAllOrganizations(userId: string, role: string) {
 	}
 }
 
-export const updateUser = async (data: z.infer<typeof editUserFormSchema>) => {
+export async function updateOrgMembershipsAction({
+	userId,
+	organizations,
+	removedMembers,
+}: {
+	userId: string
+	organizations: {
+		memberId?: string
+		organizationId: string
+		orgRole: OrganizationLevelRole
+		isNew: boolean
+	}[]
+	removedMembers: { memberId: string; organizationId: string }[]
+}) {
+	try {
+		const headerObj = await headers()
+		const session = await auth.api.getSession({ headers: headerObj })
+		if (!session) return { success: false, error: 'Unauthorized' }
+
+		const { role: sessionRole } = session.user
+		if (sessionRole !== 'superAdmin' && sessionRole !== 'admin') {
+			return { success: false, error: 'Forbidden' }
+		}
+
+		await Promise.all([
+			// Add new memberships
+			...organizations
+				.filter(org => org.isNew)
+				.map(org =>
+					auth.api.addMember({
+						body: {
+							userId,
+							organizationId: org.organizationId,
+							role: org.orgRole,
+						},
+						headers: headerObj,
+					}),
+				),
+
+			// Update existing memberships
+			...organizations
+				.filter(org => !org.isNew && org.memberId)
+				.map(org =>
+					auth.api.updateMemberRole({
+						body: {
+							role: org.orgRole,
+							memberId: org.memberId ?? '',
+							organizationId: org.organizationId,
+						},
+						headers: headerObj,
+					}),
+				),
+
+			// Remove deleted memberships
+			...removedMembers.map(({ memberId, organizationId }) =>
+				auth.api.removeMember({
+					body: {
+						memberIdOrEmail: memberId,
+						organizationId,
+					},
+					headers: headerObj,
+				}),
+			),
+		])
+
+		return { success: true }
+	} catch (error) {
+		return { success: false, error: formatError(error) }
+	}
+}
+
+export async function addOrgUserAction({ userId, organizations }: { userId: string; organizations: { organizationId: string; orgRole: OrganizationLevelRole }[] }) {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		if (!session) return { success: false, error: 'Unauthorized' }
@@ -46,24 +117,14 @@ export const updateUser = async (data: z.infer<typeof editUserFormSchema>) => {
 			return { success: false, error: 'Forbidden' }
 		}
 
-		const user = editUserFormSchema.parse(data)
-
-		await prisma.user.update({
-			where: { id: user.id },
-			data: {
-				name: user.name,
-				role: user.role,
-				email: user.email,
-				image: user.image,
-			},
-		})
-
-		const memberRole = user.role === 'superAdmin' ? 'owner' : 'platformAdmin'
-
-		await prisma.member.updateMany({
-			where: { userId: user.id },
-			data: { role: memberRole },
-		})
+		await Promise.all(
+			organizations.map(async ({ organizationId, orgRole }) =>
+				auth.api.addMember({
+					body: { userId, organizationId, role: orgRole },
+					headers: await headers(),
+				}),
+			),
+		)
 
 		return { success: true }
 	} catch (error) {

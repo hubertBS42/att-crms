@@ -20,6 +20,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import slugify from 'slugify'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import DeleteOrganization from '../../_components/delete-organization'
 
 const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organization | null>> }) => {
 	const response = React.use(data)
@@ -84,6 +85,8 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 					name: orgData.name,
 					slug: orgData.slug,
 					logo: !orgData.logo ? undefined : orgData.logo,
+					plan: orgData.plan,
+					status: orgData.status,
 					metadata: organization.slug !== orgData.slug ? { previousSlug: organization.slug } : undefined,
 				},
 				organizationId: organization.id,
@@ -182,21 +185,34 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 						</div>
 
 						{/* Right column */}
-						<Card>
-							<CardHeader>
-								<CardTitle>Status</CardTitle>
-								<CardDescription>Lipsum dolor sit amet, consectetur</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<SelectField
-									control={form.control}
-									name='status'
-									disabled={isPending}
-									loadingPlaceholder='Active'
-									options={ORGANIZATION_STATUS_OPTIONS}
-								/>
-							</CardContent>
-						</Card>
+						<div className='grid gap-4'>
+							<Card>
+								<CardHeader>
+									<CardTitle>Status</CardTitle>
+									<CardDescription>Lipsum dolor sit amet, consectetur</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<SelectField
+										control={form.control}
+										name='status'
+										disabled={isPending}
+										loadingPlaceholder='Active'
+										options={ORGANIZATION_STATUS_OPTIONS}
+									/>
+								</CardContent>
+							</Card>
+
+							<Card>
+								<CardHeader>
+									<CardTitle>Actions</CardTitle>
+									<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+								</CardHeader>
+								<CardContent>
+									<DeleteOrganization organization={organization} />
+									{/* <OrganizationActions organization={organization} /> */}
+								</CardContent>
+							</Card>
+						</div>
 					</div>
 					<div className='flex items-center justify-center gap-2 md:hidden'>
 						{form.formState.isDirty ? (

@@ -59,11 +59,11 @@ const MemberDetailsPage = async ({ params }: MemberDetailsPageProps) => {
 				</Button>
 			</div>
 
-			<div className='grid items-stretch gap-4 lg:grid-cols-3'>
+			<div className='grid items-start gap-4 lg:grid-cols-3'>
 				{/* Left column */}
 				<div className='lg:col-span-2 grid gap-4'>
 					{/* Basic Info */}
-					<Card className='h-full'>
+					<Card>
 						<CardHeader>
 							<CardTitle>Basic information</CardTitle>
 							<CardDescription>Member details and account information</CardDescription>
@@ -115,20 +115,6 @@ const MemberDetailsPage = async ({ params }: MemberDetailsPageProps) => {
 						</CardHeader>
 						<CardContent>
 							<MemberActions member={member} />
-						</CardContent>
-					</Card>
-
-					{/* Danger Zone */}
-					<Card className='border-destructive'>
-						<CardHeader>
-							<CardTitle className='text-destructive'>Danger Zone</CardTitle>
-							<CardDescription>Irreversible actions that affect this member&apos;s access</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<MemberActions
-								member={member}
-								dangerZone
-							/>
 						</CardContent>
 					</Card>
 				</div>

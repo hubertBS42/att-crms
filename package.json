@@ -6,7 +6,11 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "eslint"
+		"lint": "eslint",
+		"prisma:seed": "pnpx prisma db seed",
+		"prisma:studio": "pnpx prisma studio",
+		"prisma:migrate": "pnpx prisma migrate deploy",
+		"prisma:generate": "pnpx prisma generate"
 	},
 	"dependencies": {
 		"@better-auth/prisma-adapter": "^1.5.3",
@@ -24,6 +28,7 @@
 		"date-fns": "^4.1.0",
 		"dotenv": "^17.3.1",
 		"lucide-react": "^0.577.0",
+		"music-metadata": "^11.12.3",
 		"next": "16.1.6",
 		"next-themes": "^0.4.6",
 		"nodemailer": "^8.0.2",

@@ -1,6 +1,4 @@
 import { ColumnDef, FilterFn } from '@tanstack/react-table'
-import dynamic from 'next/dynamic'
-import { ActionsSkeleton } from './actions'
 import { Organization, OrganizationPlan, OrganizationStatus } from '@/lib/generated/prisma/client'
 import { Checkbox } from '@/components/ui/checkbox'
 import ColumnHeader from '@/components/data-table/column-header'
@@ -34,8 +32,6 @@ const dateRangeFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
 	// Compare dates (ignoring time for start, including time for end)
 	return date >= start && date <= end
 }
-
-const Actions = dynamic(() => import('./actions'), { ssr: false, loading: () => <ActionsSkeleton /> })
 
 const genStatusBadge = (status: OrganizationStatus) => {
 	const statusConfig = {
@@ -73,6 +69,7 @@ export const columns: ColumnDef<Organization>[] = [
 				checked={row.getIsSelected()}
 				onCheckedChange={value => row.toggleSelected(!!value)}
 				aria-label='Select row'
+				onClick={e => e.stopPropagation()}
 			/>
 		),
 		enableSorting: false,
@@ -133,12 +130,5 @@ export const columns: ColumnDef<Organization>[] = [
 		},
 		sortingFn: 'datetime',
 		filterFn: dateRangeFilterFn,
-	},
-	{
-		id: 'actions',
-		cell: ({ row }) => {
-			const organization = row.original
-			return <Actions organizationId={organization.id} />
-		},
 	},
 ]

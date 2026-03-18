@@ -1,0 +1,78 @@
+'use client'
+
+import { UserWithSessionsAndMemberships } from '@/interfaces'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useRouter } from 'next/navigation'
+import { useTransition } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'sonner'
+import { z } from 'zod'
+import { editAdminFormSchema } from '@/lib/zod'
+import UserFormFields from './user-form-fields'
+import ResourceFormHeader from '@/components/resource-form-header'
+import ResourceFormFooter from '@/components/resource-form-footer'
+import { authClient } from '@/lib/auth-client'
+
+const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
+	const router = useRouter()
+	const [isPending, startTransition] = useTransition()
+
+	const form = useForm<z.infer<typeof editAdminFormSchema>>({
+		resolver: zodResolver(editAdminFormSchema),
+		defaultValues: {
+			id: user.id,
+			name: user.name,
+			email: user.email,
+			image: user.image,
+		},
+	})
+
+	const onSubmit: SubmitHandler<z.infer<typeof editAdminFormSchema>> = async data => {
+		startTransition(async () => {
+			const { error } = await authClient.admin.updateUser({
+				userId: data.id,
+				data: { name: data.name, email: data.email, image: data.image }, // required
+			})
+
+			if (error) {
+				toast.error('Operation failed', { description: error.message })
+				return
+			}
+
+			toast.success('User updated successfully.')
+			router.push('/users')
+		})
+	}
+
+	const handleDiscard = async () => router.push('/users')
+
+	return (
+		<form onSubmit={form.handleSubmit(onSubmit)}>
+			<div className='grid gap-y-6'>
+				<ResourceFormHeader
+					heading='Edit user'
+					description='Lorem ipsum dolor sit amet consectetur adipisicing elit.'
+					isPending={isPending}
+					isDirty={form.formState.isDirty}
+					handleDiscard={handleDiscard}
+				/>
+
+				<div className='grid gap-8'>
+					<UserFormFields
+						control={form.control}
+						user={user}
+						isPending={isPending}
+					/>
+
+					<ResourceFormFooter
+						isPending={isPending}
+						isDirty={form.formState.isDirty}
+						handleDiscard={handleDiscard}
+					/>
+				</div>
+			</div>
+		</form>
+	)
+}
+
+export default EditAdminForm

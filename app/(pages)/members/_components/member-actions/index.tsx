@@ -5,37 +5,41 @@ import { authClient } from '@/lib/auth-client'
 import RemoveMember from './remove-member'
 import { OrganizationLevelRole } from '@/lib/permissions/org-permissions'
 import PromoteToOwner from './promote-to-owner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 interface MemberActionsProps {
 	member: MemberWithUserWithSessions
-	dangerZone?: boolean
 }
 
-const MemberActions = ({ member, dangerZone = false }: MemberActionsProps) => {
-	const { data: session, isPending: isSessionLoading } = authClient.useSession()
-	const { data: activeOrganization, isPending: isActiveOrgLoading } = authClient.useActiveOrganization()
+const MemberActions = ({ member }: MemberActionsProps) => {
+	const { data: activeMember, isPending: isActiveMemberLoading } = authClient.useActiveMember()
 
-	if (isSessionLoading || isActiveOrgLoading || !session) return null
-
-	const currentMember = activeOrganization?.members?.find(m => m.userId === session.user.id)
+	if (isActiveMemberLoading || !activeMember) return <Skeleton className='h-9 rounded-md' />
 
 	const canSetRole = authClient.organization.checkRolePermission({
-		role: (currentMember?.role ?? 'member') as OrganizationLevelRole,
+		role: (activeMember?.role ?? 'member') as OrganizationLevelRole,
 		permissions: { member: ['set-role'] },
 	})
 
 	const canRemove = authClient.organization.checkRolePermission({
-		role: (currentMember?.role ?? 'member') as OrganizationLevelRole,
+		role: (activeMember?.role ?? 'member') as OrganizationLevelRole,
 		permissions: { member: ['delete'] },
 	})
 
-	const isCurrentMember = member.user.id === session.user.id
+	const isCurrentMember = member.id === activeMember?.id
 	const isOwner = member.role === 'owner'
 
-	if (dangerZone) {
-		return <div className='grid gap-y-2'>{!isCurrentMember && canRemove && <RemoveMember member={member} />}</div>
-	}
-
-	return <div className='grid gap-y-2'>{!isCurrentMember && canSetRole && !isOwner && <PromoteToOwner member={member} />}</div>
+	return (
+		<div className='grid gap-y-2'>
+			{!isCurrentMember ? (
+				<>
+					{canRemove && <RemoveMember member={member} />}
+					{canSetRole && !isOwner && <PromoteToOwner member={member} />}
+				</>
+			) : (
+				<span className='font-light text-muted-foreground'>No actions available</span>
+			)}
+		</div>
+	)
 }
 export default MemberActions

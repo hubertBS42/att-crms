@@ -16,6 +16,7 @@ import { Skeleton } from './ui/skeleton'
 import { authClient } from '@/lib/auth-client'
 import { abbreviateName } from '@/lib/utils'
 import SignOutButton from './sign-out-button'
+import Link from 'next/link'
 
 export const NavUserSkeleton = () => {
 	return <Skeleton className='h-12 w-full rounded-lg' />
@@ -73,9 +74,14 @@ const NavUser = () => {
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
 							<DropdownMenuGroup>
-								<DropdownMenuItem>
-									<CircleUserRoundIcon />
-									Account
+								<DropdownMenuItem asChild>
+									<Link
+										href={'/account'}
+										className='cursor-pointer'
+									>
+										<CircleUserRoundIcon />
+										Account
+									</Link>
 								</DropdownMenuItem>
 								<DropdownMenuItem>
 									<CreditCardIcon />

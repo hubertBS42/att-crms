@@ -1,6 +1,5 @@
 import * as z from 'zod'
 import { OrganizationPlan, OrganizationStatus } from './generated/prisma/enums'
-import { SYSTEM_LEVEL_ROLE_NAMES } from './permissions/system-permissions'
 import { ORG_LEVEL_ROLE_NAMES } from './permissions/org-permissions'
 
 export const signInFormSchema = z.object({
@@ -64,16 +63,52 @@ export const updateOrganizationFormSchema = addOrganizationFormSchema.extend({
 	id: z.string().min(1, 'ID is required'),
 })
 
-export const addUserFormSchema = z.object({
-	name: z.string().min(1, 'You must provide a full name').min(3, 'Full name must be at least 3 characters'),
-	email: z.email('A valid email address is required'),
+export const addUserFormSchema = z.discriminatedUnion('systemRole', [
+	z.object({
+		name: z.string().min(1, 'Name is required'),
+		email: z.email('Please enter a valid email address'),
+		image: z.string().nullable(),
+		systemRole: z.literal('admin'),
+	}),
+	z.object({
+		name: z.string().min(1, 'Name is required'),
+		email: z.email('Please enter a valid email address'),
+		image: z.string().nullable(),
+		systemRole: z.literal('user'),
+		organizations: z
+			.array(
+				z.object({
+					organizationId: z.string().min(1, 'Organization is required'),
+					orgRole: z.enum(['member', 'admin'] as const),
+				}),
+			)
+			.min(1, 'At least one organization is required'),
+	}),
+])
+
+export const editAdminFormSchema = z.object({
+	id: z.string().min(1, 'ID is required'),
+	name: z.string().min(1, 'Name is required'),
+	email: z.email('Please enter a valid email address'),
 	image: z.string().nullable(),
-	role: z.enum(SYSTEM_LEVEL_ROLE_NAMES).describe('Must be one of the predefined roles'),
 })
 
-export const editUserFormSchema = addUserFormSchema.extend({
+export const editOrgUserFormSchema = z.object({
 	id: z.string().min(1, 'ID is required'),
+	name: z.string().min(1, 'Name is required'),
+	email: z.email('Please enter a valid email address'),
+	image: z.string().nullable(),
+	organizations: z.array(
+		z.object({
+			memberId: z.string().optional(),
+			organizationId: z.string().min(1, 'Organization is required'),
+			orgRole: z.enum(ORG_LEVEL_ROLE_NAMES),
+			isNew: z.boolean(),
+		}),
+	),
 })
+
+export const editUserFormSchema = z.discriminatedUnion('systemRole', [editAdminFormSchema, editOrgUserFormSchema])
 
 export const editMemberFormSchema = z.object({
 	id: z.string().min(1, 'ID is required'),

@@ -1,24 +1,29 @@
-import { getSystemAdminById } from '@/lib/data/users.data'
+import { getUserById } from '@/lib/data/users.data'
 import { Metadata } from 'next'
-import EditUserForm from './edit-user-form'
-import { Suspense } from 'react'
-import Loader from '@/components/loader'
+import { notFound } from 'next/navigation'
+import EditOrgUserForm from '../../_components/edit-org-user-form'
+import EditAdminForm from '../../_components/edit-admin-form'
 
 export const metadata: Metadata = {
 	title: 'Edit user',
 }
 
-type Props = {
+interface EditUserPageProps {
 	params: Promise<{ id: string }>
 }
 
-const EditUserPage = async ({ params }: Props) => {
+const EditUserPage = async ({ params }: EditUserPageProps) => {
 	const { id } = await params
-	const data = getSystemAdminById(id)
-	return (
-		<Suspense fallback={<Loader />}>
-			<EditUserForm data={data} />
-		</Suspense>
-	)
+	const response = await getUserById(id)
+	if (!response.success) throw new Error(response.error)
+	if (!response.data) notFound()
+
+	const user = response.data
+
+	if (user.role === 'user') {
+		return <EditOrgUserForm user={user} />
+	}
+
+	return <EditAdminForm user={user} />
 }
 export default EditUserPage

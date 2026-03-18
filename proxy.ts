@@ -5,7 +5,7 @@ import { SystemLevelRole } from './lib/permissions/system-permissions'
 import prisma from './lib/prisma'
 
 const authPaths = [/^\/sign-in/, /^\/sign-up/, /^\/reset-password/, /^\/set-password/]
-const publicPaths = [/^\/accept-invitation/, /^\/no-organization/]
+const publicPaths = [/^\/accept-invitation/, /^\/no-organization/, /^\/removed-from-organization/]
 
 export async function proxy(request: NextRequest) {
 	const { nextUrl } = request
@@ -42,9 +42,12 @@ export async function proxy(request: NextRequest) {
 	if (session) {
 		const isPlatformStaff = session.user.role === 'superAdmin' || session.user.role === 'admin'
 		const isOnNoOrgPage = nextUrl.pathname === '/no-organization'
+		const isOnRemovedPage = nextUrl.pathname === '/removed-from-organization'
 
-		// Check membership for non-platform staff
 		if (!isPlatformStaff) {
+			const activeOrganizationId = session.session.activeOrganizationId
+
+			// Check if user has any memberships
 			const membershipCount = await prisma.member.count({
 				where: { userId: session.user.id },
 			})
@@ -56,10 +59,27 @@ export async function proxy(request: NextRequest) {
 			if (membershipCount > 0 && isOnNoOrgPage) {
 				return NextResponse.redirect(new URL('/', request.url))
 			}
+
+			// Check if user is still a member of their active org
+			if (activeOrganizationId) {
+				const isActiveMember = await prisma.member.findFirst({
+					where: {
+						userId: session.user.id,
+						organizationId: activeOrganizationId,
+					},
+				})
+
+				if (!isActiveMember && !isOnRemovedPage) {
+					return NextResponse.redirect(new URL('/removed-from-organization', request.url))
+				}
+			}
 		}
 
 		// Check route permissions
-		const matchedRoute = Object.keys(routePermissions).find(route => nextUrl.pathname === route || nextUrl.pathname.startsWith(route + '/'))
+		const matchedRoute = Object.keys(routePermissions)
+			.sort((a, b) => b.length - a.length) // ✅ sort by length — most specific first
+			.find(route => nextUrl.pathname === route || nextUrl.pathname.startsWith(route + '/'))
+
 		const permission = matchedRoute ? routePermissions[matchedRoute] : null
 
 		if (permission) {

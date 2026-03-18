@@ -1,21 +1,38 @@
 import { Member, Prisma, Session, User } from '@/lib/generated/prisma/client'
 import { authClient } from './lib/auth-client'
 import { type LucideIcon } from 'lucide-react'
-import { SystemLevelRole } from './lib/permissions/system-permissions'
+import { Organization } from 'better-auth/plugins'
 
 export type ParsedRecording = Omit<Prisma.RecordingCreateInput, 'organization'> & {
 	organizationSlug: string
 }
 
 export type BetterAuthSession = typeof authClient.$Infer.Session
-export interface NavItem {
+// export interface NavItem {
+// 	title: string
+// 	url: string
+// 	icon?: LucideIcon
+// 	isActive?: boolean
+// 	context: ('global' | 'org')[]
+// 	role: SystemLevelRole[]
+// 	items?: NavItem[]
+// }
+
+export interface NavSubItem {
 	title: string
 	url: string
 	icon?: LucideIcon
-	isActive?: boolean
-	context: ('global' | 'org')[]
-	role: SystemLevelRole[]
-	items?: NavItem[]
+	context?: ('global' | 'org')[]
+	items?: NavSubItem[]
+}
+
+export interface NavItem {
+	title: string
+	url: string
+	icon: LucideIcon
+	group: 'main' | 'secondary'
+	order: number
+	items?: NavSubItem[]
 }
 export interface BreadcrumbSegment {
 	text: string
@@ -50,3 +67,7 @@ export type TreeNode<T> = T & {
 export type UserWithSessions = User & { sessions: Session[] }
 export type MemberWithUser = Member & { user: User }
 export type MemberWithUserWithSessions = Member & { user: UserWithSessions }
+export type UserWithSessionsAndMemberships = User & {
+	sessions: Session[]
+	members: (Member & { organization: Organization })[]
+}

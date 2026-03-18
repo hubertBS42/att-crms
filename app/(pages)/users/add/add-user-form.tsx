@@ -10,18 +10,26 @@ import { capitalizeFirstLetter, generatePassword } from '@/lib/utils'
 import { addUserFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useTransition } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { useEffect, useState, useTransition } from 'react'
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { addUserToAllOrganizations } from '@/lib/actions/user.actions'
+import { addOrgUserAction, addUserToAllOrganizations } from '@/lib/actions/user.actions'
 import { SYSTEM_LEVEL_ROLE_NAMES } from '@/lib/permissions/system-permissions'
-import RoleSelector from '@/components/role-selector'
 import BackButton from '@/components/back-button'
+import { ORG_LEVEL_ROLE_NAMES } from '@/lib/permissions/org-permissions'
+import { Organization } from '@/lib/generated/prisma/client'
+import SelectField from '@/components/select-field'
+import { Plus, Trash2 } from 'lucide-react'
+
+const systemRoleOptions = SYSTEM_LEVEL_ROLE_NAMES.filter(item => item !== 'superAdmin').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
+const orgRoleOptions = ORG_LEVEL_ROLE_NAMES.filter(item => item !== 'owner').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
 
 const AddUserForm = () => {
 	const router = useRouter()
 	const [isPending, startTransition] = useTransition()
+	const [organizations, setOrganizations] = useState<Organization[]>([])
+	const [isOrgsLoading, setIsOrgsLoading] = useState(false)
 
 	const form = useForm<z.infer<typeof addUserFormSchema>>({
 		resolver: zodResolver(addUserFormSchema),
@@ -29,9 +37,45 @@ const AddUserForm = () => {
 			name: '',
 			email: '',
 			image: null,
-			role: 'admin',
+			systemRole: 'user',
+			organizations: [{ organizationId: '', orgRole: 'member' }],
 		},
 	})
+
+	const { fields, append, remove } = useFieldArray({
+		control: form.control,
+		name: 'organizations',
+	})
+
+	const selectedRole = form.watch('systemRole')
+	const isOrgUser = selectedRole === 'user'
+
+	// Set first org default after fetch
+	useEffect(() => {
+		if (!isOrgUser) return
+
+		const fetchOrgs = async () => {
+			setIsOrgsLoading(true)
+			try {
+				const response = await fetch('/api/organizations')
+				const data: Organization[] = await response.json()
+				const filtered = data.filter(org => org.slug !== 'global')
+				setOrganizations(filtered)
+				form.setValue('organizations', [{ organizationId: filtered[0]?.id ?? '', orgRole: 'member' }])
+			} catch (error) {
+				console.error('Failed to fetch organizations:', error)
+			} finally {
+				setIsOrgsLoading(false)
+			}
+		}
+
+		fetchOrgs()
+	}, [isOrgUser, form])
+
+	const orgOptions = organizations.map(org => ({
+		label: org.name,
+		value: org.id,
+	}))
 
 	const onSubmit: SubmitHandler<z.infer<typeof addUserFormSchema>> = async data => {
 		startTransition(async () => {
@@ -40,20 +84,37 @@ const AddUserForm = () => {
 					name: data.name,
 					email: data.email,
 					password: generatePassword({ passwordLength: 16 }),
-					role: data.role,
+					role: data.systemRole,
 					data: {
 						image: data.image,
 					},
 				},
 				{
 					onSuccess: async ctx => {
-						await addUserToAllOrganizations(ctx.data.user.id, data.role)
+						const userId = ctx.data.user.id
+
+						if (data.systemRole === 'user') {
+							const result = await addOrgUserAction({
+								userId,
+								organizations: data.organizations,
+							})
+
+							if (!result.success) {
+								toast.error('User created but failed to add to organizations', {
+									description: result.error,
+								})
+							}
+						} else {
+							// Add admin to all organizations
+							await addUserToAllOrganizations({ userId: ctx.data.user.id, systemRole: data.systemRole })
+						}
+
 						await authClient.requestPasswordReset({
 							email: data.email,
 							redirectTo: '/set-password?action=set',
 						})
-						router.push('/users')
 						toast.success('User successfully added.')
+						router.push('/users')
 					},
 
 					onError: ctx => {
@@ -75,7 +136,6 @@ const AddUserForm = () => {
 		router.push('/users')
 	}
 
-	const adminRoleOptions = SYSTEM_LEVEL_ROLE_NAMES.filter(item => item !== 'user').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)}>
 			<div className='grid gap-y-6'>
@@ -106,11 +166,11 @@ const AddUserForm = () => {
 				</div>
 
 				<div className='grid gap-8'>
-					<div className='grid items-start gap-4'>
+					<div className='grid gap-4'>
 						<Card>
 							<CardHeader>
 								<CardTitle>Details</CardTitle>
-								<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+								<CardDescription>Basic information about the user</CardDescription>
 							</CardHeader>
 							<CardContent className='grid grid-cols-2 gap-5'>
 								<div className='grid col-span-2'>
@@ -122,7 +182,6 @@ const AddUserForm = () => {
 										autoFocus
 									/>
 								</div>
-
 								<div className='grid col-span-2 lg:col-span-1'>
 									<InputField
 										control={form.control}
@@ -132,17 +191,79 @@ const AddUserForm = () => {
 										disabled={isPending}
 									/>
 								</div>
-
 								<div className='grid col-span-2 lg:col-span-1'>
-									<RoleSelector
+									<SelectField
 										control={form.control}
-										isSubmitting={isPending}
-										options={adminRoleOptions}
-										permissionType='system'
+										label='System role'
+										name='systemRole'
+										options={systemRoleOptions}
+										disabled={isPending}
+										loadingPlaceholder='Admin'
 									/>
 								</div>
 							</CardContent>
 						</Card>
+
+						{isOrgUser && (
+							<Card>
+								<CardHeader>
+									<CardTitle>Organization</CardTitle>
+									<CardDescription>Assign this user to one or more organizations</CardDescription>
+								</CardHeader>
+								<CardContent className='grid gap-4'>
+									{fields.map((field, index) => (
+										<div
+											key={field.id}
+											className='grid grid-cols-2 gap-4 items-end'
+										>
+											<SelectField
+												control={form.control}
+												label='Organization'
+												name={`organizations.${index}.organizationId`}
+												options={orgOptions}
+												disabled={isPending || isOrgsLoading}
+												loadingPlaceholder='Select organization'
+											/>
+											<div className='flex items-end gap-2'>
+												<div className='flex-1'>
+													<SelectField
+														control={form.control}
+														label='Member role'
+														name={`organizations.${index}.orgRole`}
+														options={orgRoleOptions}
+														disabled={isPending}
+														loadingPlaceholder='Member'
+													/>
+												</div>
+												{fields.length > 1 && (
+													<Button
+														type='button'
+														variant={'outline'}
+														size={'icon'}
+														onClick={() => remove(index)}
+														disabled={isPending}
+														className='mb-0.5'
+													>
+														<Trash2 className='size-4' />
+													</Button>
+												)}
+											</div>
+										</div>
+									))}
+									<Button
+										type='button'
+										variant='outline'
+										size='sm'
+										onClick={() => append({ organizationId: '', orgRole: 'member' })}
+										disabled={isPending || isOrgsLoading}
+										className='w-full'
+									>
+										<Plus className='size-4' />
+										Add organization
+									</Button>
+								</CardContent>
+							</Card>
+						)}
 					</div>
 					<div className='flex items-center justify-center gap-2 md:hidden'>
 						{form.formState.isDirty ? (

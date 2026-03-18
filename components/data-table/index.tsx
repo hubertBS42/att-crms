@@ -40,6 +40,7 @@ interface DataTableProps<TData, TValue> {
 	data: TData[]
 	filters?: FilterConfig<TData>[]
 	defaultSorting?: SortingState
+	onRowClick?: (row: TData) => void
 }
 
 // Custom filter functions
@@ -53,7 +54,7 @@ const numberRangeFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
 	return true
 }
 
-export function DataTable<TData, TValue>({ columns, data, filters = [], defaultSorting = [] }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, filters = [], defaultSorting = [], onRowClick }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>(defaultSorting)
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 
@@ -108,6 +109,8 @@ export function DataTable<TData, TValue>({ columns, data, filters = [], defaultS
 								<TableRow
 									key={row.id}
 									data-state={row.getIsSelected() && 'selected'}
+									className={cn(onRowClick && 'cursor-pointer')}
+									onClick={() => onRowClick?.(row.original)}
 								>
 									{row.getVisibleCells().map((cell, idx) => (
 										<TableCell

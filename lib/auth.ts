@@ -209,7 +209,6 @@ export const auth = betterAuth({
 			},
 			schema: {
 				organization: {
-					modelName: 'organization',
 					additionalFields: {
 						plan: {
 							type: 'string',

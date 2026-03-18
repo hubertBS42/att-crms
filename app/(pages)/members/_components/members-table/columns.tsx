@@ -1,6 +1,5 @@
 import { ColumnDef, FilterFn } from '@tanstack/react-table'
 import dynamic from 'next/dynamic'
-import { ActionsSkeleton } from './actions'
 import { Checkbox } from '@/components/ui/checkbox'
 import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
@@ -34,7 +33,7 @@ const dateRangeFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
 	return date >= start && date <= end
 }
 
-const Actions = dynamic(() => import('./actions'), { ssr: false, loading: () => <ActionsSkeleton /> })
+// const Actions = dynamic(() => import('./actions'), { ssr: false, loading: () => <ActionsSkeleton /> })
 const RoleCell = dynamic(() => import('./role-cell'), { ssr: false, loading: () => <RollCellSkeleton /> })
 
 export const columns: ColumnDef<MemberWithUser>[] = [
@@ -107,12 +106,5 @@ export const columns: ColumnDef<MemberWithUser>[] = [
 		},
 		sortingFn: 'datetime',
 		filterFn: dateRangeFilterFn,
-	},
-	{
-		id: 'actions',
-		cell: ({ row }) => {
-			const member = row.original
-			return <Actions member={member} />
-		},
 	},
 ]

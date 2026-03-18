@@ -11,16 +11,27 @@ import { Control } from 'react-hook-form'
 interface RoleSelectorProps {
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	control: Control<any>
-	isSubmitting: boolean
+	isPending: boolean
 	user?: UserWithSessions | MemberWithUserWithSessions
 	options: PrimitiveOption[] | SelectOption[]
 	name?: string
 	label?: string
 	placeholder?: string
+	isDisabled?: boolean
 	permissionType?: 'system' | 'organization'
 }
 
-const RoleSelector = ({ control, isSubmitting, user, options, name = 'role', label = 'Role', placeholder, permissionType = 'system' }: RoleSelectorProps) => {
+const RoleSelector = ({
+	control,
+	isPending,
+	user,
+	options,
+	name = 'role',
+	label = 'Role',
+	placeholder,
+	isDisabled = false,
+	permissionType = 'system',
+}: RoleSelectorProps) => {
 	const getUserId = (user?: UserWithSessions | MemberWithUserWithSessions): string | undefined => {
 		if (!user) return undefined
 		if ('user' in user) return user.user.id
@@ -67,7 +78,7 @@ const RoleSelector = ({ control, isSubmitting, user, options, name = 'role', lab
 				name={name}
 				label={label}
 				options={options}
-				disabled={isLoading || isSubmitting || isCurrentUser || !canSetRole}
+				disabled={isDisabled || isLoading || isPending || isCurrentUser || !canSetRole}
 				loadingPlaceholder={capitalizeFirstLetter(resolvedPlaceholder)}
 			/>
 		</div>

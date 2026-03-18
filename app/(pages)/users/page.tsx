@@ -5,13 +5,13 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { Suspense } from 'react'
 import UsersTable from './_components/users-table'
-import { fetchSystemAdminUsers } from '@/lib/data/users.data'
+import { fetchAllUsers } from '@/lib/data/users.data'
 
 export const metadata: Metadata = {
 	title: 'Manage users',
 }
 const UsersPage = () => {
-	const data = fetchSystemAdminUsers()
+	const data = fetchAllUsers()
 	return (
 		<main className='flex flex-col gap-y-6'>
 			<div className='flex items-end justify-between'>

@@ -1,11 +1,9 @@
 import { ColumnDef, FilterFn } from '@tanstack/react-table'
-import dynamic from 'next/dynamic'
 import { Checkbox } from '@/components/ui/checkbox'
 import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/utils'
-import { ActionsSkeleton } from './actions'
 import { User } from '@/lib/generated/prisma/client'
 import { SystemLevelRole } from '@/lib/permissions/system-permissions'
 
@@ -47,8 +45,6 @@ const dateRangeFilterFn: FilterFn<any> = (row, columnId, filterValue) => {
 	return date >= start && date <= end
 }
 
-const Actions = dynamic(() => import('./actions'), { ssr: false, loading: () => <ActionsSkeleton /> })
-
 export const columns: ColumnDef<User>[] = [
 	{
 		id: 'select',
@@ -64,6 +60,7 @@ export const columns: ColumnDef<User>[] = [
 				checked={row.getIsSelected()}
 				onCheckedChange={value => row.toggleSelected(!!value)}
 				aria-label='Select row'
+				onClick={e => e.stopPropagation()}
 			/>
 		),
 		enableSorting: false,
@@ -127,12 +124,5 @@ export const columns: ColumnDef<User>[] = [
 		},
 		sortingFn: 'datetime',
 		filterFn: dateRangeFilterFn,
-	},
-	{
-		id: 'actions',
-		cell: ({ row }) => {
-			const user = row.original
-			return <Actions userId={user.id} />
-		},
 	},
 ]

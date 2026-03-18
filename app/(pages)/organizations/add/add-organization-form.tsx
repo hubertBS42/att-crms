@@ -72,7 +72,8 @@ const AddOrganizationForm = () => {
 				name: orgData.name,
 				slug: orgData.slug,
 				logo: !orgData.logo ? undefined : orgData.logo,
-
+				plan: orgData.plan,
+				status: orgData.status,
 				keepCurrentActiveOrganization: true,
 			})
 
