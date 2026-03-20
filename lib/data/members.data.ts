@@ -61,8 +61,3 @@ export const getOrganizationMemberById = async (memberId: string): Promise<DataR
 		return { success: false, error: formatError(error) }
 	}
 }
-
-export const getOrganizations = async () => {
-	const organizations = await prisma.organization.findMany()
-	console.log(organizations)
-}

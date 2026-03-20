@@ -29,6 +29,15 @@ const InviteMemberModal = () => {
 		},
 	})
 
+	const { data: activeMember, isPending: isActiveMemberLoading } = authClient.useActiveMember()
+
+	if (isActiveMemberLoading || !activeMember) return null
+
+	const canInvite = authClient.organization.checkRolePermission({
+		role: (activeMember?.role ?? 'member') as OrganizationLevelRole,
+		permissions: { invitation: ['create'] },
+	})
+
 	const roleOptions = ORG_LEVEL_ROLE_NAMES.filter(role => role !== 'owner').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
 
 	const onSubmit: SubmitHandler<z.infer<typeof inviteMemberFormSchema>> = async data => {
@@ -60,6 +69,8 @@ const InviteMemberModal = () => {
 			)
 		})
 	}
+
+	if (!canInvite) return null
 
 	return (
 		<Dialog
@@ -93,7 +104,8 @@ const InviteMemberModal = () => {
 							/>
 							<RoleSelector
 								control={form.control}
-								isSubmitting={isPending}
+								isDisabled={isPending}
+								isPending={isPending}
 								options={roleOptions}
 								permissionType='organization'
 							/>

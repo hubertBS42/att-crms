@@ -4,8 +4,8 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
-		"build": "next build",
-		"start": "next start",
+		"build": "pnpx prisma generate && next build --webpack && node scripts/post-build.mjs",
+		"start": "node .next/standalone/server.js",
 		"lint": "eslint",
 		"prisma:seed": "pnpx prisma db seed",
 		"prisma:studio": "pnpx prisma studio",
@@ -28,6 +28,7 @@
 		"date-fns": "^4.1.0",
 		"dotenv": "^17.3.1",
 		"lucide-react": "^0.577.0",
+		"media-chrome": "^4.18.1",
 		"music-metadata": "^11.12.3",
 		"next": "16.1.6",
 		"next-themes": "^0.4.6",

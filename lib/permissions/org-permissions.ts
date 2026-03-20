@@ -4,6 +4,7 @@ import { defaultStatements, adminAc, memberAc, ownerAc } from 'better-auth/plugi
 const statement = {
 	...defaultStatements,
 	member: [...defaultStatements.member, 'set-role'],
+	recording: ['listen', 'share', 'download', 'delete'],
 } as const
 
 export const orgAccessController = createAccessControl(statement)
@@ -12,14 +13,17 @@ export const organizationLevelRoles = {
 	owner: orgAccessController.newRole({
 		...ownerAc.statements,
 		member: [...ownerAc.statements.member, 'set-role'],
+		recording: ['listen', 'share', 'download', 'delete'],
 	}),
 
 	admin: orgAccessController.newRole({
 		...adminAc.statements,
 		member: [...adminAc.statements.member, 'set-role'],
+		recording: ['listen', 'share', 'download'],
 	}),
 	member: orgAccessController.newRole({
 		...memberAc.statements,
+		recording: ['listen', 'share', 'download'],
 	}),
 }
 

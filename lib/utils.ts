@@ -1,7 +1,6 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
-import path from 'path'
-import { FlatNode, ParsedRecording } from '@/interfaces'
+import { FlatNode } from '@/interfaces'
 import { ZodError } from 'zod'
 import { APIError } from 'better-auth'
 import { promisify } from 'util'
@@ -26,42 +25,6 @@ export const verifyPasswordWithScrypt = async (hashedPassword: string, password:
 
 	// Use timingSafeEqual to prevent timing attacks
 	return timingSafeEqual(storedKey, derivedKey)
-}
-
-export function parseRecording(filePath: string): ParsedRecording | null {
-	const ext = path.extname(filePath)
-	const dirname = path.dirname(filePath)
-	const organizationSlug = path.basename(dirname)
-	const filename = path.basename(filePath, ext)
-	// "record_2026-03-05_10-47-56_02030962222_147041007_147041007"
-
-	const parts = filename.split('_')
-
-	if (parts.length < 6) {
-		console.error(`Unexpected filename format: ${filename}`)
-		return null
-	}
-
-	const date = parts[1]
-	const rawTime = parts[2]
-	const caller = parts[3]
-	const calledNumber = parts[4]
-	const answeredBy = parts[5]
-
-	const time = rawTime.replace(/-/g, ':') // "10:47:56"
-	const datetime = new Date(`${date}T${time}`)
-
-	return {
-		organizationSlug,
-		callDate: date,
-		callTime: time,
-		datetime,
-		caller,
-		calledNumber,
-		answeredBy,
-		filename: path.basename(filePath),
-		filePath,
-	}
 }
 
 // Random password generator
@@ -137,30 +100,39 @@ export const flattenNodeTree = <T extends { id: string; children?: T[] }>(tree: 
 
 export const capitalizeFirstLetter = (value: string) => value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()
 
-export const formatDuration = (seconds: number): string => {
-	// Handle less than 1 minute
+export const formatDuration = (seconds: number, format: 'human' | 'timestamp' = 'human'): string => {
+	if (format === 'timestamp') {
+		const h = Math.floor(seconds / 3600)
+		const m = Math.floor((seconds % 3600) / 60)
+		const s = Math.floor(seconds % 60)
+		return [h, m, s].map(v => v.toString().padStart(2, '0')).join(':')
+	}
+
+	// Human readable
 	if (seconds < 60) {
 		return `${seconds} second${seconds !== 1 ? 's' : ''}`
 	}
 
 	const minutes = seconds / 60
 
-	// Handle less than 1 hour (show minutes)
 	if (minutes < 60) {
-		// Round to nearest whole number for minutes in emails
 		const roundedMinutes = Math.round(minutes)
 		return `${roundedMinutes} minute${roundedMinutes !== 1 ? 's' : ''}`
 	}
 
-	// Handle hours (show decimal only if needed)
 	const hours = minutes / 60
 
-	// For exact hours, show whole number
 	if (hours % 1 === 0) {
 		return `${hours} hour${hours !== 1 ? 's' : ''}`
 	}
 
-	// For fractional hours, round to 1 decimal
 	const roundedHours = Math.round(hours * 10) / 10
 	return `${roundedHours} hour${roundedHours !== 1 ? 's' : ''}`
+}
+
+export const formatSize = (bytes: number): string => {
+	if (bytes < 1024) return `${bytes} B`
+	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
+	if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
+	return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
 }

@@ -8,7 +8,7 @@ import path from 'path'
 export const APP_NAME = 'ATT CRMS'
 export const APP_DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 export const APP_URL = process.env.SERVER_URL || 'http://localhost:3000'
-export const APP_LOGO = 'https://www.attelecoms.co.uk/templates/att/images/logo.png'
+export const APP_LOGO = 'https://attdata.co.uk/resources/images/logo.png'
 export const RECORDINGS_PATH = path.join(os.homedir(), process.env.RECORDINGS_DIR ?? 'call_recordings')
 
 export const RESET_PASSWORD_TOKEN_EXPIRATON = 1800 // 30 minutes

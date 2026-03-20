@@ -13,34 +13,35 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { MemberWithUserWithSessions } from '@/interfaces'
-import { removeOrganizationMember } from '@/lib/actions/member.actions'
-import { useRouter } from 'next/navigation'
+import { Recording } from '@/lib/generated/prisma/client'
+import { deleteRecordingAction } from '@/lib/actions/recording.actions'
+import { Trash2 } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
+interface DeleteRecordingProps {
+	recording: Recording
+	onDelete?: () => void
+}
+
+const DeleteRecording = ({ recording, onDelete }: DeleteRecordingProps) => {
 	const [isPending, startTransition] = useTransition()
 	const [isOpen, setIsOpen] = useState(false)
 
-	const router = useRouter()
-
-	const handleRemove = () => {
+	const handleDelete = () => {
 		startTransition(async () => {
-			const response = await removeOrganizationMember(member.id)
-
-			if (response.error) {
+			const result = await deleteRecordingAction(recording.id)
+			if (!result.success) {
 				setIsOpen(false)
-				toast.error('Operation failed', { description: response.error })
-			} else {
-				setIsOpen(false)
-				toast.success('Member removed', {
-					description: `${member.user.name} has been removed from this organization.`,
-				})
-				router.push('/members')
+				toast.error('Failed to delete recording', { description: result.error })
+				return
 			}
+			setIsOpen(false)
+			toast.success('Recording deleted successfully.')
+			onDelete?.()
 		})
 	}
+
 	return (
 		<AlertDialog
 			open={isOpen}
@@ -48,32 +49,34 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 		>
 			<AlertDialogTrigger asChild>
 				<Button
-					type='button'
+					variant='destructive'
 					className='w-full'
-					variant={'destructive'}
 				>
-					Remove member
+					<Trash2 className='size-4' />
+					Delete
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-					<AlertDialogDescription>{`This action cannot be undone. ${member.user.name} will be removed from this organization.`}</AlertDialogDescription>
+					<AlertDialogDescription>{`This will permanently delete ${recording.filename}. This action cannot be undone.`}</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={e => {
 							e.preventDefault()
-							handleRemove()
+							handleDelete()
 						}}
 						disabled={isPending}
+						className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 					>
-						{isPending ? <Spinner /> : 'Continue'}
+						{isPending ? <Spinner /> : 'Delete'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
 		</AlertDialog>
 	)
 }
-export default RemoveMember
+
+export default DeleteRecording

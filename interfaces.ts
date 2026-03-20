@@ -8,15 +8,6 @@ export type ParsedRecording = Omit<Prisma.RecordingCreateInput, 'organization'> 
 }
 
 export type BetterAuthSession = typeof authClient.$Infer.Session
-// export interface NavItem {
-// 	title: string
-// 	url: string
-// 	icon?: LucideIcon
-// 	isActive?: boolean
-// 	context: ('global' | 'org')[]
-// 	role: SystemLevelRole[]
-// 	items?: NavItem[]
-// }
 
 export interface NavSubItem {
 	title: string

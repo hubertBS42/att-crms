@@ -1,6 +1,5 @@
 import { ParsedRecording } from '@/interfaces'
 import prisma from './prisma'
-import { getRecordingMetadata } from './recording-metadata'
 
 export async function indexRecordingBatch(recordings: ParsedRecording[]) {
 	const results = await Promise.allSettled(recordings.map(recording => indexRecording(recording)))
@@ -14,15 +13,12 @@ export async function indexRecordingBatch(recordings: ParsedRecording[]) {
 export async function indexRecording(recording: ParsedRecording) {
 	try {
 		const { organizationSlug, ...data } = recording
-		const { duration, size } = await getRecordingMetadata(recording.filePath)
 
 		await prisma.recording.upsert({
 			where: { filename: recording.filename },
 			update: {}, // do nothing if it already exists
 			create: {
 				...data,
-				duration,
-				size,
 				organization: {
 					connect: { slug: organizationSlug },
 				},

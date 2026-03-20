@@ -3,7 +3,6 @@ import { defaultStatements, adminAc, userAc } from 'better-auth/plugins/admin/ac
 
 const statement = {
 	...defaultStatements,
-	recording: ['listen', 'share', 'download', 'delete'],
 	organization: ['create', 'update', 'delete', 'switch'],
 } as const
 
@@ -11,15 +10,12 @@ export const systemAccessController = createAccessControl(statement)
 
 export const systemLevelRoles = {
 	user: systemAccessController.newRole({
-		recording: ['listen', 'share', 'download'],
 		...userAc.statements,
 	}),
 	admin: systemAccessController.newRole({
-		recording: ['listen', 'share', 'download'],
 		...adminAc.statements,
 	}),
 	superAdmin: systemAccessController.newRole({
-		recording: ['listen', 'share', 'download', 'delete'],
 		...adminAc.statements,
 	}),
 }

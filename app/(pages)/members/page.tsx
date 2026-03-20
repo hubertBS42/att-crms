@@ -5,10 +5,12 @@ import { Suspense } from 'react'
 import MembersTable from './_components/members-table'
 import InviteMemberModal from './_components/invite-member-modal'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
 	title: 'Manage members',
 }
-const MembersPage = () => {
+const MembersPage = async () => {
 	const data = fetchOrganizationMembers()
 	return (
 		<main className='flex flex-col gap-y-6'>
