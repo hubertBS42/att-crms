@@ -1,0 +1,11 @@
+{
+	"extends": "@att-crms/typescript-config/base.json",
+	"compilerOptions": {
+		"outDir": "./dist",
+		"types": ["node"],
+		"module": "commonjs",
+		"moduleResolution": "node"
+	},
+	"include": ["src/**/*"],
+	"exclude": ["node_modules", "dist"]
+}

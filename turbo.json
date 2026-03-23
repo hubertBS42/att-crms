@@ -1,0 +1,49 @@
+{
+	"$schema": "https://turborepo.dev/schema.json",
+	"globalEnv": [
+		"DATABASE_URL",
+		"RECORDINGS_DIR",
+		"SERVER_URL",
+		"BETTER_AUTH_SECRET",
+		"BETTER_AUTH_URL",
+		"SITE_MAILER_HOST",
+		"SITE_MAILER_PORT",
+		"SITE_MAILER_EMAIL",
+		"SITE_MAILER_PASSWORD"
+	],
+	"tasks": {
+		"build": {
+			"dependsOn": ["^build", "db:generate"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**"],
+			"cache": false
+		},
+		"dev": {
+			"dependsOn": ["^db:generate"],
+			"cache": false,
+			"persistent": true
+		},
+		"start": {
+			"cache": false,
+			"persistent": true
+		},
+		"lint": {
+			"dependsOn": ["^lint"]
+		},
+		"db:generate": {
+			"cache": false
+		},
+		"db:migrate": {
+			"cache": false
+		},
+		"db:deploy": {
+			"cache": false
+		},
+		"db:seed": {
+			"cache": false
+		},
+		"db:studio": {
+			"cache": false
+		}
+	}
+}

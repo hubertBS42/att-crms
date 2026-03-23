@@ -1,0 +1,22 @@
+{
+	"name": "watcher",
+	"version": "0.0.0",
+	"type": "module",
+	"private": true,
+	"scripts": {
+		"dev": "tsx watch --env-file=.env src/index.ts",
+		"build": "echo 'No build step required'",
+		"start": "tsx --env-file=.env ./src/index.ts"
+	},
+	"dependencies": {
+		"@att-crms/db": "workspace:*",
+		"chokidar": "^5.0.0",
+		"music-metadata": "^11.12.3"
+	},
+	"devDependencies": {
+		"@att-crms/typescript-config": "workspace:*",
+		"@types/node": "^20",
+		"tsx": "^4.21.0",
+		"typescript": "^5"
+	}
+}
