@@ -22,6 +22,7 @@ async function main() {
 	await prisma.session.deleteMany()
 	await prisma.account.deleteMany()
 	await prisma.user.deleteMany()
+	await prisma.activity.deleteMany()
 
 	console.log('Database cleared')
 

@@ -20,11 +20,7 @@ const EditUserPage = async ({ params }: EditUserPageProps) => {
 
 	const user = response.data
 
-	if (user.role === 'user') {
-		return <EditOrgUserForm user={user} />
-	}
-
+	if (user.role === 'user') return <EditOrgUserForm user={user} />
 	return <EditAdminForm user={user} />
-	return <></>
 }
 export default EditUserPage

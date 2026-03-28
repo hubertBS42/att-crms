@@ -55,6 +55,12 @@ const UserFormFields = ({ control, user, isPending }: UserFormFieldsProps) => {
 								disabled
 							/>
 						</Field>
+						<InputField
+							control={control}
+							name='image'
+							label='Avatar URL'
+							disabled={isPending}
+						/>
 					</CardContent>
 				</Card>
 			</div>

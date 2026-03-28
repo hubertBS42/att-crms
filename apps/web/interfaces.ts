@@ -1,4 +1,4 @@
-import { Member, Organization, Session, User } from '@att-crms/db/client'
+import { Invitation, Member, Organization, Session, User } from '@att-crms/db/client'
 import { type LucideIcon } from 'lucide-react'
 
 export interface NavSubItem {
@@ -56,3 +56,15 @@ export interface BreadcrumbConfig {
 	pathname: string
 	segments: BreadcrumbSegment[]
 }
+
+export interface OrgRecordingsOverTimeData {
+	date: string
+	count: number
+}
+
+export interface GlobalRecordingsOverTimeData {
+	chartData: { date: string; [orgSlug: string]: number | string }[]
+	organizations: { slug: string; name: string }[]
+}
+
+export type InvitationWithUser = Invitation & { user: User }

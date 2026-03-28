@@ -7,6 +7,7 @@ import { capitalizeFirstLetter } from '@/lib/utils'
 import { format } from 'date-fns'
 import DeleteOrganization from './_components/delete-organization'
 import { prisma } from '@att-crms/db'
+import LeaveOrganization from '../members/_components/member-actions/leave-organization'
 
 const SettingsPage = async () => {
 	const session = await auth.api.getSession({ headers: await headers() })
@@ -74,17 +75,13 @@ const SettingsPage = async () => {
 				</div>
 
 				{/* Right column */}
-				{isPlatformStaff && (
-					<Card className='border-destructive'>
-						<CardHeader>
-							<CardTitle>Actions</CardTitle>
-							<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<DeleteOrganization organization={organization} />
-						</CardContent>
-					</Card>
-				)}
+				<Card className='border-destructive'>
+					<CardHeader>
+						<CardTitle>Actions</CardTitle>
+						<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+					</CardHeader>
+					<CardContent>{isPlatformStaff ? <DeleteOrganization organization={organization} /> : <LeaveOrganization />} </CardContent>
+				</Card>
 			</div>
 		</div>
 	)

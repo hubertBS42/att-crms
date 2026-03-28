@@ -1,5 +1,5 @@
 'server-only'
-import { DataResponse, MemberWithUser, MemberWithUserWithSessions } from '@/interfaces'
+import { DataResponse, InvitationWithUser, MemberWithUser, MemberWithUserWithSessions } from '@/interfaces'
 import { headers } from 'next/headers'
 import { auth } from '../auth'
 import { formatError } from '../utils'
@@ -57,6 +57,28 @@ export const getOrganizationMemberById = async (memberId: string): Promise<DataR
 		if (!member) return { success: false, error: 'Member not found' }
 
 		return { success: true, data: member }
+	} catch (error) {
+		return { success: false, error: formatError(error) }
+	}
+}
+
+export const fetchOrganizationInvitations = async (): Promise<DataResponse<InvitationWithUser[]>> => {
+	try {
+		const session = await auth.api.getSession({ headers: await headers() })
+		if (!session) return { success: false, error: 'Unauthorized' }
+
+		const activeOrganizationId = session.session.activeOrganizationId
+		if (!activeOrganizationId) return { success: false, error: 'No active organization' }
+
+		const invitations = await prisma.invitation.findMany({
+			where: {
+				organizationId: activeOrganizationId,
+				status: 'pending',
+			},
+			include: { user: true },
+		})
+
+		return { success: true, data: invitations }
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}

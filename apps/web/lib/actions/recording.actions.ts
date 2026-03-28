@@ -4,15 +4,16 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { formatError } from '@/lib/utils'
 import fs from 'fs'
-import { prisma } from '@att-crms/db'
+import { logActivity, prisma } from '@att-crms/db'
 
 export async function deleteRecordingAction(recordingId: string) {
 	try {
-		const session = await auth.api.getSession({ headers: await headers() })
+		const headersObj = await headers()
+		const session = await auth.api.getSession({ headers: headersObj })
 		if (!session) return { success: false, error: 'Unauthorized' }
 
 		const canDelete = await auth.api.hasPermission({
-			headers: await headers(),
+			headers: headersObj,
 			body: {
 				permissions: {
 					recording: ['delete'],
@@ -24,6 +25,7 @@ export async function deleteRecordingAction(recordingId: string) {
 
 		const recording = await prisma.recording.findUnique({
 			where: { id: recordingId },
+			include: { organization: { select: { id: true, name: true } } },
 		})
 
 		if (!recording) return { success: false, error: 'Recording not found' }
@@ -36,6 +38,17 @@ export async function deleteRecordingAction(recordingId: string) {
 		// Delete from database
 		await prisma.recording.delete({
 			where: { id: recordingId },
+		})
+
+		await logActivity({
+			type: 'DELETE',
+			resource: 'RECORDING',
+			actorId: session.user.id,
+			actorName: session.user.name,
+			organizationId: recording.organization.id,
+			organizationName: recording.organization.name,
+			targetId: recording.id,
+			targetName: recording.filename,
 		})
 
 		return { success: true }

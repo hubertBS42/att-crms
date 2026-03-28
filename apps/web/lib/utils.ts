@@ -55,6 +55,9 @@ export const formatError = (error: any): string => {
 	}
 
 	if (error instanceof APIError) {
+		if (Object.hasOwn(error, 'body')) {
+			return error.body?.message?.toString() || 'API Error'
+		}
 		return error.status?.toString() || 'API Error'
 	}
 

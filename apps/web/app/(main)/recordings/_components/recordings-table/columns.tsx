@@ -86,14 +86,4 @@ export const columns: ColumnDef<Recording>[] = [
 		),
 		cell: ({ row }) => <div className='text-sm font-mono'>{formatDuration(row.original.duration, 'timestamp')}</div>,
 	},
-	// {
-	// 	accessorKey: 'size',
-	// 	header: ({ column }) => (
-	// 		<ColumnHeader
-	// 			column={column}
-	// 			title='Size'
-	// 		/>
-	// 	),
-	// 	cell: ({ row }) => <div className='text-sm'>{formatSize(row.original.size)}</div>,
-	// },
 ]

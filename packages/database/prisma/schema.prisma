@@ -18,6 +18,37 @@ enum OrganizationPlan {
   ENTERPRISE
 }
 
+enum ActivityType {
+  CREATE
+  UPDATE
+  DELETE
+  ALERT
+}
+
+enum ActivityResource {
+  RECORDING
+  ORGANIZATION
+  MEMBER
+  INVITATION
+  USER
+}
+
+model Activity {
+  id               String           @id @default(dbgenerated("gen_random_uuid()"))
+  type             ActivityType
+  resource         ActivityResource
+  organizationId   String?
+  organizationName String?
+  actorId          String?
+  actorName        String?
+  targetId         String?
+  targetName       String?
+  metadata         Json?
+  createdAt        DateTime         @default(now())
+
+  @@map("activity")
+}
+
 model Recording {
   id               String   @id @default(dbgenerated("gen_random_uuid()"))
   filename         String   @unique // prevents duplicate indexing across restarts

@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { MemberWithUserWithSessions } from '@/interfaces'
-import { removeOrganizationMember } from '@/lib/actions/member.actions'
+import { removeOrganizationMemberAction } from '@/lib/actions/member.actions'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -27,7 +27,7 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 
 	const handleRemove = () => {
 		startTransition(async () => {
-			const response = await removeOrganizationMember(member.id)
+			const response = await removeOrganizationMemberAction({ memberId: member.id, organizationId: member.organizationId })
 
 			if (response.error) {
 				setIsOpen(false)

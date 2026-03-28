@@ -12,7 +12,7 @@ import {
 	SidebarMenuSubItem,
 	useSidebar,
 } from '@/components/ui/sidebar'
-import { ChevronRight, CirclePlusIcon } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible'
@@ -20,6 +20,7 @@ import { cn } from '@/lib/utils'
 import { Skeleton } from './ui/skeleton'
 import { NavItem, NavSubItem } from '@/interfaces'
 import { useNavItems } from '@/hooks/use-nav-items'
+import QuickCreateButton from './quick-create-button'
 
 export function NavMainSkeleton() {
 	return (
@@ -193,13 +194,7 @@ const NavMain = () => {
 						{isAdmin && isGlobalWorkspace && (
 							<SidebarMenu>
 								<SidebarMenuItem className='flex items-center gap-2'>
-									<SidebarMenuButton
-										tooltip='Quick Create'
-										className='min-w-8 bg-primary text-primary-foreground duration-200 ease-linear hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground'
-									>
-										<CirclePlusIcon />
-										<span>Quick Create</span>
-									</SidebarMenuButton>
+									<QuickCreateButton />
 								</SidebarMenuItem>
 							</SidebarMenu>
 						)}

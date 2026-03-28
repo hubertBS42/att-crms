@@ -7,7 +7,8 @@
 		"db:migrate": "prisma migrate dev",
 		"db:deploy": "prisma migrate deploy",
 		"db:studio": "prisma studio",
-		"db:seed": "prisma db seed"
+		"db:seed": "prisma db seed",
+		"build": "pnpm db:generate && tsc"
 	},
 	"devDependencies": {
 		"@att-crms/typescript-config": "workspace:*",
@@ -18,13 +19,13 @@
 	"dependencies": {
 		"@noble/hashes": "^2.0.1",
 		"@prisma/adapter-pg": "^7.5.0",
-		"@prisma/client": "^7.5.0",
+		"@prisma/client": "^7.6.0",
 		"dotenv": "^17.3.1",
 		"pg": "^8.20.0"
 	},
 	"exports": {
-		".": "./src/index.ts",
-		"./enums": "./generated/prisma/enums.ts",
-		"./client": "./generated/prisma/client.ts"
+		".": "./dist/src/index.js",
+		"./enums": "./dist/generated/prisma/enums.js",
+		"./client": "./dist/generated/prisma/client.js"
 	}
 }

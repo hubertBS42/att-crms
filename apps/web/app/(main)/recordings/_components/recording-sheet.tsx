@@ -27,7 +27,7 @@ const RecordingSheet = ({ recording, isOpen, onClose }: RecordingSheetProps) => 
 					<SheetDescription>Lorem ipsum dolor sit amet consectetur adipisicing elit</SheetDescription>
 				</SheetHeader>
 
-				<div className='grid gap-6 mt-6 px-4'>
+				<div className='grid gap-6 px-4'>
 					{/* Audio player */}
 					<AudioPlayer src={`/api/recordings/${recording.id}/stream`} />
 

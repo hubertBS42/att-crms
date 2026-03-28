@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MemberWithUser } from '@/interfaces'
+import { updateOrganizationMemberRoleAction } from '@/lib/actions/member.actions'
 import { authClient } from '@/lib/auth-client'
 import { ORG_LEVEL_ROLE_NAMES, OrganizationLevelRole } from '@/lib/permissions/org-permissions'
 import { capitalizeFirstLetter } from '@/lib/utils'
@@ -53,21 +54,19 @@ const RoleCell = ({ member }: { member: MemberWithUser }) => {
 
 	const handleRoleChange = (role: string) => {
 		startTransition(async () => {
-			await authClient.organization.updateMemberRole(
-				{
-					role: role,
-					memberId: member.id,
-				},
-				{
-					onError: ctx => {
-						toast.error('Operation failed', { description: ctx.error.message })
-					},
-					onSuccess: () => {
-						toast.success('Operation success', { description: "Member's role has been updated successfully!" })
-						router.refresh()
-					},
-				},
-			)
+			const response = await updateOrganizationMemberRoleAction({
+				memberId: member.id,
+				role,
+				organizationId: member.organizationId,
+			})
+
+			if (!response.success) {
+				toast.error('Operation failed', { description: response.error })
+				return
+			}
+
+			toast.success('Operation success', { description: "Member's role has been updated successfully!" })
+			router.refresh()
 		})
 	}
 

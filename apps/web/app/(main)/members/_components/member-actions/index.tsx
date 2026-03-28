@@ -6,6 +6,7 @@ import RemoveMember from './remove-member'
 import { OrganizationLevelRole } from '@/lib/permissions/org-permissions'
 import PromoteToOwner from './promote-to-owner'
 import { Skeleton } from '@/components/ui/skeleton'
+import LeaveOrganization from './leave-organization'
 
 interface MemberActionsProps {
 	member: MemberWithUserWithSessions
@@ -37,7 +38,7 @@ const MemberActions = ({ member }: MemberActionsProps) => {
 					{canSetRole && !isOwner && <PromoteToOwner member={member} />}
 				</>
 			) : (
-				<span className='font-light text-muted-foreground'>No actions available</span>
+				<LeaveOrganization />
 			)}
 		</div>
 	)

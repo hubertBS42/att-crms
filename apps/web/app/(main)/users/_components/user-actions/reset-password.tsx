@@ -12,7 +12,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { authClient } from '@/lib/auth-client'
+import { requestPasswordResetAction } from '@/lib/actions/user.actions'
 import { User } from '@att-crms/db/client'
 import { Loader } from 'lucide-react'
 import { useState, useTransition } from 'react'
@@ -24,22 +24,18 @@ const ResetPassword = ({ user }: { user: User }) => {
 
 	const handleReset = () => {
 		startTransition(async () => {
-			await authClient.requestPasswordReset(
-				{
-					email: user.email,
-					redirectTo: '/set-password?action=reset',
-				},
-				{
-					onSuccess: () => {
-						setIsOpen(false)
-						toast.success('Operation success', { description: 'Reset email has been sent.' })
-					},
+			const response = await requestPasswordResetAction({
+				email: user.email,
+				redirectTo: '/set-password?action=reset',
+				actor: 'admin',
+			})
 
-					onError: ctx => {
-						toast.error('Operation failed', { description: ctx.error.message })
-					},
-				},
-			)
+			if (!response.success) {
+				toast.error('Operation failed', { description: response.error })
+			}
+
+			setIsOpen(false)
+			toast.success('Operation success', { description: 'Reset email has been sent.' })
 		})
 	}
 	return (

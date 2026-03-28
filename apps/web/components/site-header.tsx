@@ -7,6 +7,7 @@ import { BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, Breadcr
 import { Fragment } from 'react/jsx-runtime'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import ThemeToggle from './theme-toggle'
 
 export function SiteHeader() {
 	const pathname = usePathname()
@@ -57,6 +58,7 @@ export function SiteHeader() {
 						)
 					})}
 				</BreadcrumbList>
+				<ThemeToggle className='ml-auto' />
 			</div>
 		</header>
 	)

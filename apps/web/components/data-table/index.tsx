@@ -41,6 +41,7 @@ interface DataTableProps<TData, TValue> {
 	filters?: FilterConfig<TData>[]
 	defaultSorting?: SortingState
 	onRowClick?: (row: TData) => void
+	enablePagination?: boolean
 }
 
 // Custom filter functions
@@ -81,7 +82,7 @@ export const dateRangeFilterFn: FilterFn<any> = (row, columnId, filterValue) => 
 	return date >= start && date <= end
 }
 
-export function DataTable<TData, TValue>({ columns, data, filters = [], defaultSorting = [], onRowClick }: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, filters = [], defaultSorting = [], onRowClick, enablePagination = true }: DataTableProps<TData, TValue>) {
 	const [sorting, setSorting] = React.useState<SortingState>(defaultSorting)
 	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
 
@@ -104,7 +105,7 @@ export function DataTable<TData, TValue>({ columns, data, filters = [], defaultS
 	})
 
 	return (
-		<div className='grid border rounded-md'>
+		<div className={cn(filters.length > 0 && 'border', 'grid rounded-md overflow-hidden')}>
 			{filters.length > 0 && (
 				<FiltersToolbar
 					table={table}
@@ -113,7 +114,7 @@ export function DataTable<TData, TValue>({ columns, data, filters = [], defaultS
 			)}
 			<div className='relative w-full overflow-auto border border-l-0 border-r-0'>
 				<Table>
-					<TableHeader>
+					<TableHeader className='sticky top-0 z-10 bg-muted'>
 						{table.getHeaderGroups().map(headerGroup => (
 							<TableRow key={headerGroup.id}>
 								{headerGroup.headers.map((header, idx) => {
@@ -162,7 +163,7 @@ export function DataTable<TData, TValue>({ columns, data, filters = [], defaultS
 				</Table>
 			</div>
 
-			<Pagination table={table} />
+			{enablePagination && <Pagination table={table} />}
 		</div>
 	)
 }

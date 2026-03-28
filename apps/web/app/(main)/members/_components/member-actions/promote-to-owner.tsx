@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { MemberWithUserWithSessions } from '@/interfaces'
-import { authClient } from '@/lib/auth-client'
+import { updateOrganizationMemberRoleAction } from '@/lib/actions/member.actions'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -26,21 +26,19 @@ const PromoteToOwner = ({ member }: { member: MemberWithUserWithSessions }) => {
 
 	const handlePromote = () => {
 		startTransition(async () => {
-			await authClient.organization.updateMemberRole(
-				{
-					role: 'owner',
-					memberId: member.id,
-				},
-				{
-					onError: ctx => {
-						toast.error('Operation failed', { description: ctx.error.message })
-					},
-					onSuccess: () => {
-						toast.success('Operation success', { description: 'Member has been promoted to owner!' })
-						router.refresh()
-					},
-				},
-			)
+			const response = await updateOrganizationMemberRoleAction({
+				memberId: member.id,
+				organizationId: member.organizationId,
+				role: 'owner',
+			})
+
+			if (!response.success) {
+				toast.error('Operation failed', { description: response.error })
+				return
+			}
+
+			toast.success('Operation success', { description: 'Member has been promoted to owner!' })
+			router.refresh()
 		})
 	}
 

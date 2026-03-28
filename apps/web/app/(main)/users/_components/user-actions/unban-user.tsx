@@ -12,7 +12,7 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
-import { authClient } from '@/lib/auth-client'
+import { unbanUserAction } from '@/lib/actions/user.actions'
 import { User } from '@att-crms/db/client'
 import { Loader } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -26,23 +26,17 @@ const UnbanUser = ({ user }: { user: User }) => {
 
 	const handleUnban = () => {
 		startTransition(async () => {
-			await authClient.admin.unbanUser(
-				{
-					userId: user.id,
-				},
-				{
-					onSuccess: () => {
-						startTransition(() => {
-							setIsOpen(false)
-							router.push(`/users/${user.id}/edit`)
-							toast.success('Operation success', { description: 'The user has been successfully unbanned.' })
-						})
-					},
-					onError: () => {
-						toast.error('Operation failed', { description: 'Something went wrong...' })
-					},
-				},
-			)
+			const response = await unbanUserAction(user.id)
+			if (!response.success) {
+				toast.error('Operation failed', { description: 'Something went wrong...' })
+				return
+			}
+
+			startTransition(() => {
+				setIsOpen(false)
+				router.push(`/users/${user.id}/edit`)
+				toast.success('Operation success', { description: 'The user has been successfully unbanned.' })
+			})
 		})
 	}
 

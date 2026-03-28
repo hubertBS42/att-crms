@@ -44,7 +44,7 @@ async function reconcile() {
 
 	for (let i = 0; i < missed.length; i += BATCH_SIZE) {
 		const batch = missed.slice(i, i + BATCH_SIZE)
-		await processBatch(batch)
+		await processBatch({ files: batch, isLive: false })
 		console.log(`Reconciliation indexed ${Math.min(i + BATCH_SIZE, missed.length)} / ${missed.length}`)
 	}
 
@@ -57,17 +57,24 @@ async function processLiveQueue() {
 	const files = [...liveQueue]
 	liveQueue.length = 0
 
-	console.log(`Processing live queue: ${files.length} files`)
+	const live = isReady
+
+	console.log(`Processing ${live ? 'live' : 'initial'} queue: ${files.length} files`)
 
 	for (let i = 0; i < files.length; i += BATCH_SIZE) {
 		const batch = files.slice(i, i + BATCH_SIZE)
-		await processBatch(batch)
-		console.log(`Live indexed ${Math.min(i + BATCH_SIZE, files.length)} / ${files.length}`)
+		await processBatch({ files: batch, isLive: live })
+		console.log(`${live ? 'Live' : 'Initial'} indexed ${Math.min(i + BATCH_SIZE, files.length)} / ${files.length}`)
 	}
 
-	console.log('Live queue processing complete')
+	console.log(`${live ? 'Live' : 'Initial'} queue processing complete`)
 
 	await reconcile()
+
+	if (!isReady) {
+		isReady = true
+		console.log('Watcher is now live')
+	}
 }
 
 function startQueueMonitor() {
@@ -84,7 +91,7 @@ function startQueueMonitor() {
 	}, 1000)
 }
 
-async function processBatch(files: string[]) {
+async function processBatch({ files, isLive = false }: { files: string[]; isLive?: boolean }) {
 	const results = await Promise.all(files.map(parseRecording))
 
 	const nullResults = results.filter(r => r === null).length
@@ -93,8 +100,10 @@ async function processBatch(files: string[]) {
 	}
 
 	const recordings = results.filter(Boolean) as ParsedRecording[]
-	await indexRecordingBatch(recordings)
+	await indexRecordingBatch({ recordings, isLive })
 }
+
+let isReady = false
 
 export async function startWatcher() {
 	if (watcherStarted) return
@@ -123,6 +132,7 @@ export async function startWatcher() {
 
 	watcher.on('ready', () => {
 		console.log(`Watcher ready: ${liveQueue.length} existing recordings queued`)
+		isReady = false
 		lastAddTime = Date.now()
 		startQueueMonitor()
 	})

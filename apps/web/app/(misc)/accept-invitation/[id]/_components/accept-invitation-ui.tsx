@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { toast } from 'sonner'
 import { Invitation, Organization, User } from '@att-crms/db/client'
+import { acceptInvitationAction, rejectInvitationAction } from '@/lib/actions/invitation.actions'
 
 type InvitationWithUserWithOrganization = Invitation & { user: User } & { organization: Organization }
 
@@ -16,39 +17,41 @@ const AcceptInvitationUI = ({ invitation }: { invitation: InvitationWithUserWith
 
 	const handleAccept = () => {
 		startTransition(async () => {
-			await authClient.organization.acceptInvitation(
-				{ invitationId: invitation.id },
-				{
-					onError: ctx => {
-						toast.error('Failed to accept invitation', { description: ctx.error.message })
-					},
-					onSuccess: async () => {
-						// Set the accepted organization as active
-						await authClient.organization.setActive({
-							organizationId: invitation.organizationId,
-						})
-						toast.success('Invitation accepted')
-						router.push('/')
-					},
-				},
-			)
+			const response = await acceptInvitationAction({
+				invitationId: invitation.id,
+				organizationId: invitation.organizationId,
+				organizationName: invitation.organization.name,
+			})
+
+			if (!response.success) {
+				toast.error('Failed to accept invitation', { description: response.error })
+				return
+			}
+
+			// Set the accepted organization as active
+			await authClient.organization.setActive({
+				organizationId: invitation.organizationId,
+			})
+			toast.success('Invitation accepted')
+			router.push('/')
 		})
 	}
 
 	const handleReject = () => {
 		startTransition(async () => {
-			await authClient.organization.rejectInvitation(
-				{ invitationId: invitation.id },
-				{
-					onError: ctx => {
-						toast.error('Failed to reject invitation', { description: ctx.error.message })
-					},
-					onSuccess: () => {
-						toast.success('Invitation declined')
-						router.push('/')
-					},
-				},
-			)
+			const response = await rejectInvitationAction({
+				invitationId: invitation.id,
+				organizationId: invitation.organizationId,
+				organizationName: invitation.organization.name,
+			})
+
+			if (!response.success) {
+				toast.error('Failed to reject invitation', { description: response.error })
+				return
+			}
+
+			toast.success('Invitation rejected')
+			router.push('/')
 		})
 	}
 

@@ -1,8 +1,9 @@
 {
 	"extends": "@att-crms/typescript-config/base.json",
 	"compilerOptions": {
-		"module": "commonjs",
-		"moduleResolution": "node",
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"outDir": "./dist",
 		"declaration": true,
 		"declarationMap": true,
 		"types": ["node"]

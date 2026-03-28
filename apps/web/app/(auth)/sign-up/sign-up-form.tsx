@@ -6,13 +6,13 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import InputField from '@/components/input-field'
-import { authClient } from '@/lib/auth-client'
 import { useTransition } from 'react'
 import { toast } from 'sonner'
 import { Spinner } from '@/components/ui/spinner'
 import { signUpFormSchema } from '@/lib/zod'
 import { APP_URL } from '@/constants'
 import { useRouter } from 'next/navigation'
+import { userSignUpAction } from '@/lib/actions/user.actions'
 
 interface SignUpFormProps {
 	callbackURL: string
@@ -36,24 +36,20 @@ export function SignUpForm({ callbackURL, email }: SignUpFormProps) {
 
 	const onSubmit: SubmitHandler<z.infer<typeof signUpFormSchema>> = async data => {
 		startTransition(async () => {
-			await authClient.signUp.email(
-				{
-					name: data.fullName,
-					email: data.email,
-					password: data.password,
-					callbackURL: callbackURL || APP_URL,
-				},
+			const response = await userSignUpAction({
+				name: data.fullName,
+				email: data.email,
+				password: data.password,
+				callbackURL: callbackURL || APP_URL,
+			})
 
-				{
-					onSuccess: () => {
-						toast.success('Account created successfully.')
-						router.push(callbackURL || '/')
-					},
-					onError: ctx => {
-						toast.error(ctx.error.message)
-					},
-				},
-			)
+			if (!response.success) {
+				toast.error(response.error)
+				return
+			}
+
+			toast.success('Account created successfully.')
+			router.push(callbackURL || '/')
 		})
 	}
 

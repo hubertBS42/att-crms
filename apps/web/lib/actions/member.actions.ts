@@ -1,45 +1,206 @@
 'use server'
 
-import { auth } from '@/lib/auth'
+import { auth, type Session } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { formatError } from '@/lib/utils'
-import { prisma } from '@att-crms/db'
+import { logActivity, prisma } from '@att-crms/db'
+import { OrganizationLevelRole } from '../permissions/org-permissions'
 
-export async function removeOrganizationMember(memberId: string) {
+export async function addOrganizationMemberAction({
+	userId,
+	organizationId,
+	role,
+	session,
+}: {
+	userId: string
+	organizationId: string
+	role: OrganizationLevelRole
+	session?: Session
+}) {
 	try {
-		const session = await auth.api.getSession({ headers: await headers() })
-		if (!session) return { success: false, error: 'Unauthorized' }
+		const headersObj = await headers()
 
-		const activeOrganizationId = session.session.activeOrganizationId
-		if (!activeOrganizationId) return { success: false, error: 'No active organization' }
+		// Use provided session or fetch it
+		const sessionData = session ?? (await auth.api.getSession({ headers: headersObj }))
+		if (!sessionData) return { success: false, error: 'Unauthorized' }
 
-		// Check org-level permission instead of system role
-		const currentMember = await prisma.member.findFirst({
-			where: {
-				userId: session.user.id,
-				organizationId: activeOrganizationId,
-			},
-		})
+		// Fetch org and user in parallel
+		const [organization, user] = await Promise.all([
+			prisma.organization.findUnique({
+				where: { id: organizationId },
+				select: { id: true, name: true },
+			}),
+			prisma.user.findUnique({
+				where: { id: userId },
+				select: { id: true, name: true },
+			}),
+		])
 
-		if (!currentMember) return { success: false, error: 'Forbidden' }
+		if (!organization) return { success: false, error: 'Organization not found' }
+		if (!user) return { success: false, error: 'User not found' }
 
-		const canRemove = await auth.api.hasPermission({
-			headers: await headers(),
+		await auth.api.addMember({
 			body: {
-				permissions: { member: ['delete'] },
+				userId,
+				role,
+				organizationId,
+			},
+			headers: headersObj,
+		})
+
+		await logActivity({
+			type: 'CREATE',
+			resource: 'MEMBER',
+			actorId: sessionData.user.id,
+			actorName: sessionData.user.name,
+			organizationId: organization.id,
+			organizationName: organization.name,
+			targetId: user.id,
+			targetName: user.name,
+			metadata: {
+				role,
 			},
 		})
 
-		if (!canRemove.success) return { success: false, error: 'Forbidden' }
+		return { success: true }
+	} catch (error) {
+		return { success: false, error: formatError(error) }
+	}
+}
 
-		// Remove member from organization
+export async function removeOrganizationMemberAction({ memberId, organizationId, session }: { memberId: string; organizationId: string; session?: Session }) {
+	try {
+		const headersObj = await headers()
+
+		// Use provided session or fetch it
+		const sessionData = session ?? (await auth.api.getSession({ headers: headersObj }))
+		if (!sessionData) return { success: false, error: 'Unauthorized' }
+
+		// Fetch member before removing so we have their details for logging
+		const member = await prisma.member.findUnique({
+			where: { id: memberId },
+			include: {
+				user: { select: { id: true, name: true } },
+				organization: { select: { id: true, name: true } },
+			},
+		})
+
+		if (!member) return { success: false, error: 'Member not found' }
+
 		await auth.api.removeMember({
 			body: {
 				memberIdOrEmail: memberId,
-				organizationId: activeOrganizationId,
+				organizationId,
+			},
+			headers: headersObj,
+		})
+
+		await logActivity({
+			type: 'DELETE',
+			resource: 'MEMBER',
+			actorId: sessionData.user.id,
+			actorName: sessionData.user.name,
+			organizationId: member.organization.id,
+			organizationName: member.organization.name,
+			targetId: member.user.id,
+			targetName: member.user.name,
+		})
+
+		return { success: true }
+	} catch (error) {
+		return { success: false, error: formatError(error) }
+	}
+}
+
+export async function updateOrganizationMemberRoleAction({
+	memberId,
+	organizationId,
+	role,
+	session,
+}: {
+	memberId: string
+	organizationId: string
+	role: string
+	session?: Session
+}) {
+	try {
+		const headersObj = await headers()
+
+		// Use provided session or fetch it
+		const sessionData = session ?? (await auth.api.getSession({ headers: headersObj }))
+		if (!sessionData) return { success: false, error: 'Unauthorized' }
+
+		const member = await prisma.member.findUnique({
+			where: { id: memberId },
+			include: {
+				user: { select: { id: true, name: true } },
+				organization: { select: { id: true, name: true } },
+			},
+		})
+
+		if (!member) return { success: false, error: 'Member not found' }
+
+		await auth.api.updateMemberRole({
+			body: {
+				memberId,
+				role,
+				organizationId,
 			},
 
-			headers: await headers(),
+			headers: headersObj,
+		})
+
+		await logActivity({
+			type: 'UPDATE',
+			resource: 'MEMBER',
+			actorId: sessionData.user.id,
+			actorName: sessionData.user.name,
+			organizationId: member.organization.id,
+			organizationName: member.organization.name,
+			targetId: member.user.id,
+			targetName: member.user.name,
+			metadata: {
+				role,
+			},
+		})
+		return { success: true }
+	} catch (error) {
+		return { success: false, error: formatError(error) }
+	}
+}
+
+export async function leaveOrganizationAction({ organizationId, session }: { organizationId: string; session?: Session }) {
+	try {
+		const headersObj = await headers()
+
+		// Use provided session or fetch it
+		const sessionData = session ?? (await auth.api.getSession({ headers: headersObj }))
+		if (!sessionData) return { success: false, error: 'Unauthorized' }
+
+		const organization = await prisma.organization.findUnique({
+			where: { id: organizationId },
+			select: { name: true },
+		})
+
+		if (!organization) return { success: false, error: 'Organization not found' }
+
+		await auth.api.leaveOrganization({
+			body: {
+				organizationId,
+			},
+			headers: headersObj,
+		})
+
+		await logActivity({
+			type: 'DELETE',
+			resource: 'MEMBER',
+			actorId: sessionData.user.id,
+			actorName: sessionData.user.name,
+			organizationId,
+			organizationName: organization.name,
+			metadata: {
+				action: 'leave_organization',
+			},
 		})
 
 		return { success: true }

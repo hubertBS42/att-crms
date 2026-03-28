@@ -8,7 +8,6 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { editOrgUserFormSchema } from '@/lib/zod'
-import { updateOrgMembershipsAction } from '@/lib/actions/user.actions'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import SelectField from '@/components/select-field'
@@ -20,7 +19,7 @@ import UserFormFields from './user-form-fields'
 import ResourceFormHeader from '@/components/resource-form-header'
 import ResourceFormFooter from '@/components/resource-form-footer'
 import { Badge } from '@/components/ui/badge'
-import { authClient } from '@/lib/auth-client'
+import { updateUserAction } from '@/lib/actions/user.actions'
 
 const orgRoleOptions = ORG_LEVEL_ROLE_NAMES.filter(item => item !== 'owner').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
 
@@ -37,7 +36,7 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 			id: user.id,
 			name: user.name,
 			email: user.email,
-			image: user.image,
+			image: user.image ?? '',
 			organizations: user.members.map(m => ({
 				memberId: m.id,
 				organizationId: m.organizationId,
@@ -84,31 +83,21 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 
 	const onSubmit: SubmitHandler<z.infer<typeof editOrgUserFormSchema>> = async data => {
 		startTransition(async () => {
-			// const res = await updateUser(data)
-			const { error } = await authClient.admin.updateUser({
-				userId: data.id,
-				data: { name: data.name, email: data.email, image: data.image }, // required
-			})
-
-			if (error) {
-				toast.error('Operation failed', { description: error.message })
-				return
-			}
-
-			const result = await updateOrgMembershipsAction({
-				userId: user.id,
+			const result = await updateUserAction({
+				id: data.id,
+				email: data.email,
+				name: data.name,
+				image: data.image,
 				organizations: data.organizations,
-				removedMembers,
+				removedMembers: removedMembers,
 			})
 
 			if (!result.success) {
-				toast.error('User updated but failed to update memberships', {
-					description: result.error,
-				})
+				toast.error('Failed to update user', { description: result.error })
 				return
 			}
 
-			toast.success('User updated successfully.')
+			toast.success('User successfully updated.')
 			router.push('/users')
 		})
 	}

@@ -11,7 +11,7 @@ import { editAdminFormSchema } from '@/lib/zod'
 import UserFormFields from './user-form-fields'
 import ResourceFormHeader from '@/components/resource-form-header'
 import ResourceFormFooter from '@/components/resource-form-footer'
-import { authClient } from '@/lib/auth-client'
+import { updateUserAction } from '@/lib/actions/user.actions'
 
 const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
 	const router = useRouter()
@@ -23,23 +23,25 @@ const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
 			id: user.id,
 			name: user.name,
 			email: user.email,
-			image: user.image,
+			image: user.image ?? '',
 		},
 	})
 
 	const onSubmit: SubmitHandler<z.infer<typeof editAdminFormSchema>> = async data => {
 		startTransition(async () => {
-			const { error } = await authClient.admin.updateUser({
-				userId: data.id,
-				data: { name: data.name, email: data.email, image: data.image }, // required
+			const result = await updateUserAction({
+				id: data.id,
+				name: data.name,
+				email: data.email,
+				image: data.image,
 			})
 
-			if (error) {
-				toast.error('Operation failed', { description: error.message })
+			if (!result.success) {
+				toast.error('Failed to user user', { description: result.error })
 				return
 			}
 
-			toast.success('User updated successfully.')
+			toast.success('User successfully updated.')
 			router.push('/users')
 		})
 	}

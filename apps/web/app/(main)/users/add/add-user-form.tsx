@@ -5,7 +5,6 @@ import InputField from '@/components/input-field'
 import SaveButton from '@/components/save-button'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { authClient } from '@/lib/auth-client'
 import { capitalizeFirstLetter, generatePassword } from '@/lib/utils'
 import { addUserFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -14,13 +13,13 @@ import { useEffect, useState, useTransition } from 'react'
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { addOrgUserAction, addUserToAllOrganizations } from '@/lib/actions/user.actions'
 import { SYSTEM_LEVEL_ROLE_NAMES } from '@/lib/permissions/system-permissions'
 import BackButton from '@/components/back-button'
 import { ORG_LEVEL_ROLE_NAMES } from '@/lib/permissions/org-permissions'
 import { Organization } from '@att-crms/db/client'
 import SelectField from '@/components/select-field'
 import { Plus, Trash2 } from 'lucide-react'
+import { createUserAction } from '@/lib/actions/user.actions'
 
 const systemRoleOptions = SYSTEM_LEVEL_ROLE_NAMES.filter(item => item !== 'superAdmin').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
 const orgRoleOptions = ORG_LEVEL_ROLE_NAMES.filter(item => item !== 'owner').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
@@ -36,7 +35,7 @@ const AddUserForm = () => {
 		defaultValues: {
 			name: '',
 			email: '',
-			image: null,
+			image: '',
 			systemRole: 'user',
 			organizations: [{ organizationId: '', orgRole: 'member' }],
 		},
@@ -79,56 +78,29 @@ const AddUserForm = () => {
 
 	const onSubmit: SubmitHandler<z.infer<typeof addUserFormSchema>> = async data => {
 		startTransition(async () => {
-			await authClient.admin.createUser(
-				{
-					name: data.name,
-					email: data.email,
-					password: generatePassword({ passwordLength: 16 }),
-					role: data.systemRole,
-					data: {
-						image: data.image,
-					},
-				},
-				{
-					onSuccess: async ctx => {
-						const userId = ctx.data.user.id
+			const result = await createUserAction({
+				name: data.name,
+				email: data.email,
+				password: generatePassword({ passwordLength: 16 }),
+				systemRole: data.systemRole,
+				image: data.image,
+				organizations: data.systemRole === 'user' ? data.organizations : undefined,
+			})
 
-						if (data.systemRole === 'user') {
-							const result = await addOrgUserAction({
-								userId,
-								organizations: data.organizations,
-							})
+			if (!result.success) {
+				if (result.error === 'User already exists. Use another email.') {
+					form.setError('email', {
+						type: 'custom',
+						message: 'This email address is already registered to a user',
+					})
+				} else {
+					toast.error('Failed to create user', { description: result.error })
+				}
+				return
+			}
 
-							if (!result.success) {
-								toast.error('User created but failed to add to organizations', {
-									description: result.error,
-								})
-							}
-						} else {
-							// Add admin to all organizations
-							await addUserToAllOrganizations({ userId: ctx.data.user.id, systemRole: data.systemRole })
-						}
-
-						await authClient.requestPasswordReset({
-							email: data.email,
-							redirectTo: '/set-password?action=set',
-						})
-						toast.success('User successfully added.')
-						router.push('/users')
-					},
-
-					onError: ctx => {
-						if (ctx.error.code === 'USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL') {
-							form.setError('email', {
-								type: 'custom',
-								message: 'This email address is already registered to a user.',
-							})
-						} else {
-							toast.error(ctx.error.message)
-						}
-					},
-				},
-			)
+			toast.success('User successfully added.')
+			router.push('/users')
 		})
 	}
 
@@ -199,6 +171,15 @@ const AddUserForm = () => {
 										options={systemRoleOptions}
 										disabled={isPending}
 										loadingPlaceholder='Admin'
+									/>
+								</div>
+
+								<div className='grid col-span-2'>
+									<InputField
+										control={form.control}
+										name='image'
+										label='Avatar URL'
+										disabled={isPending}
 									/>
 								</div>
 							</CardContent>

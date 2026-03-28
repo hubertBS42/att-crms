@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldDescription, FieldGroup } from '@/components/ui/field'
 import { Spinner } from '@/components/ui/spinner'
-import { authClient } from '@/lib/auth-client'
+import { requestPasswordResetAction } from '@/lib/actions/user.actions'
 import { resetPasswordFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
@@ -26,19 +26,17 @@ export function ResetPasswordForm() {
 
 	const onSubmit: SubmitHandler<z.infer<typeof resetPasswordFormSchema>> = async data => {
 		startTransition(async () => {
-			await authClient.requestPasswordReset(
-				{
-					email: data.email,
-					redirectTo: '/set-password?action=reset',
-				},
-				{
-					onSuccess: () => {
-						startTransition(() => {
-							setIsComplete(true)
-						})
-					},
-				},
-			)
+			const response = await requestPasswordResetAction({
+				email: data.email,
+				redirectTo: '/set-password?action=reset',
+				actor: 'self',
+			})
+
+			if (response.success) {
+				startTransition(() => {
+					setIsComplete(true)
+				})
+			}
 		})
 	}
 

@@ -24,7 +24,7 @@ const AudioPlayer = ({ src, showDuration = true }: AudioPlayerProps) => {
 				crossOrigin=''
 				autoPlay
 			/>
-			<MediaControlBar className='w-full px-3 rounded-md bg-card'>
+			<MediaControlBar className='w-full px-3 rounded-md'>
 				<MediaPlayButton className='bg-transparent mr-3' />
 
 				<MediaTimeDisplay

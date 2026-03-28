@@ -7,12 +7,12 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { banUserFormSchema } from '@/lib/zod'
-import { authClient } from '@/lib/auth-client'
 import { useRouter } from 'next/navigation'
 import DateField from '@/components/date-field'
 import TextAreaField from '@/components/textarea-field'
 import { Spinner } from '@/components/ui/spinner'
 import { User } from '@att-crms/db/client'
+import { banUserAction } from '@/lib/actions/user.actions'
 
 const BanUser = ({ user }: { user: User }) => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -30,33 +30,18 @@ const BanUser = ({ user }: { user: User }) => {
 
 	const onSubmit: SubmitHandler<z.infer<typeof banUserFormSchema>> = async values => {
 		startTransition(async () => {
-			let banExpiresIn: number | undefined = undefined
-
-			if (values.banExpiresIn) {
-				const now = Date.now() // current time in ms
-				banExpiresIn = Math.floor((values.banExpiresIn.getTime() - now) / 1000)
+			const response = await banUserAction({ userId: values.userId, banExpiresIn: values.banExpiresIn, banReason: values.banReason })
+			if (!response.success) {
+				toast.error('Operation failed', { description: 'Something went wrong..' })
+				return
 			}
 
-			await authClient.admin.banUser(
-				{
-					userId: values.userId,
-					banExpiresIn,
-					banReason: values?.banReason || undefined,
-				},
-				{
-					onSuccess: () => {
-						startTransition(() => {
-							setIsOpen(false)
-							form.reset()
-							router.push(`/users/${user.id}/edit`)
-							toast.success('Operation success', { description: 'User has been banned.' })
-						})
-					},
-					onError: () => {
-						toast.error('Operation failed', { description: 'Something went wrong..' })
-					},
-				},
-			)
+			startTransition(() => {
+				setIsOpen(false)
+				form.reset()
+				router.push(`/users/${user.id}/edit`)
+				toast.success('Operation success', { description: 'User has been banned.' })
+			})
 		})
 	}
 

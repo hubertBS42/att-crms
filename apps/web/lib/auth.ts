@@ -1,6 +1,6 @@
 import { betterAuth } from 'better-auth'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
-import { prisma } from '@att-crms/db'
+import { logActivity, prisma } from '@att-crms/db'
 import { APP_NAME, APP_URL, INVITATION_EXPIRATON, RECORDINGS_PATH, RESET_PASSWORD_TOKEN_EXPIRATON, SESSION_CACHE_EXPIRATION } from '@/constants'
 import SetPasswordEmail from '@/components/email-templates/set-password-email'
 import ResetPasswordEmail from '@/components/email-templates/reset-password-email'
@@ -144,23 +144,17 @@ export const auth = betterAuth({
 						fs.mkdirSync(orgDirectory, { recursive: true })
 						console.log(`Created directory: ${orgDirectory}`)
 					}
-				},
-				beforeDeleteOrganization: async ({ organization }) => {
-					const orgDirectory = path.join(RECORDINGS_PATH, organization.slug)
 
-					// Delete all recording rows from the database first
-					await prisma.recording.deleteMany({
-						where: { organizationSlug: organization.slug },
+					await logActivity({
+						type: 'CREATE',
+						resource: 'ORGANIZATION',
+						actorName: user.name,
+						actorId: user.id,
+						targetName: organization.name,
+						targetId: organization.id,
 					})
-
-					// Delete the directory and all its contents
-					if (fs.existsSync(orgDirectory)) {
-						fs.rmSync(orgDirectory, { recursive: true, force: true })
-						console.log(`Deleted directory: ${orgDirectory}`)
-					}
 				},
-
-				afterUpdateOrganization: async ({ organization }) => {
+				afterUpdateOrganization: async ({ organization, user }) => {
 					const metadata = organization?.metadata as { previousSlug?: string } | null
 					const previousSlug = metadata?.previousSlug
 
@@ -200,6 +194,39 @@ export const auth = betterAuth({
 							},
 						})
 					}
+
+					await logActivity({
+						type: 'UPDATE',
+						resource: 'ORGANIZATION',
+						actorName: user.name,
+						actorId: user.id,
+						targetName: organization?.name,
+						targetId: organization?.id,
+					})
+				},
+				beforeDeleteOrganization: async ({ organization }) => {
+					const orgDirectory = path.join(RECORDINGS_PATH, organization.slug)
+
+					// Delete all recording rows from the database first
+					await prisma.recording.deleteMany({
+						where: { organizationSlug: organization.slug },
+					})
+
+					// Delete the directory and all its contents
+					if (fs.existsSync(orgDirectory)) {
+						fs.rmSync(orgDirectory, { recursive: true, force: true })
+						console.log(`Deleted directory: ${orgDirectory}`)
+					}
+				},
+				afterDeleteOrganization: async ({ organization, user }) => {
+					await logActivity({
+						type: 'DELETE',
+						resource: 'ORGANIZATION',
+						actorName: user.name,
+						actorId: user.id,
+						targetName: organization?.name,
+						targetId: organization?.id,
+					})
 				},
 			},
 			schema: {
@@ -222,3 +249,5 @@ export const auth = betterAuth({
 		nextCookies(),
 	],
 })
+
+export type Session = typeof auth.$Infer.Session

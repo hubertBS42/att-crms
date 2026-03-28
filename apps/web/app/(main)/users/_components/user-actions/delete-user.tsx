@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { authClient } from '@/lib/auth-client'
+import { deleteUserAction } from '@/lib/actions/user.actions'
 import { User } from '@att-crms/db/client'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
@@ -27,26 +27,21 @@ const DeleteUser = ({ user }: { user: User }) => {
 
 	const handleDelete = () => {
 		startTransition(async () => {
-			await authClient.admin.removeUser(
-				{
-					userId: user.id,
-				},
-				{
-					onSuccess: () => {
-						startTransition(() => {
-							setIsOpen(false)
-							router.push('/users')
-							toast.success('Operation sucess', { description: 'User has been deleted.' })
-						})
-					},
-					onError: ctx => {
-						startTransition(() => {
-							setIsOpen(false)
-							toast.error('Operation failed', { description: ctx.error.message })
-						})
-					},
-				},
-			)
+			const response = await deleteUserAction(user)
+
+			if (!response.success) {
+				startTransition(() => {
+					setIsOpen(false)
+					toast.error('Operation failed', { description: response.error })
+				})
+				return
+			}
+
+			startTransition(() => {
+				setIsOpen(false)
+				router.push('/users')
+				toast.success('Operation sucess', { description: 'User has been deleted.' })
+			})
 		})
 	}
 	return (

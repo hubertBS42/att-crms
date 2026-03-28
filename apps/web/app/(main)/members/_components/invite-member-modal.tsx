@@ -16,6 +16,7 @@ import { toast } from 'sonner'
 import { z } from 'zod'
 import { Spinner } from '@/components/ui/spinner'
 import RoleSelector from '@/components/role-selector'
+import { inviteMemberAction } from '@/lib/actions/invitation.actions'
 
 const InviteMemberModal = () => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -42,31 +43,25 @@ const InviteMemberModal = () => {
 
 	const onSubmit: SubmitHandler<z.infer<typeof inviteMemberFormSchema>> = async data => {
 		startTransition(async () => {
-			await authClient.organization.inviteMember(
-				{
-					email: data.email,
-					role: data.role as OrganizationLevelRole,
-				},
-				{
-					onError: ctx => {
-						if (ctx.error.status === 422) {
-							form.setError('email', {
-								type: 'custom',
-								message: 'This email has already been invited.',
-							})
-						} else {
-							toast.error('Operation failed', { description: ctx.error.message })
-						}
-					},
-					onSuccess: () => {
-						toast.success('Invitation sent', {
-							description: `An invitation has been sent to ${data.email}.`,
-						})
-						form.reset()
-						setIsOpen(false)
-					},
-				},
-			)
+			const response = await inviteMemberAction({ email: data.email, role: data.role })
+
+			if (!response.success) {
+				if (response.error === 'User is already invited to this organization') {
+					form.setError('email', {
+						type: 'custom',
+						message: 'User is already invited to this organization',
+					})
+				} else {
+					toast.error('Operation failed', { description: response.error })
+				}
+				return
+			}
+
+			toast.success('Invitation sent', {
+				description: `An invitation has been sent to ${data.email}.`,
+			})
+			form.reset()
+			setIsOpen(false)
 		})
 	}
 

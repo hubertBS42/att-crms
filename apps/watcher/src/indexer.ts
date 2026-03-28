@@ -1,8 +1,8 @@
-import { prisma } from '@att-crms/db'
+import { logActivity, prisma } from '@att-crms/db'
 import { ParsedRecording } from './parser.js'
 
-export async function indexRecordingBatch(recordings: ParsedRecording[]) {
-	const results = await Promise.allSettled(recordings.map(recording => indexRecording(recording)))
+export async function indexRecordingBatch({ recordings, isLive = false }: { recordings: ParsedRecording[]; isLive?: boolean }) {
+	const results = await Promise.allSettled(recordings.map(recording => indexRecording({ recording, isLive })))
 
 	const succeeded = results.filter(r => r.status === 'fulfilled')
 	const failed = results.filter(r => r.status === 'rejected')
@@ -18,11 +18,21 @@ export async function indexRecordingBatch(recordings: ParsedRecording[]) {
 	}
 }
 
-export async function indexRecording(recording: ParsedRecording) {
+export async function indexRecording({ recording, isLive = false }: { recording: ParsedRecording; isLive?: boolean }) {
 	try {
 		const { organizationSlug, ...data } = recording
 
-		await prisma.recording.upsert({
+		const org = await prisma.organization.findUnique({
+			where: { slug: organizationSlug },
+			select: { id: true, name: true },
+		})
+
+		if (!org) {
+			console.warn(`Organization not found for slug: "${organizationSlug}" — skipping ${recording.filename}`)
+			return
+		}
+
+		const result = await prisma.recording.upsert({
 			where: { filename: recording.filename },
 			update: {},
 			create: {
@@ -32,6 +42,23 @@ export async function indexRecording(recording: ParsedRecording) {
 				},
 			},
 		})
+
+		if (result && isLive) {
+			await logActivity({
+				type: 'CREATE',
+				resource: 'RECORDING',
+				organizationId: org.id,
+				organizationName: org.name,
+				targetId: result.id,
+				targetName: recording.filename,
+				metadata: {
+					caller: recording.caller,
+					calledNumber: recording.calledNumber,
+					duration: recording.duration,
+					size: recording.size,
+				},
+			})
+		}
 
 		console.log(`Indexed: ${recording.filename}`)
 	} catch (error: any) {

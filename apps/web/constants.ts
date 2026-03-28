@@ -98,6 +98,37 @@ export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 			{ text: 'Settings', href: '#' },
 		],
 	},
+	{
+		pathname: '/account',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Account overview', href: '#' },
+		],
+	},
+	{
+		pathname: '/account/profile',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Account overview', href: '/account' },
+			{ text: 'Profile', href: '#' },
+		],
+	},
+	{
+		pathname: '/account/password',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Account overview', href: '/account' },
+			{ text: 'Password', href: '#' },
+		],
+	},
+	{
+		pathname: '/account/sessions',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Account overview', href: '/account' },
+			{ text: 'Sessions', href: '#' },
+		],
+	},
 ]
 
 export const PAGE_SIZE_OPTIONS = [10, 20, 30, 40, 50]
