@@ -33,7 +33,7 @@ const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
 				id: data.id,
 				name: data.name,
 				email: data.email,
-				image: data.image,
+				image: data.image ?? null,
 			})
 
 			if (!result.success) {
@@ -52,8 +52,9 @@ const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
 		<form onSubmit={form.handleSubmit(onSubmit)}>
 			<div className='grid gap-y-6'>
 				<ResourceFormHeader
-					heading='Edit user'
-					description='Lorem ipsum dolor sit amet consectetur adipisicing elit.'
+					heading='Edit User'
+					description="Manage user's account."
+					backTo='/users'
 					isPending={isPending}
 					isDirty={form.formState.isDirty}
 					handleDiscard={handleDiscard}

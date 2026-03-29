@@ -65,13 +65,13 @@ const MemberDetailsPage = async ({ params }: MemberDetailsPageProps) => {
 					{/* Basic Info */}
 					<Card>
 						<CardHeader>
-							<CardTitle>Basic information</CardTitle>
+							<CardTitle>Basic Information</CardTitle>
 							<CardDescription>Member details and account information</CardDescription>
 						</CardHeader>
 						<CardContent className='grid gap-4'>
 							<div className='grid grid-cols-2 gap-4'>
 								<div className='grid gap-1'>
-									<p className='text-xs text-muted-foreground'>Full name</p>
+									<p className='text-xs text-muted-foreground'>Full Name</p>
 									<p className='text-sm font-medium'>{user.name}</p>
 								</div>
 								<div className='grid gap-1'>
@@ -91,11 +91,11 @@ const MemberDetailsPage = async ({ params }: MemberDetailsPageProps) => {
 									</div>
 								</div>
 								<div className='grid gap-1'>
-									<p className='text-xs text-muted-foreground'>Joined on</p>
+									<p className='text-xs text-muted-foreground'>Joined On</p>
 									<p className='text-sm font-medium'>{format(new Date(member.createdAt), 'LLL dd, y')}</p>
 								</div>
 								<div className='grid gap-1'>
-									<p className='text-xs text-muted-foreground'>Email verified</p>
+									<p className='text-xs text-muted-foreground'>Email Verified</p>
 									<div>
 										<Badge variant={user.emailVerified ? 'default' : 'outline'}>{user.emailVerified ? 'Verified' : 'Unverified'}</Badge>
 									</div>

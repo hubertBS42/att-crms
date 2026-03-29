@@ -4,7 +4,7 @@ import { Recording } from '@att-crms/db/client'
 export const filters: FilterConfig<Recording>[] = [
 	{
 		columnId: 'callDate',
-		label: 'Call date',
+		label: 'Call Date',
 		type: 'dateRange',
 	},
 	{
@@ -15,13 +15,13 @@ export const filters: FilterConfig<Recording>[] = [
 	},
 	{
 		columnId: 'calledNumber',
-		label: 'Number called',
+		label: 'Number Called',
 		type: 'text',
 		placeholder: 'Search by number called',
 	},
 	{
 		columnId: 'answeredBy',
-		label: 'Answered by',
+		label: 'Answered By',
 		type: 'text',
 		placeholder: 'Search by answered by',
 	},

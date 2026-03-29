@@ -53,7 +53,7 @@ const PromoteToOwner = ({ member }: { member: MemberWithUserWithSessions }) => {
 					className='w-full'
 					variant='outline'
 				>
-					Promote to Owner
+					Promote To Owner
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

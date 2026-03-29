@@ -14,7 +14,7 @@ const RecordingsPage = () => {
 		<main className='flex flex-col gap-y-6'>
 			<div className='flex items-end justify-between'>
 				<div className='grid'>
-					<h1 className='text-xl md:text-2xl font-bold'>Manage recordings</h1>
+					<h1 className='text-xl md:text-2xl font-bold'>Manage Recordings</h1>
 					<p className='text-muted-foreground text-sm'>View and manage all recordings.</p>
 				</div>
 

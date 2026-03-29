@@ -1,11 +1,9 @@
 import Loader from '@/components/loader'
-import { buttonVariants } from '@/components/ui/button'
-import { Plus } from 'lucide-react'
 import { Metadata } from 'next'
-import Link from 'next/link'
 import { Suspense } from 'react'
 import UsersTable from './_components/users-table'
 import { fetchAllUsers } from '@/lib/data/users.data'
+import AddButton from '@/components/add-button'
 
 export const metadata: Metadata = {
 	title: 'Manage users',
@@ -16,17 +14,14 @@ const UsersPage = () => {
 		<main className='flex flex-col gap-y-6'>
 			<div className='flex items-end justify-between'>
 				<div className='grid'>
-					<h1 className='text-xl md:text-2xl font-bold'>Manage users</h1>
+					<h1 className='text-xl md:text-2xl font-bold'>Manage Users</h1>
 					<p className='text-muted-foreground text-sm'>View and manage all users.</p>
 				</div>
 
-				<Link
-					className={buttonVariants({ variant: 'default', size: 'sm' })}
-					href={'/users/add'}
-				>
-					<Plus />
-					<span className='hidden md:block'>Add user</span>
-				</Link>
+				<AddButton
+					label='Add User'
+					url='/users/add'
+				/>
 			</div>
 			<Suspense fallback={<Loader />}>
 				<UsersTable data={data} />

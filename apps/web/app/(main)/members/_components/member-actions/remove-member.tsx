@@ -52,7 +52,7 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 					className='w-full'
 					variant={'destructive'}
 				>
-					Remove member
+					Remove Member
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

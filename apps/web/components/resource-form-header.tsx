@@ -5,11 +5,12 @@ import SaveButton from './save-button'
 interface ResourceFormHeaderProps {
 	heading: string
 	description: string
+	backTo: string
 	isPending: boolean
 	isDirty: boolean
 	handleDiscard: () => Promise<void>
 }
-const ResourceFormHeader = ({ heading, description, isPending, isDirty, handleDiscard }: ResourceFormHeaderProps) => {
+const ResourceFormHeader = ({ heading, description, backTo, isPending, isDirty, handleDiscard }: ResourceFormHeaderProps) => {
 	return (
 		<div className='flex items-end'>
 			<div className='grid'>
@@ -24,7 +25,7 @@ const ResourceFormHeader = ({ heading, description, isPending, isDirty, handleDi
 					/>
 				) : (
 					<BackButton
-						link='/users'
+						link={backTo}
 						isLoading={isPending}
 					/>
 				)}

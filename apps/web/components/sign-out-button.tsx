@@ -40,7 +40,7 @@ const SignOutButton = ({ variant = 'outline', className }: SignOutButtonProps) =
 			disabled={isPending}
 		>
 			{isPending ? <Spinner /> : <LogOut className='size-4' />}
-			{isPending ? 'Signing out...' : 'Sign out'}
+			{isPending ? 'Signing Out...' : 'Sign Out'}
 		</Button>
 	)
 }

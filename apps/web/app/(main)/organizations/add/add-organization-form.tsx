@@ -1,9 +1,6 @@
 'use client'
-import DiscardButton from '@/components/discard-button'
 import InputField from '@/components/input-field'
-import SaveButton from '@/components/save-button'
 import SelectField from '@/components/select-field'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { ORGANIZATION_PLAN_OPTIONS, ORGANIZATION_STATUS_OPTIONS } from '@/constants'
@@ -18,7 +15,8 @@ import { z } from 'zod'
 import slugify from 'slugify'
 import { toast } from 'sonner'
 import { Checkbox } from '@/components/ui/checkbox'
-import BackButton from '@/components/back-button'
+import ResourceFormHeader from '@/components/resource-form-header'
+import ResourceFormFooter from '@/components/resource-form-footer'
 
 const AddOrganizationForm = () => {
 	const router = useRouter()
@@ -30,7 +28,7 @@ const AddOrganizationForm = () => {
 		defaultValues: {
 			name: '',
 			slug: '',
-			logo: null,
+			logo: '',
 			plan: OrganizationPlan.BASIC,
 			status: OrganizationStatus.ACTIVE,
 		},
@@ -92,30 +90,14 @@ const AddOrganizationForm = () => {
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)}>
 			<div className='grid gap-y-6'>
-				<div className='flex items-end'>
-					<div className='grid'>
-						<h1 className='text-xl md:text-2xl font-bold'>Add organization</h1>
-						<p className='text-muted-foreground text-sm'>Lorem ipsum dolar sit amet consectetur adipisicing elit.</p>
-					</div>
-
-					<div className='hidden items-center gap-2 md:ml-auto md:flex'>
-						{form.formState.isDirty ? (
-							<DiscardButton
-								isLoading={isPending}
-								handleDiscard={handleDiscard}
-							/>
-						) : (
-							<BackButton
-								link='/organizations'
-								isLoading={isPending}
-							/>
-						)}
-						<SaveButton
-							isLoading={isPending}
-							isDisabled={!form.formState.isDirty}
-						/>
-					</div>
-				</div>
+				<ResourceFormHeader
+					heading='Add Organization'
+					description='Create a new organization to manage members and recordings.'
+					backTo='/organizations'
+					isPending={isPending}
+					isDirty={form.formState.isDirty}
+					handleDiscard={handleDiscard}
+				/>
 
 				<div className='grid gap-8'>
 					<div className='grid items-start gap-4 lg:grid-cols-3'>
@@ -123,8 +105,8 @@ const AddOrganizationForm = () => {
 						<div className='lg:col-span-2'>
 							<Card>
 								<CardHeader>
-									<CardTitle>Details</CardTitle>
-									<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+									<CardTitle>Organization Details</CardTitle>
+									<CardDescription>Configure the basic information and settings for your organization.</CardDescription>
 								</CardHeader>
 								<CardContent>
 									<FieldGroup>
@@ -165,6 +147,12 @@ const AddOrganizationForm = () => {
 											loadingPlaceholder='Basic'
 											options={ORGANIZATION_PLAN_OPTIONS}
 										/>
+										<InputField
+											control={form.control}
+											name='logo'
+											label='Logo URL'
+											disabled={isPending}
+										/>
 									</FieldGroup>
 								</CardContent>
 							</Card>
@@ -173,8 +161,8 @@ const AddOrganizationForm = () => {
 						{/* Right column */}
 						<Card>
 							<CardHeader>
-								<CardTitle>Status</CardTitle>
-								<CardDescription>Lipsum dolor sit amet, consectetur</CardDescription>
+								<CardTitle>Organization Status</CardTitle>
+								<CardDescription>Set the status for this organization.</CardDescription>
 							</CardHeader>
 							<CardContent>
 								<SelectField
@@ -187,28 +175,12 @@ const AddOrganizationForm = () => {
 							</CardContent>
 						</Card>
 					</div>
-					<div className='flex items-center justify-center gap-2 md:hidden'>
-						{form.formState.isDirty ? (
-							<DiscardButton
-								isLoading={isPending}
-								handleDiscard={handleDiscard}
-							/>
-						) : (
-							<Button
-								variant={'outline'}
-								size={'sm'}
-								disabled={isPending}
-								onClick={() => router.push('/organizations')}
-								type='button'
-							>
-								Back
-							</Button>
-						)}
-						<SaveButton
-							isLoading={isPending}
-							isDisabled={!form.formState.isDirty}
-						/>
-					</div>
+
+					<ResourceFormFooter
+						isPending={isPending}
+						isDirty={form.formState.isDirty}
+						handleDiscard={handleDiscard}
+					/>
 				</div>
 			</div>
 		</form>

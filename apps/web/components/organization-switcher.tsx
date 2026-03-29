@@ -124,7 +124,7 @@ const OrganizationSwitcher = () => {
 										<div className='flex size-6 items-center justify-center rounded-md border bg-transparent'>
 											<Plus className='size-4' />
 										</div>
-										<div className='font-medium text-muted-foreground'>Add organization</div>
+										<div className='font-medium text-muted-foreground'>Add Organization</div>
 									</Link>
 								</DropdownMenuItem>
 							</>

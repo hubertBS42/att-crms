@@ -83,7 +83,7 @@ const AddUserForm = () => {
 				email: data.email,
 				password: generatePassword({ passwordLength: 16 }),
 				systemRole: data.systemRole,
-				image: data.image,
+				image: data.image ?? null,
 				organizations: data.systemRole === 'user' ? data.organizations : undefined,
 			})
 
@@ -113,8 +113,8 @@ const AddUserForm = () => {
 			<div className='grid gap-y-6'>
 				<div className='flex items-end'>
 					<div className='grid'>
-						<h1 className='text-xl md:text-2xl font-bold'>Add user</h1>
-						<p className='text-muted-foreground text-sm'>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+						<h1 className='text-xl md:text-2xl font-bold'>Add User</h1>
+						<p className='text-muted-foreground text-sm'>Create a new user to manage organizations and recordings.</p>
 					</div>
 
 					<div className='hidden items-center gap-2 md:ml-auto md:flex'>
@@ -141,14 +141,14 @@ const AddUserForm = () => {
 					<div className='grid gap-4'>
 						<Card>
 							<CardHeader>
-								<CardTitle>Details</CardTitle>
-								<CardDescription>Basic information about the user</CardDescription>
+								<CardTitle>User Details</CardTitle>
+								<CardDescription>Basic information about the user.</CardDescription>
 							</CardHeader>
 							<CardContent className='grid grid-cols-2 gap-5'>
 								<div className='grid col-span-2'>
 									<InputField
 										control={form.control}
-										label='Full name'
+										label='Full Name'
 										name='name'
 										disabled={isPending}
 										autoFocus
@@ -189,7 +189,7 @@ const AddUserForm = () => {
 							<Card>
 								<CardHeader>
 									<CardTitle>Organization</CardTitle>
-									<CardDescription>Assign this user to one or more organizations</CardDescription>
+									<CardDescription>Assign this user to one or more organizations.</CardDescription>
 								</CardHeader>
 								<CardContent className='grid gap-4'>
 									{fields.map((field, index) => (

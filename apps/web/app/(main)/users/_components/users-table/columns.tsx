@@ -88,7 +88,7 @@ export const columns: ColumnDef<User>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Created on'
+				title='Created On'
 			/>
 		),
 		cell: ({ row }) => {

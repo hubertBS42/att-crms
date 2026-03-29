@@ -21,7 +21,13 @@ const activityConfig: Partial<Record<ActivityKey, ActivityConfigEntry>> = {
 	DELETE_RECORDING: {
 		icon: MicIcon,
 		color: 'text-red-500 bg-red-500/10',
-		label: a => `Recording ${a.targetName} was deleted${a.organizationName ? ` from ${a.organizationName}` : ''}`,
+		label: a => {
+			const metadata = a.metadata as { action?: string; retentionDays?: number } | null
+			if (metadata?.action === 'retention_cleanup') {
+				return `Recording ${a.targetName} was automatically deleted after ${metadata.retentionDays} day retention period`
+			}
+			return `Recording ${a.targetName} was deleted${a.organizationName ? ` from ${a.organizationName}` : ''}`
+		},
 	},
 	CREATE_ORGANIZATION: {
 		icon: BuildingIcon,

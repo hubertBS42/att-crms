@@ -94,7 +94,7 @@ export const columns: ColumnDef<Organization>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Created on'
+				title='Created On'
 			/>
 		),
 		cell: ({ row }) => {

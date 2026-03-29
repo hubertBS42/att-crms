@@ -48,13 +48,13 @@ export const addUserFormSchema = z.discriminatedUnion('systemRole', [
 	z.object({
 		name: z.string().min(1, 'Name is required'),
 		email: z.email('Please enter a valid email address'),
-		image: z.string().nullable(),
+		image: z.url('Invalid URL').optional().or(z.literal('')),
 		systemRole: z.literal('admin'),
 	}),
 	z.object({
 		name: z.string().min(1, 'Name is required'),
 		email: z.email('Please enter a valid email address'),
-		image: z.string().nullable(),
+		image: z.url('Invalid URL').optional().or(z.literal('')),
 		systemRole: z.literal('user'),
 		organizations: z
 			.array(
@@ -71,14 +71,14 @@ export const editAdminFormSchema = z.object({
 	id: z.string().min(1, 'ID is required'),
 	name: z.string().min(1, 'Name is required'),
 	email: z.email('Please enter a valid email address'),
-	image: z.string().nullable(),
+	image: z.url('Invalid URL').optional().or(z.literal('')),
 })
 
 export const editOrgUserFormSchema = z.object({
 	id: z.string().min(1, 'ID is required'),
 	name: z.string().min(1, 'Name is required'),
 	email: z.email('Please enter a valid email address'),
-	image: z.string().nullable(),
+	image: z.url('Invalid URL').optional().or(z.literal('')),
 	organizations: z.array(
 		z.object({
 			memberId: z.string().optional(),
@@ -115,19 +115,20 @@ const slugSchema = z
 export const addOrganizationFormSchema = z.object({
 	name: z.string().min(1, 'You must provide an organization name').min(3, 'Organization name must be at least 3 characters'),
 	slug: slugSchema,
-	logo: z.string().nullable(),
+	logo: z.url('Invalid URL').optional().or(z.literal('')),
 	plan: z.enum(OrganizationPlan),
 	status: z.enum(OrganizationStatus),
 })
 
 export const updateOrganizationFormSchema = addOrganizationFormSchema.extend({
 	id: z.string().min(1, 'ID is required'),
+	retentionDays: z.string(),
 })
 
 export const profileFormSchema = z.object({
 	name: z.string().min(1, 'Name is required'),
-	email: z.string().email('Invalid email address'),
-	image: z.string().url('Invalid URL').optional().or(z.literal('')),
+	email: z.email('Invalid email address'),
+	image: z.url('Invalid URL').optional().or(z.literal('')),
 })
 
 export const updatePasswordFormSchema = z

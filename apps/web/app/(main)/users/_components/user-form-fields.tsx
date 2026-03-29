@@ -31,13 +31,13 @@ const UserFormFields = ({ control, user, isPending }: UserFormFieldsProps) => {
 				{/* Details card */}
 				<Card className='h-full'>
 					<CardHeader>
-						<CardTitle>Details</CardTitle>
-						<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+						<CardTitle>User Details</CardTitle>
+						<CardDescription>Basic information about the user.</CardDescription>
 					</CardHeader>
 					<CardContent className='grid gap-5'>
 						<InputField
 							control={control}
-							label='Full name'
+							label='Full Name'
 							name='name'
 							disabled={isPending}
 						/>
@@ -94,7 +94,7 @@ const UserFormFields = ({ control, user, isPending }: UserFormFieldsProps) => {
 				<Card>
 					<CardHeader>
 						<CardTitle>Actions</CardTitle>
-						<CardDescription>Lipsum dolor sit amet, consectetur adipiscing elit</CardDescription>
+						<CardDescription>Perform actions on user.</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<UserActions user={user} />

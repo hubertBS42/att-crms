@@ -27,106 +27,106 @@ export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 		pathname: '/organizations',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Organizations', href: '#' },
+			{ text: 'Manage Organizations', href: '#' },
 		],
 	},
 	{
 		pathname: '/organizations/add',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Organizations', href: '/organizations' },
-			{ text: 'Add organization', href: '#' },
+			{ text: 'Manage Organizations', href: '/organizations' },
+			{ text: 'Add Organization', href: '#' },
 		],
 	},
 	{
 		pathname: '/organizations/[id]/edit',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Organizations', href: '/organizations' },
-			{ text: 'Edit organization', href: '#' },
+			{ text: 'Manage Organizations', href: '/organizations' },
+			{ text: 'Edit Organization', href: '#' },
 		],
 	},
 	{
 		pathname: '/users',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Users', href: '#' },
+			{ text: 'Manage Users', href: '#' },
 		],
 	},
 	{
 		pathname: '/users/add',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Users', href: '/users' },
-			{ text: 'Add user', href: '#' },
+			{ text: 'Manage Users', href: '/users' },
+			{ text: 'Add User', href: '#' },
 		],
 	},
 	{
 		pathname: '/users/[id]/edit',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Users', href: '/users' },
-			{ text: 'Edit user', href: '#' },
+			{ text: 'Manage Users', href: '/users' },
+			{ text: 'Edit User', href: '#' },
 		],
 	},
 	{
 		pathname: '/recordings',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Recordings', href: '#' },
+			{ text: 'Manage Recordings', href: '#' },
 		],
 	},
 	{
 		pathname: '/members',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Members', href: '#' },
+			{ text: 'Manage Members', href: '#' },
 		],
 	},
 	{
 		pathname: '/members/[id]/details',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Members', href: '/members' },
-			{ text: 'Member details', href: '#' },
+			{ text: 'Manage Members', href: '/members' },
+			{ text: 'Member Details', href: '#' },
 		],
 	},
 	{
 		pathname: '/settings',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Settings', href: '#' },
+			{ text: 'Manage Settings', href: '#' },
 		],
 	},
 	{
 		pathname: '/account',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Account overview', href: '#' },
+			{ text: 'Account Overview', href: '#' },
 		],
 	},
 	{
 		pathname: '/account/profile',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Account overview', href: '/account' },
-			{ text: 'Profile', href: '#' },
+			{ text: 'Account Overview', href: '/account' },
+			{ text: 'Profile Details', href: '#' },
 		],
 	},
 	{
 		pathname: '/account/password',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Account overview', href: '/account' },
-			{ text: 'Password', href: '#' },
+			{ text: 'Account Overview', href: '/account' },
+			{ text: 'Change Password', href: '#' },
 		],
 	},
 	{
 		pathname: '/account/sessions',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Account overview', href: '/account' },
-			{ text: 'Sessions', href: '#' },
+			{ text: 'Account Overview', href: '/account' },
+			{ text: 'Manage Sessions', href: '#' },
 		],
 	},
 ]
@@ -143,3 +143,13 @@ export const ORGANIZATION_PLAN_OPTIONS = Object.values(OrganizationPlan).map(val
 	label: capitalizeFirstLetter(value),
 	value,
 }))
+
+export const RETENTION_OPTIONS = [
+	{ label: 'Keep forever', value: 'forever' },
+	{ label: '30 days', value: '30' },
+	{ label: '60 days', value: '60' },
+	{ label: '90 days', value: '90' },
+	{ label: '180 days', value: '180' },
+	{ label: '1 year', value: '365' },
+	{ label: '2 years', value: '730' },
+]

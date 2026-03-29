@@ -32,7 +32,7 @@ export const columns: ColumnDef<Recording>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Call date'
+				title='Call Date'
 			/>
 		),
 		cell: ({ row }) => <div className='text-sm'>{format(new Date(row.original.callDate), 'LLL dd, y')}</div>,
@@ -43,7 +43,7 @@ export const columns: ColumnDef<Recording>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Call time'
+				title='Call Time'
 			/>
 		),
 		cell: ({ row }) => <div className='text-sm font-mono'>{row.original.callTime}</div>,
@@ -63,7 +63,7 @@ export const columns: ColumnDef<Recording>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Number called'
+				title='Number Called'
 			/>
 		),
 	},
@@ -72,7 +72,7 @@ export const columns: ColumnDef<Recording>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Answered by'
+				title='Answered By'
 			/>
 		),
 	},

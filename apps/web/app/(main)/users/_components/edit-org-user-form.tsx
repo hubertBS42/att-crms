@@ -87,7 +87,7 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 				id: data.id,
 				email: data.email,
 				name: data.name,
-				image: data.image,
+				image: data.image ?? null,
 				organizations: data.organizations,
 				removedMembers: removedMembers,
 			})
@@ -108,8 +108,9 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 		<form onSubmit={form.handleSubmit(onSubmit)}>
 			<div className='grid gap-y-6'>
 				<ResourceFormHeader
-					heading='Edit user'
-					description='Lorem ipsum dolor sit amet consectetur adipisicing elit.'
+					heading='Edit User'
+					description="Manage user's account."
+					backTo='/users'
 					isPending={isPending}
 					isDirty={form.formState.isDirty}
 					handleDiscard={handleDiscard}
