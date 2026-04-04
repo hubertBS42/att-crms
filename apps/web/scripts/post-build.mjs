@@ -64,7 +64,7 @@ cpSync(join(monorepoRoot, 'apps', 'watcher'), join(distDir, 'watcher'), {
 })
 
 // Generate ecosystem.config.js
-console.log('Generating ecosystem.config.js...')
+console.log('Generating ecosystem.config.cjs...')
 const ecosystem = `module.exports = {
   apps: [
     {
@@ -90,7 +90,7 @@ const ecosystem = `module.exports = {
 }
 `
 
-writeFileSync(join(distDir, 'ecosystem.config.js'), ecosystem)
+writeFileSync(join(distDir, 'ecosystem.config.cjs'), ecosystem)
 
 console.log('✅ Post-build copy complete')
 console.log('\nDist structure:')
