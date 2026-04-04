@@ -5,7 +5,7 @@ import os from 'os'
 import { parseRecording, ParsedRecording } from './parser.js'
 import { indexRecordingBatch } from './indexer.js'
 
-const RECORDINGS_PATH = path.join(os.homedir(), process.env.RECORDINGS_DIR ?? 'call_recordings')
+const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? path.join(os.homedir(), 'call_recordings')
 const BATCH_SIZE = 50
 const validExtensions = ['.mp3', '.wav', '.ogg', '.m4a']
 
