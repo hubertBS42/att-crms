@@ -142,6 +142,9 @@ export const auth = betterAuth({
 
 					if (!fs.existsSync(orgDirectory)) {
 						fs.mkdirSync(orgDirectory, { recursive: true })
+						// Set ownership to sftpuser group so they can write to it
+						// This requires the app user to have sudo privileges or be in the same group
+						fs.chmodSync(orgDirectory, 0o775) // rwxrwxr-x — group can write
 						console.log(`Created directory: ${orgDirectory}`)
 					}
 
