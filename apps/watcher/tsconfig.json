@@ -3,7 +3,9 @@
 	"compilerOptions": {
 		"types": ["node"],
 		"module": "ESNext",
-		"moduleResolution": "Bundler"
+		"moduleResolution": "Bundler",
+		"rootDir": "./src",
+		"outDir": "./dist"
 	},
 	"include": ["src/**/*"],
 	"exclude": ["node_modules", "dist"]

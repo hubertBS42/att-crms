@@ -1,5 +1,5 @@
 {
-	"name": "web",
+	"name": "@att-crms/web",
 	"version": "0.1.0",
 	"type": "module",
 	"private": true,
@@ -7,7 +7,6 @@
 		"dev": "next dev --port 3000",
 		"build": "next build --webpack && node scripts/post-build.mjs",
 		"start": "node .next/standalone/apps/web/server.js",
-		"start:prod": "node server.js",
 		"lint": "eslint --max-warnings 0"
 	},
 	"dependencies": {

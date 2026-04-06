@@ -1,16 +1,17 @@
 {
-	"name": "watcher",
+	"name": "@att-crms/watcher",
 	"version": "0.0.0",
 	"type": "module",
 	"private": true,
 	"scripts": {
 		"dev": "tsx watch --env-file=.env src/index.ts",
-		"build": "echo 'No build step required'",
-		"start": "tsx --env-file=.env ./src/index.ts"
+		"build": "tsc && node scripts/post-build.mjs",
+		"start": "node dist/index.js"
 	},
 	"dependencies": {
 		"@att-crms/db": "workspace:*",
 		"chokidar": "^5.0.0",
+		"dotenv": "^17.3.1",
 		"music-metadata": "^11.12.3"
 	},
 	"devDependencies": {

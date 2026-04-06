@@ -22,27 +22,27 @@ if (existsSync(distDir)) {
 
 mkdirSync(distDir, { recursive: true })
 
+// Copy static assets
+console.log('Copying static assets...')
+cpSync(join(nextDir, 'static'), join(standaloneDir, 'apps', 'web', '.next', 'static'), { recursive: true })
+
+// Copy public folder
+if (existsSync(join(root, 'public'))) {
+	console.log('Copying public folder...')
+	cpSync(join(root, 'public'), join(standaloneDir, 'apps', 'web', 'public'), { recursive: true })
+}
+
 // Copy standalone output directly to dist
 console.log('Copying standalone output...')
 cpSync(standaloneDir, distDir, { recursive: true })
 
 // Remove unnecessary folders
 console.log('Cleaning up unnecessary folders...')
-for (const item of ['node_modules', 'packages', 'package.json', 'apps/watcher']) {
+for (const item of ['node_modules', 'packages', 'package.json']) {
 	const target = join(distDir, item)
 	if (existsSync(target)) {
 		rmSync(target, { recursive: true, force: true })
 	}
-}
-
-// Copy static assets
-console.log('Copying static assets...')
-cpSync(join(nextDir, 'static'), join(distDir, 'apps', 'web', '.next', 'static'), { recursive: true })
-
-// Copy public folder
-if (existsSync(join(root, 'public'))) {
-	console.log('Copying public folder...')
-	cpSync(join(root, 'public'), join(distDir, 'apps', 'web', 'public'), { recursive: true })
 }
 
 // Rename apps/web to web and remove apps folder
@@ -55,15 +55,7 @@ if (existsSync(join(distDir, 'server.js'))) {
 	renameSync(join(distDir, 'server.js'), join(distDir, 'web', 'server.js'))
 }
 
-// Copy watcher
-console.log('Copying watcher...')
-mkdirSync(join(distDir, 'watcher'), { recursive: true })
-cpSync(join(monorepoRoot, 'apps', 'watcher'), join(distDir, 'watcher'), {
-	recursive: true,
-	filter: src => !src.includes('dist'),
-})
-
-// Generate ecosystem.config.js
+// Generate ecosystem.config.cjs
 console.log('Generating ecosystem.config.cjs...')
 const ecosystem = `module.exports = {
   apps: [
@@ -77,8 +69,7 @@ const ecosystem = `module.exports = {
     },
     {
       name: 'att-crms-watcher',
-      script: './watcher/src/index.ts',
-      interpreter: 'tsx',
+      script: './watcher/dist/index.js',
       watch: false,
       autorestart: true,
       restart_delay: 3000,
@@ -92,13 +83,11 @@ const ecosystem = `module.exports = {
 
 writeFileSync(join(distDir, 'ecosystem.config.cjs'), ecosystem)
 
-console.log('✅ Post-build copy complete')
+console.log('✅ Web post-build complete')
 console.log('\nDist structure:')
 console.log('  dist/')
-console.log('  ├── web/                 ← Next.js server')
+console.log('  ├── web/                  ← Next.js server')
 console.log('  │   ├── server.js')
 console.log('  │   ├── .next/')
 console.log('  │   └── public/')
-console.log('  ├── watcher/             ← Watcher process')
-console.log('  │   └── src/')
-console.log('  └── ecosystem.config.js  ← PM2 config')
+console.log('  └── ecosystem.config.cjs  ← PM2 config')

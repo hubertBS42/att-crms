@@ -16,10 +16,23 @@
 		"build": {
 			"dependsOn": ["^build"],
 			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": [".next/**", "!.next/cache/**", "dist/**"],
+			"cache": false
+		},
+		"@att-crms/watcher#build": {
+			"dependsOn": ["@att-crms/web#build", "@att-crms/db#build"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["dist/**"],
+			"cache": false
+		},
+		"@att-crms/db#build": {
+			"dependsOn": ["db:generate"],
+			"inputs": ["$TURBO_DEFAULT$", ".env*"],
+			"outputs": ["dist/**"],
 			"cache": false
 		},
 		"dev": {
-			"dependsOn": ["^build"],
+			"dependsOn": ["@att-crms/db#build"],
 			"cache": false,
 			"persistent": true
 		},

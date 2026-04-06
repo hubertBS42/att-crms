@@ -1,7 +1,7 @@
-// import 'dotenv/config'
-import { startWatcher, stopWatcher } from './watcher'
+import 'dotenv/config'
+import { startWatcher, stopWatcher } from './watcher.js'
 import { prisma } from '@att-crms/db'
-import { runRetentionCleanup } from './retention'
+import { runRetentionCleanup } from './retention.js'
 
 let retentionInterval: NodeJS.Timeout | null = null
 let retentionTimeout: NodeJS.Timeout | null = null
@@ -14,15 +14,17 @@ function msUntilMidnight(): number {
 }
 
 function scheduleRetention() {
-	const minutes = Math.round(msUntilMidnight() / 1000 / 60)
-	console.log(`Retention cleanup scheduled for midnight (in ${minutes} minutes)`)
+	const totalMinutes = Math.round(msUntilMidnight() / 1000 / 60)
+	const hours = Math.floor(totalMinutes / 60)
+	const minutes = totalMinutes % 60
 
-	// Wait until midnight then run
+	const timeLabel = hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
+
+	console.log(`Retention cleanup scheduled for midnight (in ${timeLabel})`)
+
 	retentionTimeout = setTimeout(async () => {
 		retentionTimeout = null
 		await runRetentionCleanup()
-
-		// Then run every 24 hours after that
 		retentionInterval = setInterval(runRetentionCleanup, 24 * 60 * 60 * 1000)
 	}, msUntilMidnight())
 }
