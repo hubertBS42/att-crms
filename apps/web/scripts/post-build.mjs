@@ -55,6 +55,10 @@ if (existsSync(join(distDir, 'server.js'))) {
 	renameSync(join(distDir, 'server.js'), join(distDir, 'web', 'server.js'))
 }
 
+// Copy .env
+console.log('Copying .env...')
+cpSync(join(monorepoRoot, '.env'), join(distDir, '.env'), { recursive: true })
+
 // Generate ecosystem.config.cjs
 console.log('Generating ecosystem.config.cjs...')
 const ecosystem = `
