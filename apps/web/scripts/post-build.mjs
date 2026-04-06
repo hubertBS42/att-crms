@@ -62,27 +62,12 @@ cpSync(join(monorepoRoot, '.env'), join(distDir, '.env'), { recursive: true })
 // Generate ecosystem.config.cjs
 console.log('Generating ecosystem.config.cjs...')
 const ecosystem = `
-const fs = require('fs')
-
-const env = Object.fromEntries(
-  fs.readFileSync(__dirname + '/.env', 'utf-8')
-    .split('\\n')
-    .filter(line => line && !line.startsWith('#'))
-    .map(line => {
-      const [key, ...values] = line.split('=')
-      return [key.trim(), values.join('=').trim()]
-    })
-)
-
 module.exports = {
   apps: [
     {
       name: 'att-crms-web',
       script: './web/server.js',
-      env: {
-        ...env,
-        PORT: 3000,
-      },
+      node_args: "--env-file=.env"
     },
     {
       name: 'att-crms-watcher',
@@ -90,9 +75,7 @@ module.exports = {
       watch: false,
       autorestart: true,
       restart_delay: 3000,
-      env: {
-        ...env,
-      },
+      node_args: "--env-file=.env"
     },
   ],
 }
@@ -107,4 +90,5 @@ console.log('  ├── web/                  ← Next.js server')
 console.log('  │   ├── server.js')
 console.log('  │   ├── .next/')
 console.log('  │   └── public/')
+console.log('  ├── .env')
 console.log('  └── ecosystem.config.cjs  ← PM2 config')
