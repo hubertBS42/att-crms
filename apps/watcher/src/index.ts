@@ -1,4 +1,3 @@
-import 'dotenv/config'
 import { startWatcher, stopWatcher } from './watcher.js'
 import { prisma } from '@att-crms/db'
 import { runRetentionCleanup } from './retention.js'

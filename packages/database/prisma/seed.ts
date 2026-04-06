@@ -1,6 +1,7 @@
 import { prisma } from '../src'
 import { scrypt } from '@noble/hashes/scrypt.js'
 import { bytesToHex, randomBytes } from '@noble/hashes/utils.js'
+import { env } from 'prisma/config'
 
 const hashPassword = async (password: string): Promise<string> => {
 	const salt = bytesToHex(randomBytes(16))
@@ -37,14 +38,14 @@ async function main() {
 	// Create superAdmin (you)
 	const superAdmin = await prisma.user.create({
 		data: {
-			name: process.env.SEED_SUPERADMIN_NAME!,
-			email: process.env.SEED_SUPERADMIN_EMAIL!,
+			name: env('SEED_SUPERADMIN_NAME'),
+			email: env('SEED_SUPERADMIN_EMAIL'),
 			emailVerified: false,
 			role: 'superAdmin',
 		},
 	})
 
-	const hashedPassword = await hashPassword(process.env.SEED_SUPERADMIN_PASSWORD!)
+	const hashedPassword = await hashPassword(env('SEED_SUPERADMIN_PASSWORD'))
 
 	await prisma.account.create({
 		data: {

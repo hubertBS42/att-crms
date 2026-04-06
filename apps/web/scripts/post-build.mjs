@@ -57,13 +57,26 @@ if (existsSync(join(distDir, 'server.js'))) {
 
 // Generate ecosystem.config.cjs
 console.log('Generating ecosystem.config.cjs...')
-const ecosystem = `module.exports = {
+const ecosystem = `
+const fs = require('fs')
+
+const env = Object.fromEntries(
+  fs.readFileSync(__dirname + '/.env', 'utf-8')
+    .split('\\n')
+    .filter(line => line && !line.startsWith('#'))
+    .map(line => {
+      const [key, ...values] = line.split('=')
+      return [key.trim(), values.join('=').trim()]
+    })
+)
+
+module.exports = {
   apps: [
     {
       name: 'att-crms-web',
       script: './web/server.js',
       env: {
-        NODE_ENV: 'production',
+        ...env,
         PORT: 3000,
       },
     },
@@ -74,7 +87,7 @@ const ecosystem = `module.exports = {
       autorestart: true,
       restart_delay: 3000,
       env: {
-        NODE_ENV: 'production',
+        ...env,
       },
     },
   ],
