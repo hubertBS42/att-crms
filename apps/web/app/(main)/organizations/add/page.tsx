@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import AddOrganizationForm from './add-organization-form'
+import AddOrganizationForm from './_components/add-organization-form'
 
 export const metadata: Metadata = {
 	title: 'Add organization',

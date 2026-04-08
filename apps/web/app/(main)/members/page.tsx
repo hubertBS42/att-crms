@@ -6,17 +6,24 @@ import MembersTable from './_components/members-table'
 import InviteMemberModal from './_components/invite-member-modal'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import InvitationsTable from './_components/invitations-table'
+import SuccessToast from '@/components/success-toast'
 
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
 	title: 'Manage members',
 }
-const MembersPage = async () => {
+
+interface MembersPageProps {
+	searchParams: Promise<{ success?: string }>
+}
+const MembersPage = async ({ searchParams }: MembersPageProps) => {
+	const { success } = await searchParams
 	const members = fetchOrganizationMembers()
 	const invitations = fetchOrganizationInvitations()
 	return (
 		<main className='flex flex-col gap-y-6'>
+			{success && <SuccessToast message={decodeURIComponent(success)} />}
 			<div className='flex items-end justify-between'>
 				<div className='grid'>
 					<h1 className='text-xl md:text-2xl font-bold'>Manage Members</h1>

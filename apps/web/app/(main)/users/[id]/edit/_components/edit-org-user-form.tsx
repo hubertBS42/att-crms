@@ -87,7 +87,7 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 				id: data.id,
 				email: data.email,
 				name: data.name,
-				image: data.image ?? null,
+				image: data.image,
 				organizations: data.organizations,
 				removedMembers: removedMembers,
 			})
@@ -187,26 +187,25 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 												</div>
 											)
 										})}
-										{orgOptions.length > fields.length && (
-											<Button
-												type='button'
-												variant='outline'
-												size='sm'
-												onClick={() =>
-													append({
-														memberId: undefined,
-														organizationId: organizations.find(org => !fields.map(f => f.organizationId).includes(org.id))?.id ?? '',
-														orgRole: 'member',
-														isNew: true,
-													})
-												}
-												disabled={isPending || isOrgsLoading}
-												className='w-full'
-											>
-												<Plus className='size-4' />
-												Add organization
-											</Button>
-										)}
+
+										<Button
+											type='button'
+											variant='outline'
+											size='sm'
+											onClick={() =>
+												append({
+													memberId: undefined,
+													organizationId: organizations.find(org => !fields.map(f => f.organizationId).includes(org.id))?.id ?? '',
+													orgRole: 'member',
+													isNew: true,
+												})
+											}
+											disabled={isPending || isOrgsLoading || orgOptions.length === fields.length}
+											className='w-full'
+										>
+											<Plus className='size-4' />
+											Add organization
+										</Button>
 									</CardContent>
 								</Card>
 							</div>

@@ -16,12 +16,12 @@ export const metadata: Metadata = {
 }
 
 type MemberDetailsPageProps = {
-	params: Promise<{ memberId: string }>
+	params: Promise<{ id: string }>
 }
 
 const MemberDetailsPage = async ({ params }: MemberDetailsPageProps) => {
-	const { memberId } = await params
-	const response = await getOrganizationMemberById(memberId)
+	const { id } = await params
+	const response = await getOrganizationMemberById(id)
 
 	if (!response.success) throw new Error(response.error)
 	if (!response.data) notFound()

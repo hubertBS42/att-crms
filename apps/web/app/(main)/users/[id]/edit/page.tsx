@@ -1,8 +1,8 @@
 import { getUserById } from '@/lib/data/users.data'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import EditOrgUserForm from '../../_components/edit-org-user-form'
-import EditAdminForm from '../../_components/edit-admin-form'
+import EditOrgUserForm from './_components/edit-org-user-form'
+import EditAdminForm from './_components/edit-admin-form'
 
 export const metadata: Metadata = {
 	title: 'Edit user',

@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import { SignUpForm } from './sign-up-form'
+import { SignUpForm } from './_components/sign-up-form'
 import { prisma } from '@att-crms/db'
 
 export const metadata: Metadata = {

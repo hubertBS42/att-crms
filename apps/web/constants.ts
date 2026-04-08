@@ -5,7 +5,7 @@ import { OrganizationPlan, OrganizationStatus } from '@att-crms/db/enums'
 import { capitalizeFirstLetter } from './lib/utils'
 export const APP_NAME = 'ATT CRMS'
 export const APP_DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
-export const APP_URL = process.env.SERVER_URL || 'http://localhost:3000'
+export const APP_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
 export const APP_LOGO = 'https://attdata.co.uk/resources/images/logo.png'
 export const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? path.join(os.homedir(), 'call_recordings')
 

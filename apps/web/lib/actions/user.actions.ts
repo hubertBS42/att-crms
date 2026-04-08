@@ -7,6 +7,7 @@ import { OrganizationLevelRole } from '../permissions/org-permissions'
 import { SystemLevelRole } from '../permissions/system-permissions'
 import { User } from '@att-crms/db/client'
 import { addOrganizationMemberAction, removeOrganizationMemberAction, updateOrganizationMemberRoleAction } from './member.actions'
+import { redirect } from 'next/navigation'
 
 async function addUserToAllOrganizations({ userId, systemRole }: { userId: string; systemRole: SystemLevelRole }) {
 	try {
@@ -39,7 +40,7 @@ export async function createUserAction({
 }: {
 	name: string
 	email: string
-	image: string | null
+	image: string | undefined
 	password: string
 	systemRole: SystemLevelRole
 	organizations?: { organizationId: string; orgRole: OrganizationLevelRole }[]
@@ -56,7 +57,7 @@ export async function createUserAction({
 
 		// Create user via better-auth admin API
 		const newUser = await auth.api.createUser({
-			body: { name, email, password, role: systemRole, data: { ...(image && { image }) } },
+			body: { name, email, password, role: systemRole, data: { image } },
 			headers: headersObj,
 		})
 
@@ -85,11 +86,11 @@ export async function createUserAction({
 		} else {
 			await addUserToAllOrganizations({ userId, systemRole })
 		}
-
-		return { success: true }
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}
+
+	redirect('/users?success=User+added+successfully')
 }
 
 async function updateOrgMembershipsAction({
@@ -144,7 +145,7 @@ export async function updateUserAction({
 	id: string
 	name: string
 	email: string
-	image: string | null
+	image: string | undefined
 	organizations?: {
 		memberId?: string
 		organizationId: string
@@ -174,7 +175,7 @@ export async function updateUserAction({
 		await auth.api.adminUpdateUser({
 			body: {
 				userId: id,
-				data: { name, email, ...(image && { image }) },
+				data: { name, email, image },
 			},
 			headers: headersObj,
 		})
@@ -308,11 +309,10 @@ export async function deleteUserAction(user: User) {
 			targetId: user.id,
 			targetName: user.name,
 		})
-
-		return { success: true }
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}
+	redirect('/users?success=User+deleted+successfully')
 }
 
 export async function userSignUpAction({ name, email, password, callbackURL }: { name: string; email: string; password: string; callbackURL: string }) {

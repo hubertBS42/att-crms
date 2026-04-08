@@ -40,7 +40,7 @@ const UpdateProfileForm = ({ user }: UpdateProfileFormProps) => {
 		startTransition(async () => {
 			const result = await updateProfileAction({
 				name: data.name,
-				image: data.image ?? null,
+				image: data.image,
 			})
 
 			if (!result.success) {

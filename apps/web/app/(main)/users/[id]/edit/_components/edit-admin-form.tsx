@@ -29,11 +29,12 @@ const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
 
 	const onSubmit: SubmitHandler<z.infer<typeof editAdminFormSchema>> = async data => {
 		startTransition(async () => {
+			console.log(data)
 			const result = await updateUserAction({
 				id: data.id,
 				name: data.name,
 				email: data.email,
-				image: data.image ?? null,
+				image: data.image,
 			})
 
 			if (!result.success) {

@@ -5,7 +5,7 @@ import { headers } from 'next/headers'
 import { formatError } from '@/lib/utils'
 import { logActivity } from '@att-crms/db'
 
-export async function updateProfileAction({ name, image }: { name: string; image: string | null }) {
+export async function updateProfileAction({ name, image }: { name: string; image: string | undefined }) {
 	try {
 		const headersObj = await headers()
 		const session = await auth.api.getSession({ headers: headersObj })

@@ -56,14 +56,12 @@ export const addUserFormSchema = z.discriminatedUnion('systemRole', [
 		email: z.email('Please enter a valid email address'),
 		image: z.url('Invalid URL').optional().or(z.literal('')),
 		systemRole: z.literal('user'),
-		organizations: z
-			.array(
-				z.object({
-					organizationId: z.string().min(1, 'Organization is required'),
-					orgRole: z.enum(['member', 'admin'] as const),
-				}),
-			)
-			.min(1, 'At least one organization is required'),
+		organizations: z.array(
+			z.object({
+				organizationId: z.string().min(1, 'Organization is required'),
+				orgRole: z.enum(['member', 'admin'] as const),
+			}),
+		),
 	}),
 ])
 

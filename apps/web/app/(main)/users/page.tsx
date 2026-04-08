@@ -4,14 +4,20 @@ import { Suspense } from 'react'
 import UsersTable from './_components/users-table'
 import { fetchAllUsers } from '@/lib/data/users.data'
 import AddButton from '@/components/add-button'
+import SuccessToast from '@/components/success-toast'
 
 export const metadata: Metadata = {
 	title: 'Manage users',
 }
-const UsersPage = () => {
+interface UsersPageProps {
+	searchParams: Promise<{ success?: string }>
+}
+const UsersPage = async ({ searchParams }: UsersPageProps) => {
+	const { success } = await searchParams
 	const data = fetchAllUsers()
 	return (
 		<main className='flex flex-col gap-y-6'>
+			{success && <SuccessToast message={decodeURIComponent(success)} />}
 			<div className='flex items-end justify-between'>
 				<div className='grid'>
 					<h1 className='text-xl md:text-2xl font-bold'>Manage Users</h1>

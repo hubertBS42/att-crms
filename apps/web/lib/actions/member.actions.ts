@@ -5,6 +5,7 @@ import { headers } from 'next/headers'
 import { formatError } from '@/lib/utils'
 import { logActivity, prisma } from '@att-crms/db'
 import { OrganizationLevelRole } from '../permissions/org-permissions'
+import { redirect } from 'next/navigation'
 
 export async function addOrganizationMemberAction({
 	userId,
@@ -105,11 +106,11 @@ export async function removeOrganizationMemberAction({ memberId, organizationId,
 			targetId: member.user.id,
 			targetName: member.user.name,
 		})
-
-		return { success: true }
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}
+
+	redirect('/members?success=Member+removed+successfully')
 }
 
 export async function updateOrganizationMemberRoleAction({

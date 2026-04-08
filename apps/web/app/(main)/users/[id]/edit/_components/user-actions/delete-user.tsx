@@ -13,22 +13,23 @@ import {
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
-import { MemberWithUserWithSessions } from '@/interfaces'
-import { removeOrganizationMemberAction } from '@/lib/actions/member.actions'
+import { deleteUserAction } from '@/lib/actions/user.actions'
+import { User } from '@att-crms/db/client'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
+const DeleteUser = ({ user }: { user: User }) => {
 	const [isPending, startTransition] = useTransition()
 	const [isOpen, setIsOpen] = useState(false)
 
-	const handleRemove = () => {
+	const handleDelete = () => {
 		startTransition(async () => {
-			const response = await removeOrganizationMemberAction({ memberId: member.id, organizationId: member.organizationId })
+			const response = await deleteUserAction(user)
 
 			if (response.error) {
 				setIsOpen(false)
-				toast.error('Operation failed', { description: response.error })
+				toast.error(response.error)
+				return
 			}
 		})
 	}
@@ -43,20 +44,22 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 					className='w-full'
 					variant={'destructive'}
 				>
-					Remove Member
+					Delete account
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
 					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-					<AlertDialogDescription>{`This action cannot be undone. ${member.user.name} will be removed from this organization.`}</AlertDialogDescription>
+					<AlertDialogDescription>
+						{`This action cannot be undone. ${user.name}'s account and all associated resources will be permanently deleted from the system.`}
+					</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={e => {
 							e.preventDefault()
-							handleRemove()
+							handleDelete()
 						}}
 						disabled={isPending}
 					>
@@ -67,4 +70,4 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 		</AlertDialog>
 	)
 }
-export default RemoveMember
+export default DeleteUser

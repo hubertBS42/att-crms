@@ -16,7 +16,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import slugify from 'slugify'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import DeleteOrganization from '../../_components/delete-organization'
+import DeleteOrganization from './delete-organization'
 import { Organization } from '@att-crms/db/client'
 import { updateRetentionPolicyAction } from '@/lib/actions/organization.actions'
 import ResourceFormHeader from '@/components/resource-form-header'
@@ -84,7 +84,7 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 				data: {
 					name: orgData.name,
 					slug: orgData.slug,
-					logo: !orgData.logo ? undefined : orgData.logo,
+					logo: orgData.logo,
 					plan: orgData.plan,
 					status: orgData.status,
 					metadata: organization.slug !== orgData.slug ? { previousSlug: organization.slug } : undefined,
@@ -98,13 +98,13 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 			}
 
 			// Update retention policy if it changed
-			if (orgData.retentionDays !== organization.retentionDays?.toString()) {
+			if (orgData.retentionDays !== (organization.retentionDays?.toString() ?? 'forever')) {
 				const retentionResult = await updateRetentionPolicyAction({
 					organizationId: organization.id,
 					retentionDays: orgData.retentionDays === 'forever' ? null : parseInt(orgData.retentionDays),
 				})
 
-				if (!retentionResult.success) {
+				if (retentionResult.error) {
 					toast.error('Organization updated but failed to update retention policy', {
 						description: retentionResult.error,
 					})

@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
-import { SetPasswordForm } from './set-password-form'
-import TokenError from './token-error'
+import { SetPasswordForm } from './_components/set-password-form'
+import TokenError from './_components/token-error'
 
 export const metadata: Metadata = {
 	title: 'Set a new password',

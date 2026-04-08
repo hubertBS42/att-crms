@@ -4,6 +4,7 @@ import { headers } from 'next/headers'
 import { auth } from '../auth'
 import { prisma } from '@att-crms/db'
 import { formatError } from '../utils'
+import { redirect } from 'next/navigation'
 
 export async function updateRetentionPolicyAction({ organizationId, retentionDays }: { organizationId: string; retentionDays: number | null }) {
 	try {
@@ -20,9 +21,9 @@ export async function updateRetentionPolicyAction({ organizationId, retentionDay
 			where: { id: organizationId },
 			data: { retentionDays },
 		})
-
-		return { success: true }
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}
+
+	redirect('/organizations?success=Organization+updated+successfully')
 }

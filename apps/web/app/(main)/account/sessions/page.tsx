@@ -2,7 +2,7 @@ import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import SessionsList from '../_components/sessions-list'
+import SessionsList from './_components/sessions-list'
 
 export const dynamic = 'force-dynamic'
 

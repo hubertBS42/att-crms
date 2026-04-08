@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import AddUserForm from './add-user-form'
+import AddUserForm from './_components/add-user-form'
 
 export const metadata: Metadata = {
 	title: 'Add user',

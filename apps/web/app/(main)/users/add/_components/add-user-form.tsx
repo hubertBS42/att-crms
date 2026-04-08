@@ -37,7 +37,7 @@ const AddUserForm = () => {
 			email: '',
 			image: '',
 			systemRole: 'user',
-			organizations: [{ organizationId: '', orgRole: 'member' }],
+			organizations: [],
 		},
 	})
 
@@ -60,7 +60,10 @@ const AddUserForm = () => {
 				const data: Organization[] = await response.json()
 				const filtered = data.filter(org => org.slug !== 'global')
 				setOrganizations(filtered)
-				form.setValue('organizations', [{ organizationId: filtered[0]?.id ?? '', orgRole: 'member' }])
+				if (filtered.length) {
+					form.setValue('organizations', [{ organizationId: filtered[0]?.id ?? '', orgRole: 'member' }])
+				}
+				// form.setValue('organizations', [{ organizationId: filtered[0]?.id ?? '', orgRole: 'member' }])
 			} catch (error) {
 				console.error('Failed to fetch organizations:', error)
 			} finally {
@@ -83,11 +86,11 @@ const AddUserForm = () => {
 				email: data.email,
 				password: generatePassword({ passwordLength: 16 }),
 				systemRole: data.systemRole,
-				image: data.image ?? null,
+				image: data.image,
 				organizations: data.systemRole === 'user' ? data.organizations : undefined,
 			})
 
-			if (!result.success) {
+			if (result.error) {
 				if (result.error === 'User already exists. Use another email.') {
 					form.setError('email', {
 						type: 'custom',
@@ -96,11 +99,7 @@ const AddUserForm = () => {
 				} else {
 					toast.error('Failed to create user', { description: result.error })
 				}
-				return
 			}
-
-			toast.success('User successfully added.')
-			router.push('/users')
 		})
 	}
 
@@ -236,7 +235,7 @@ const AddUserForm = () => {
 										variant='outline'
 										size='sm'
 										onClick={() => append({ organizationId: '', orgRole: 'member' })}
-										disabled={isPending || isOrgsLoading}
+										disabled={isPending || isOrgsLoading || orgOptions.length === fields.length}
 										className='w-full'
 									>
 										<Plus className='size-4' />
