@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { MemberWithUserWithSessions } from '@/interfaces'
 import { removeOrganizationMemberAction } from '@/lib/actions/member.actions'
+import { BadgeMinus } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
@@ -43,6 +44,7 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 					className='w-full'
 					variant={'destructive'}
 				>
+					<BadgeMinus className='size-4' />
 					Remove Member
 				</Button>
 			</AlertDialogTrigger>
@@ -60,7 +62,7 @@ const RemoveMember = ({ member }: { member: MemberWithUserWithSessions }) => {
 						}}
 						disabled={isPending}
 					>
-						{isPending ? <Spinner /> : 'Continue'}
+						{isPending ? <Spinner /> : 'Proceed'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

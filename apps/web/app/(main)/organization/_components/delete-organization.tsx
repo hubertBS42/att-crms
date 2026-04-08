@@ -20,6 +20,7 @@ import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { OrganizationLevelRole } from '@/lib/permissions/org-permissions'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Trash2 } from 'lucide-react'
 
 const DeleteOrganization = ({ organization }: { organization: Organization }) => {
 	const [isPending, startTransition] = useTransition()
@@ -74,7 +75,8 @@ const DeleteOrganization = ({ organization }: { organization: Organization }) =>
 					className='w-full'
 					disabled={!canDelete}
 				>
-					Delete organization
+					<Trash2 className='size-4' />
+					Delete Organization
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

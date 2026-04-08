@@ -16,6 +16,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
 import { leaveOrganizationAction } from '@/lib/actions/member.actions'
 import { authClient } from '@/lib/auth-client'
+import { DoorOpen } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -55,6 +56,7 @@ const LeaveOrganization = () => {
 					className='w-full'
 					variant='destructive'
 				>
+					<DoorOpen className='size-4' />
 					Leave Organization
 				</Button>
 			</AlertDialogTrigger>
@@ -73,7 +75,7 @@ const LeaveOrganization = () => {
 						disabled={isPending}
 						className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 					>
-						{isPending ? <Spinner /> : 'Leave Organization'}
+						{isPending ? <Spinner /> : 'Proceed'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

@@ -69,7 +69,7 @@ export const columns: ColumnDef<MemberWithUser>[] = [
 		header: ({ column }) => (
 			<ColumnHeader
 				column={column}
-				title='Joined on'
+				title='Joined On'
 			/>
 		),
 		cell: ({ row }) => {

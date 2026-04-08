@@ -24,7 +24,7 @@ const RecordingSheet = ({ recording, isOpen, onClose }: RecordingSheetProps) => 
 			<SheetContent className='min-w-full sm:min-w-125'>
 				<SheetHeader>
 					<SheetTitle className='text-lg'>Call Recording</SheetTitle>
-					<SheetDescription>Lorem ipsum dolor sit amet consectetur adipisicing elit</SheetDescription>
+					<SheetDescription>Listen, share, download and delete call recordings.</SheetDescription>
 				</SheetHeader>
 
 				<div className='grid gap-6 px-4'>

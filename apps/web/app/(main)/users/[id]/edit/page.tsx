@@ -5,7 +5,7 @@ import EditOrgUserForm from './_components/edit-org-user-form'
 import EditAdminForm from './_components/edit-admin-form'
 
 export const metadata: Metadata = {
-	title: 'Edit user',
+	title: 'Edit User',
 }
 
 interface EditUserPageProps {

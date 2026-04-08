@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { deleteUserAction } from '@/lib/actions/user.actions'
 import { User } from '@att-crms/db/client'
+import { Trash2 } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
@@ -44,7 +45,8 @@ const DeleteUser = ({ user }: { user: User }) => {
 					className='w-full'
 					variant={'destructive'}
 				>
-					Delete account
+					<Trash2 className='size-4' />
+					Delete User
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>

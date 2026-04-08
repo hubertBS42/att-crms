@@ -1,4 +1,4 @@
-import { AudioLines, Building2, LayoutDashboard, LucideIcon, ScrollTextIcon, Settings2Icon, UsersIcon } from 'lucide-react'
+import { AudioLines, Building2, LayoutDashboard, LucideIcon, ScrollTextIcon, UsersIcon } from 'lucide-react'
 import { SystemLevelRole } from './system-permissions'
 import { NavSubItem } from '@/interfaces'
 
@@ -75,17 +75,17 @@ export const routePermissions: Record<string, RoutePermission> = {
 			order: 2,
 		},
 	},
-	'/settings': {
+	'/organization': {
 		role: ['superAdmin', 'admin', 'user'],
 		context: ['org'],
 		nav: {
-			title: 'Settings',
-			icon: Settings2Icon,
+			title: 'Organization',
+			icon: Building2,
 			group: 'secondary',
 			order: 1,
 		},
 	},
-	'/settings/logs': {
+	'/organization/logs': {
 		role: ['superAdmin', 'admin', 'user'],
 		context: ['org'],
 		// nav: {

@@ -6,7 +6,7 @@ import RecordingsTable from './_components/recordings-table'
 import RefreshButton from '@/components/refresh-button'
 
 export const metadata: Metadata = {
-	title: 'Manage recordings',
+	title: 'Manage Recordings',
 }
 const RecordingsPage = () => {
 	const data = fetchOrganizationRecordings()

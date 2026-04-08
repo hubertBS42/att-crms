@@ -7,7 +7,7 @@ import AddButton from '@/components/add-button'
 import SuccessToast from '@/components/success-toast'
 
 export const metadata: Metadata = {
-	title: 'Manage users',
+	title: 'Manage Users',
 }
 interface UsersPageProps {
 	searchParams: Promise<{ success?: string }>

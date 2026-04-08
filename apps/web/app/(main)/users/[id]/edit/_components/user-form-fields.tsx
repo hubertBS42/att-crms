@@ -49,7 +49,7 @@ const UserFormFields = ({ control, user, isPending }: UserFormFieldsProps) => {
 							disabled
 						/>
 						<Field className='gap-y-1'>
-							<FieldLabel>Role</FieldLabel>
+							<FieldLabel>System Role</FieldLabel>
 							<Input
 								defaultValue={capitalizeFirstLetter(user.role)}
 								disabled
@@ -78,11 +78,11 @@ const UserFormFields = ({ control, user, isPending }: UserFormFieldsProps) => {
 						<CardContent>
 							<div className='grid text-sm gap-y-5'>
 								<div>
-									<h3 className='font-medium'>Ban reason:</h3>
+									<h3 className='font-medium'>Ban Reason:</h3>
 									<p className='text-muted-foreground'>{user.banReason}</p>
 								</div>
 								<div>
-									<h3 className='font-medium'>Ban expiration:</h3>
+									<h3 className='font-medium'>Ban Expiration:</h3>
 									<p className='text-muted-foreground'>{user.banExpires ? format(user.banExpires, 'LLL dd, y') : 'N/A'}</p>
 								</div>
 							</div>
@@ -94,7 +94,7 @@ const UserFormFields = ({ control, user, isPending }: UserFormFieldsProps) => {
 				<Card>
 					<CardHeader>
 						<CardTitle>Actions</CardTitle>
-						<CardDescription>Perform actions on user.</CardDescription>
+						<CardDescription>Perform actions on this user.</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<UserActions user={user} />

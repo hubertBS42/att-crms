@@ -11,7 +11,7 @@ import LeaveOrganization from '../members/_components/member-actions/leave-organ
 
 export const dynamic = 'force-dynamic'
 
-const SettingsPage = async () => {
+const OrganizationOverviewPage = async () => {
 	const session = await auth.api.getSession({ headers: await headers() })
 	if (!session) redirect('/sign-in')
 
@@ -88,4 +88,4 @@ const SettingsPage = async () => {
 	)
 }
 
-export default SettingsPage
+export default OrganizationOverviewPage

@@ -155,7 +155,7 @@ export function DataTable<TData, TValue>({ columns, data, filters = [], defaultS
 									colSpan={columns.length}
 									className='h-24 text-center'
 								>
-									No results.
+									No Results.
 								</TableCell>
 							</TableRow>
 						)}

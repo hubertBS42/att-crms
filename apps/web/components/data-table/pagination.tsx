@@ -23,11 +23,11 @@ const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 	return (
 		<div className='flex items-center justify-between p-4'>
 			<div className='hidden lg:flex lg:flex-1 text-sm'>
-				{selectedRows} of {totalRows} row(s) selected
+				{selectedRows} of {totalRows} Row(s) Selected
 			</div>
 			<div className='flex items-center justify-between lg:justify-normal space-x-6 lg:space-x-8 w-full lg:w-fit'>
 				<div className='flex items-center space-x-2'>
-					<p className='hidden lg:inline text-sm'>Rows per page</p>
+					<p className='hidden lg:inline text-sm'>Rows Per Page</p>
 					<div className='w-17'>
 						<ClientOnlySelect
 							value={`${pageSize}`}
@@ -49,9 +49,9 @@ const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 						className='hidden size-8 p-0 lg:flex'
 						onClick={() => table.setPageIndex(0)}
 						disabled={!table.getCanPreviousPage()}
-						aria-label='Go to first page'
+						aria-label='Go To First Page'
 					>
-						<span className='sr-only'>Go to previous page</span>
+						<span className='sr-only'>Go To Previous Page</span>
 						<ChevronsLeft />
 					</Button>
 					<Button
@@ -59,9 +59,9 @@ const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 						className='size-8 p-0'
 						onClick={() => table.previousPage()}
 						disabled={!table.getCanPreviousPage()}
-						aria-label='Go to previous page'
+						aria-label='Go To Previous Page'
 					>
-						<span className='sr-only'>Go to previous page</span>
+						<span className='sr-only'>Go To Previous Page</span>
 						<ChevronLeft />
 					</Button>
 					<Button
@@ -69,9 +69,9 @@ const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 						className='size-8 p-0'
 						onClick={() => table.nextPage()}
 						disabled={!table.getCanNextPage()}
-						aria-label='Go to next page'
+						aria-label='Go To Next Page'
 					>
-						<span className='sr-only'>Go to next page</span>
+						<span className='sr-only'>Go To Next Page</span>
 						<ChevronRight />
 					</Button>
 					<Button
@@ -79,9 +79,9 @@ const Pagination = <TData,>({ table }: PaginationProps<TData>) => {
 						className='hidden size-8 p-0 lg:flex'
 						onClick={() => table.setPageIndex(table.getPageCount() - 1)}
 						disabled={!table.getCanNextPage()}
-						aria-label='Go to last page'
+						aria-label='Go To Last Page'
 					>
-						<span className='sr-only'>Go to last page</span>
+						<span className='sr-only'>Go To Last Page</span>
 						<ChevronsRight />
 					</Button>
 				</div>

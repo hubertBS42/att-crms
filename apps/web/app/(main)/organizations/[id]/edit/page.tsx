@@ -5,7 +5,7 @@ import { Suspense } from 'react'
 import Loader from '@/components/loader'
 
 export const metadata: Metadata = {
-	title: 'Edit organization',
+	title: 'Edit Organization',
 }
 
 type Props = {

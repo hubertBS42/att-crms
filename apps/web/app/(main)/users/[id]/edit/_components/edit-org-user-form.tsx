@@ -150,14 +150,14 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 														name={`organizations.${index}.organizationId`}
 														options={availableOrgOptions}
 														disabled={isPending || isOrgsLoading || !field.isNew}
-														loadingPlaceholder='Select organization'
+														loadingPlaceholder='Select Organization'
 													/>
 													<div className='flex items-end gap-2'>
 														<div className='flex-1'>
 															{field.orgRole === 'owner' ? (
 																// Show read-only badge for owners
 																<div className='grid gap-1.5'>
-																	<p className='text-sm font-medium'>Member role</p>
+																	<p className='text-sm font-medium'>Member Role</p>
 																	<div className='flex h-9 items-center'>
 																		<Badge variant='default'>Owner</Badge>
 																	</div>
@@ -165,7 +165,7 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 															) : (
 																<SelectField
 																	control={form.control}
-																	label='Member role'
+																	label='Member Role'
 																	name={`organizations.${index}.orgRole`}
 																	options={orgRoleOptions}
 																	disabled={isPending}
@@ -204,7 +204,7 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 											className='w-full'
 										>
 											<Plus className='size-4' />
-											Add organization
+											Add Organization
 										</Button>
 									</CardContent>
 								</Card>

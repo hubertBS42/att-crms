@@ -7,7 +7,7 @@ import AddButton from '@/components/add-button'
 import SuccessToast from '@/components/success-toast'
 
 export const metadata: Metadata = {
-	title: 'Manage organizations',
+	title: 'Manage Organizations',
 }
 
 interface OrganizationsPageProps {

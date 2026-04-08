@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { requestPasswordResetAction } from '@/lib/actions/user.actions'
 import { User } from '@att-crms/db/client'
-import { Loader } from 'lucide-react'
+import { Loader, RotateCcw } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
@@ -49,7 +49,8 @@ const ResetPassword = ({ user }: { user: User }) => {
 					className='w-full text-red-500 hover:text-red-700 hover:bg-red-50'
 					variant={'outline'}
 				>
-					Reset password
+					<RotateCcw />
+					Reset Password
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
@@ -66,7 +67,7 @@ const ResetPassword = ({ user }: { user: User }) => {
 						}}
 						disabled={isPending}
 					>
-						{isPending ? <Loader className='h-4 w-4 animate-spin' /> : 'Continue'}
+						{isPending ? <Loader className='size-4 animate-spin' /> : 'Continue'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

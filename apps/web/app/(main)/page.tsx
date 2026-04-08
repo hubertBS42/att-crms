@@ -11,6 +11,11 @@ import RecentActivities from './_components/recent-activities'
 import SectionCardsSkeleton from './_components/section-cards-skeleton'
 import RecentActivitiesSkeleton from './_components/recent-activities-skeleton'
 import RecordingsChartSkeleton from './_components/recordings-chart-skeleton'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'Dashboard',
+}
 
 const DashboardPage = async () => {
 	const session = await auth.api.getSession({ headers: await headers() })

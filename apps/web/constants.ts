@@ -92,10 +92,17 @@ export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 		],
 	},
 	{
-		pathname: '/settings',
+		pathname: '/organization',
 		segments: [
 			{ text: 'Dashboard', href: '/' },
-			{ text: 'Manage Settings', href: '#' },
+			{ text: 'Organization Overview', href: '#' },
+		],
+	},
+	{
+		pathname: '/organization/logs',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Organization Logs', href: '#' },
 		],
 	},
 	{
@@ -127,6 +134,13 @@ export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 			{ text: 'Dashboard', href: '/' },
 			{ text: 'Account Overview', href: '/account' },
 			{ text: 'Manage Sessions', href: '#' },
+		],
+	},
+	{
+		pathname: '/logs',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Activity Logs', href: '#' },
 		],
 	},
 ]

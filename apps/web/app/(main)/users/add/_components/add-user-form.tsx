@@ -165,7 +165,7 @@ const AddUserForm = () => {
 								<div className='grid col-span-2 lg:col-span-1'>
 									<SelectField
 										control={form.control}
-										label='System role'
+										label='System Role'
 										name='systemRole'
 										options={systemRoleOptions}
 										disabled={isPending}
@@ -208,7 +208,7 @@ const AddUserForm = () => {
 												<div className='flex-1'>
 													<SelectField
 														control={form.control}
-														label='Member role'
+														label='Member Role'
 														name={`organizations.${index}.orgRole`}
 														options={orgRoleOptions}
 														disabled={isPending}
@@ -239,7 +239,7 @@ const AddUserForm = () => {
 										className='w-full'
 									>
 										<Plus className='size-4' />
-										Add organization
+										Add Organization
 									</Button>
 								</CardContent>
 							</Card>

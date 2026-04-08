@@ -14,7 +14,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { unbanUserAction } from '@/lib/actions/user.actions'
 import { User } from '@att-crms/db/client'
-import { Loader } from 'lucide-react'
+import { Loader, ShieldCheck } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
@@ -51,7 +51,7 @@ const UnbanUser = ({ user }: { user: User }) => {
 					className='w-full text-red-500 hover:text-red-700 hover:bg-red-50'
 					variant={'outline'}
 				>
-					Unban account
+					<ShieldCheck className='size-5' /> Unban User
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
@@ -70,7 +70,7 @@ const UnbanUser = ({ user }: { user: User }) => {
 						}}
 						disabled={isPending}
 					>
-						{isPending ? <Loader className='h-4 w-4 animate-spin' /> : 'Proceed'}
+						{isPending ? <Loader className='size-4 animate-spin' /> : 'Proceed'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

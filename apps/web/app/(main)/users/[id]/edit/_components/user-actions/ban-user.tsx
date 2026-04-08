@@ -13,6 +13,7 @@ import TextAreaField from '@/components/textarea-field'
 import { Spinner } from '@/components/ui/spinner'
 import { User } from '@att-crms/db/client'
 import { banUserAction } from '@/lib/actions/user.actions'
+import { ShieldX } from 'lucide-react'
 
 const BanUser = ({ user }: { user: User }) => {
 	const [isOpen, setIsOpen] = useState(false)
@@ -56,12 +57,13 @@ const BanUser = ({ user }: { user: User }) => {
 					className='w-full text-red-500 hover:text-red-700 hover:bg-red-50'
 					variant={'outline'}
 				>
-					Ban account
+					<ShieldX className='size-5' />
+					Ban User
 				</Button>
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-106.25'>
 				<DialogHeader>
-					<DialogTitle>Ban account</DialogTitle>
+					<DialogTitle>Ban User</DialogTitle>
 					<DialogDescription>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
@@ -70,7 +72,7 @@ const BanUser = ({ user }: { user: User }) => {
 							<DateField
 								control={form.control}
 								name='banExpiresIn'
-								label='Ban expiration'
+								label='Ban Expiration'
 								disabled={isPending}
 								disabledDates={date => date < new Date()}
 							/>
@@ -79,7 +81,7 @@ const BanUser = ({ user }: { user: User }) => {
 						<div className='col-span-2'>
 							<TextAreaField
 								control={form.control}
-								label='Ban reason'
+								label='Ban Reason'
 								name='banReason'
 								disabled={isPending}
 							/>
@@ -91,7 +93,7 @@ const BanUser = ({ user }: { user: User }) => {
 								onClick={() => form.handleSubmit(onSubmit)()}
 								disabled={isPending}
 							>
-								{isPending ? <Spinner /> : 'Ban user'}
+								{isPending ? <Spinner /> : 'Proceed'}
 							</Button>
 						</div>
 					</div>

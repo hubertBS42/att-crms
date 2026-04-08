@@ -6,7 +6,7 @@ import { useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { Loader } from 'lucide-react'
+import { KeyRound, Loader } from 'lucide-react'
 import { changePasswordFormSchema } from '@/lib/zod'
 import { authClient } from '@/lib/auth-client'
 import PasswordField from '@/components/password-field'
@@ -64,13 +64,14 @@ const ChangePassword = () => {
 					className='w-full text-red-500 hover:text-red-700 hover:bg-red-50'
 					variant={'outline'}
 				>
-					Change password
+					<KeyRound className='size-4' />
+					Change Password
 				</Button>
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-106.25'>
 				<DialogHeader>
-					<DialogTitle>Change password</DialogTitle>
-					<DialogDescription>Lorem ipsum dolor sit, amet consectetur adipisicing elit.</DialogDescription>
+					<DialogTitle>Change Password</DialogTitle>
+					<DialogDescription>Enter your current password and choose a new one to update your password.</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={form.handleSubmit(onSubmit)}>
 					<div className='grid grid-cols-2 gap-4'>
@@ -78,7 +79,7 @@ const ChangePassword = () => {
 							<PasswordField
 								control={form.control}
 								name='currentPassword'
-								label='Current password'
+								label='Current Password'
 								disabled={isPending}
 							/>
 						</div>
@@ -87,7 +88,7 @@ const ChangePassword = () => {
 							<PasswordField
 								control={form.control}
 								name='password'
-								label='New password'
+								label='New Password'
 								disabled={isPending}
 							/>
 						</div>
@@ -95,7 +96,7 @@ const ChangePassword = () => {
 							<PasswordField
 								control={form.control}
 								name='confirmPassword'
-								label='Confirm password'
+								label='Confirm Password'
 								disabled={isPending}
 							/>
 						</div>
@@ -106,7 +107,13 @@ const ChangePassword = () => {
 								onClick={() => form.handleSubmit(onSubmit)()}
 								disabled={isPending}
 							>
-								{isPending ? <Loader className='w-4 h-4 animate-spin' /> : 'Change password'}
+								{isPending ? (
+									<Loader className='w-4 h-4 animate-spin' />
+								) : (
+									<>
+										<KeyRound className='size-4' /> Change Password
+									</>
+								)}
 							</Button>
 						</div>
 					</div>

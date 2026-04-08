@@ -11,7 +11,7 @@ import SuccessToast from '@/components/success-toast'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-	title: 'Manage members',
+	title: 'Manage Members',
 }
 
 interface MembersPageProps {
