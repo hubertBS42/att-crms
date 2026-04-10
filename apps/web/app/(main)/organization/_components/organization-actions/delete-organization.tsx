@@ -15,18 +15,17 @@ import { Button } from '@/components/ui/button'
 import { Spinner } from '@/components/ui/spinner'
 import { Organization } from '@att-crms/db/client'
 import { authClient } from '@/lib/auth-client'
-import { useRouter } from 'next/navigation'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 import { OrganizationLevelRole } from '@/lib/permissions/org-permissions'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Trash2 } from 'lucide-react'
+import { useOrganizationSwitcher } from '@/hooks/use-org-switch'
 
 const DeleteOrganization = ({ organization }: { organization: Organization }) => {
 	const [isPending, startTransition] = useTransition()
 	const [isOpen, setIsOpen] = useState(false)
-	const router = useRouter()
-
+	const { switchOrganization, isSwitching } = useOrganizationSwitcher()
 	const { data, isPending: isActiveMemberRoleLoading } = authClient.useActiveMemberRole()
 
 	const canDelete = authClient.organization.checkRolePermission({
@@ -49,13 +48,7 @@ const DeleteOrganization = ({ organization }: { organization: Organization }) =>
 					},
 					onSuccess: async () => {
 						// Switch to global workspace after deletion
-						await authClient.organization.setActive({
-							organizationSlug: 'global',
-						})
-						setIsOpen(false)
-						toast.success(`${organization.name} has been deleted.`)
-						router.push('/')
-						router.refresh()
+						await switchOrganization({ organizationSlug: 'global' })
 					},
 				},
 			)
@@ -85,16 +78,16 @@ const DeleteOrganization = ({ organization }: { organization: Organization }) =>
 					<AlertDialogDescription>{`This action cannot be undone. ${organization.name} and all its call recordings will be permanently deleted.`}</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
-					<AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
+					<AlertDialogCancel disabled={isPending || isSwitching}>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={e => {
 							e.preventDefault()
 							handleDelete()
 						}}
-						disabled={isPending}
+						disabled={isPending || isSwitching}
 						className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 					>
-						{isPending ? <Spinner /> : 'Delete'}
+						{isPending || isSwitching ? <Spinner /> : 'Delete'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>

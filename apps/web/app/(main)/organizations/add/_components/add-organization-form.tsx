@@ -177,6 +177,7 @@ const AddOrganizationForm = () => {
 					</div>
 
 					<ResourceFormFooter
+						backTo='/organizations'
 						isPending={isPending}
 						isDirty={form.formState.isDirty}
 						handleDiscard={handleDiscard}

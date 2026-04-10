@@ -1,5 +1,5 @@
 import BackButton from './back-button'
-import DiscardButton from './discard-button'
+import DiscardChangesButton from './discard-changes-button'
 import SaveButton from './save-button'
 
 interface ResourceFormHeaderProps {
@@ -19,7 +19,7 @@ const ResourceFormHeader = ({ heading, description, backTo, isPending, isDirty, 
 			</div>
 			<div className='hidden items-center gap-2 md:ml-auto md:flex'>
 				{isDirty ? (
-					<DiscardButton
+					<DiscardChangesButton
 						isLoading={isPending}
 						handleDiscard={handleDiscard}
 					/>

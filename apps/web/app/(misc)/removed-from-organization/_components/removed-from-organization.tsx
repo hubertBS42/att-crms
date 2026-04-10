@@ -20,7 +20,7 @@ const RemovedFromOrganization = ({ memberships }: { memberships: MemberWithOrgan
 					<ShieldX className='size-16 text-destructive' />
 				</div>
 				<div className='grid gap-2'>
-					<h1 className='text-2xl font-bold'>Removed from Organization</h1>
+					<h1 className='text-2xl font-bold'>Removed From Organization</h1>
 					<p className='text-muted-foreground text-sm'>
 						You have been removed from this organization.
 						{hasOtherOrgs ? ' You can switch to another organization or sign out.' : ' You no longer have access to any organizations.'}

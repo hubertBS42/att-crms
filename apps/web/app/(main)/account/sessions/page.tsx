@@ -4,8 +4,6 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import SessionsList from './_components/sessions-list'
 
-export const dynamic = 'force-dynamic'
-
 const SessionsPage = async () => {
 	const headersObj = await headers()
 	const session = await auth.api.getSession({ headers: headersObj })

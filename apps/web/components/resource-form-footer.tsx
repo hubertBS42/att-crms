@@ -1,23 +1,24 @@
 import BackButton from './back-button'
-import DiscardButton from './discard-button'
+import DiscardChangesButton from './discard-changes-button'
 import SaveButton from './save-button'
 
 interface ResourceFormFooterProps {
+	backTo: string
 	isPending: boolean
 	isDirty: boolean
 	handleDiscard: () => Promise<void>
 }
-const ResourceFormFooter = ({ isPending, isDirty, handleDiscard }: ResourceFormFooterProps) => {
+const ResourceFormFooter = ({ backTo, isPending, isDirty, handleDiscard }: ResourceFormFooterProps) => {
 	return (
 		<div className='flex items-center justify-center gap-2 md:hidden'>
 			{isDirty ? (
-				<DiscardButton
+				<DiscardChangesButton
 					isLoading={isPending}
 					handleDiscard={handleDiscard}
 				/>
 			) : (
 				<BackButton
-					link='/users'
+					link={backTo}
 					isLoading={isPending}
 				/>
 			)}

@@ -3,7 +3,7 @@ import { SignUpForm } from './_components/sign-up-form'
 import { prisma } from '@att-crms/db'
 
 export const metadata: Metadata = {
-	title: 'Create an account',
+	title: 'Create An Account',
 }
 
 interface SignUpPageProps {

@@ -1,8 +1,6 @@
 'use client'
 
-import DiscardButton from '@/components/discard-button'
 import InputField from '@/components/input-field'
-import SaveButton from '@/components/save-button'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { capitalizeFirstLetter, generatePassword } from '@/lib/utils'
@@ -14,12 +12,13 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { SYSTEM_LEVEL_ROLE_NAMES } from '@/lib/permissions/system-permissions'
-import BackButton from '@/components/back-button'
 import { ORG_LEVEL_ROLE_NAMES } from '@/lib/permissions/org-permissions'
 import { Organization } from '@att-crms/db/client'
 import SelectField from '@/components/select-field'
 import { Plus, Trash2 } from 'lucide-react'
 import { createUserAction } from '@/lib/actions/user.actions'
+import ResourceFormHeader from '@/components/resource-form-header'
+import ResourceFormFooter from '@/components/resource-form-footer'
 
 const systemRoleOptions = SYSTEM_LEVEL_ROLE_NAMES.filter(item => item !== 'superAdmin').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
 const orgRoleOptions = ORG_LEVEL_ROLE_NAMES.filter(item => item !== 'owner').map(role => ({ label: capitalizeFirstLetter(role), value: role }))
@@ -110,31 +109,14 @@ const AddUserForm = () => {
 	return (
 		<form onSubmit={form.handleSubmit(onSubmit)}>
 			<div className='grid gap-y-6'>
-				<div className='flex items-end'>
-					<div className='grid'>
-						<h1 className='text-xl md:text-2xl font-bold'>Add User</h1>
-						<p className='text-muted-foreground text-sm'>Create a new user to manage organizations and recordings.</p>
-					</div>
-
-					<div className='hidden items-center gap-2 md:ml-auto md:flex'>
-						{form.formState.isDirty ? (
-							<DiscardButton
-								isLoading={isPending}
-								handleDiscard={handleDiscard}
-							/>
-						) : (
-							<BackButton
-								link='/users'
-								isLoading={isPending}
-							/>
-						)}
-
-						<SaveButton
-							isLoading={isPending}
-							isDisabled={!form.formState.isDirty}
-						/>
-					</div>
-				</div>
+				<ResourceFormHeader
+					heading='Add User'
+					description='Create a new user to manage organizations and recordings.'
+					backTo='/users'
+					isPending={isPending}
+					isDirty={form.formState.isDirty}
+					handleDiscard={handleDiscard}
+				/>
 
 				<div className='grid gap-8'>
 					<div className='grid gap-4'>
@@ -245,28 +227,13 @@ const AddUserForm = () => {
 							</Card>
 						)}
 					</div>
-					<div className='flex items-center justify-center gap-2 md:hidden'>
-						{form.formState.isDirty ? (
-							<DiscardButton
-								isLoading={isPending}
-								handleDiscard={handleDiscard}
-							/>
-						) : (
-							<Button
-								variant={'outline'}
-								size={'sm'}
-								disabled={isPending}
-								onClick={() => router.push('/users')}
-								type='button'
-							>
-								Back
-							</Button>
-						)}
-						<SaveButton
-							isLoading={isPending}
-							isDisabled={!form.formState.isDirty}
-						/>
-					</div>
+
+					<ResourceFormFooter
+						backTo='/users'
+						isPending={isPending}
+						isDirty={form.formState.isDirty}
+						handleDiscard={handleDiscard}
+					/>
 				</div>
 			</div>
 		</form>

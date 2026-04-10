@@ -37,12 +37,14 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 			name: user.name,
 			email: user.email,
 			image: user.image ?? '',
-			organizations: user.members.map(m => ({
-				memberId: m.id,
-				organizationId: m.organizationId,
-				orgRole: m.role as OrganizationLevelRole,
-				isNew: false,
-			})),
+			organizations: user.members
+				.sort((a, b) => a.organization.name.localeCompare(b.organization.name))
+				.map(m => ({
+					memberId: m.id,
+					organizationId: m.organizationId,
+					orgRole: m.role as OrganizationLevelRole,
+					isNew: false,
+				})),
 		},
 	})
 
@@ -213,6 +215,7 @@ const EditOrgUserForm = ({ user }: { user: UserWithSessionsAndMemberships }) => 
 					</div>
 
 					<ResourceFormFooter
+						backTo='/users'
 						isPending={isPending}
 						isDirty={form.formState.isDirty}
 						handleDiscard={handleDiscard}

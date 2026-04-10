@@ -203,9 +203,9 @@ export async function leaveOrganizationAction({ organizationId, session }: { org
 				action: 'leave_organization',
 			},
 		})
-
-		return { success: true }
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}
+
+	redirect('/removed-from-organization?success=You+have+left+the+organization')
 }

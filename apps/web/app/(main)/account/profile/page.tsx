@@ -4,8 +4,6 @@ import { redirect } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import UpdateProfileForm from './_components/update-profile-form'
 
-export const dynamic = 'force-dynamic'
-
 const ProfilePage = async () => {
 	const session = await auth.api.getSession({ headers: await headers() })
 	if (!session) redirect('/sign-in')

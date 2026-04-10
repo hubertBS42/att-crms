@@ -4,23 +4,14 @@ import { MemberWithUserWithSessions } from '@/interfaces'
 import { authClient } from '@/lib/auth-client'
 import RemoveMember from './remove-member'
 import { OrganizationLevelRole } from '@/lib/permissions/org-permissions'
-// import PromoteToOwner from './promote-to-owner'
-import { Skeleton } from '@/components/ui/skeleton'
-import LeaveOrganization from './leave-organization'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 
 interface MemberActionsProps {
 	member: MemberWithUserWithSessions
 }
 
 const MemberActions = ({ member }: MemberActionsProps) => {
-	const { data: activeMember, isPending: isActiveMemberLoading } = authClient.useActiveMember()
-
-	if (isActiveMemberLoading || !activeMember) return <Skeleton className='h-9 rounded-md' />
-
-	// const canSetRole = authClient.organization.checkRolePermission({
-	// 	role: (activeMember?.role ?? 'member') as OrganizationLevelRole,
-	// 	permissions: { member: ['set-role'] },
-	// })
+	const { data: activeMember } = authClient.useActiveMember()
 
 	const canRemove = authClient.organization.checkRolePermission({
 		role: (activeMember?.role ?? 'member') as OrganizationLevelRole,
@@ -28,19 +19,17 @@ const MemberActions = ({ member }: MemberActionsProps) => {
 	})
 
 	const isCurrentMember = member.id === activeMember?.id
-	// const isOwner = member.role === 'owner'
 
+	if (isCurrentMember) return null
+	if (!isCurrentMember && !canRemove) return null
 	return (
-		<div className='grid gap-y-2'>
-			{!isCurrentMember ? (
-				<>
-					{canRemove && <RemoveMember member={member} />}
-					{/* {canSetRole && !isOwner && <PromoteToOwner member={member} />} */}
-				</>
-			) : (
-				<LeaveOrganization />
-			)}
-		</div>
+		<Card>
+			<CardHeader>
+				<CardTitle>Actions</CardTitle>
+				<CardDescription>Remove member from organization</CardDescription>
+			</CardHeader>
+			<CardContent>{canRemove && <RemoveMember member={member} />}</CardContent>
+		</Card>
 	)
 }
 export default MemberActions

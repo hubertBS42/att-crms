@@ -10,7 +10,7 @@ interface AcceptInvitationPageProps {
 }
 
 export const metadata: Metadata = {
-	title: 'Organization invitation',
+	title: 'Organization Invitation',
 }
 const AcceptInvitationPage = async ({ params }: AcceptInvitationPageProps) => {
 	const { id } = await params

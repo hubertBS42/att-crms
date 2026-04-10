@@ -12,33 +12,30 @@ import {
 	AlertDialogTrigger,
 } from '@/components/ui/alert-dialog'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Spinner } from '@/components/ui/spinner'
-import { MemberWithUserWithSessions } from '@/interfaces'
-import { updateOrganizationMemberRoleAction } from '@/lib/actions/member.actions'
-import { useRouter } from 'next/navigation'
+import { leaveOrganizationAction } from '@/lib/actions/member.actions'
+import { authClient } from '@/lib/auth-client'
+import { DoorOpen } from 'lucide-react'
 import { useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-const PromoteToOwner = ({ member }: { member: MemberWithUserWithSessions }) => {
+const LeaveOrganization = () => {
 	const [isPending, startTransition] = useTransition()
+	const { data: activeOrganization, isPending: isActiveOrganizationPending } = authClient.useActiveOrganization()
 	const [isOpen, setIsOpen] = useState(false)
-	const router = useRouter()
 
-	const handlePromote = () => {
+	if (isActiveOrganizationPending || !activeOrganization) return <Skeleton className='w-full h-9' />
+
+	const handleLeave = () => {
 		startTransition(async () => {
-			const response = await updateOrganizationMemberRoleAction({
-				memberId: member.id,
-				organizationId: member.organizationId,
-				role: 'owner',
-			})
+			const response = await leaveOrganizationAction({ organizationId: activeOrganization.id })
 
 			if (!response.success) {
+				setIsOpen(false)
 				toast.error('Operation failed', { description: response.error })
 				return
 			}
-
-			toast.success('Operation success', { description: 'Member has been promoted to owner!' })
-			router.refresh()
 		})
 	}
 
@@ -51,28 +48,28 @@ const PromoteToOwner = ({ member }: { member: MemberWithUserWithSessions }) => {
 				<Button
 					type='button'
 					className='w-full'
-					variant='outline'
+					variant='destructive'
 				>
-					Promote To Owner
+					<DoorOpen className='size-4' />
+					Leave Organization
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
 				<AlertDialogHeader>
-					<AlertDialogTitle>Promote to Owner?</AlertDialogTitle>
-					<AlertDialogDescription>
-						{`${member.user.name} will become an owner of this organization and will have full control including the ability to delete it.`}
-					</AlertDialogDescription>
+					<AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+					<AlertDialogDescription>{`You will be removed from ${activeOrganization.name} and will lose access to all its resources.`}</AlertDialogDescription>
 				</AlertDialogHeader>
 				<AlertDialogFooter>
 					<AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
 					<AlertDialogAction
 						onClick={e => {
 							e.preventDefault()
-							handlePromote()
+							handleLeave()
 						}}
 						disabled={isPending}
+						className='bg-destructive text-destructive-foreground hover:bg-destructive/90'
 					>
-						{isPending ? <Spinner /> : 'Promote'}
+						{isPending ? <Spinner /> : 'Proceed'}
 					</AlertDialogAction>
 				</AlertDialogFooter>
 			</AlertDialogContent>
@@ -80,4 +77,4 @@ const PromoteToOwner = ({ member }: { member: MemberWithUserWithSessions }) => {
 	)
 }
 
-export default PromoteToOwner
+export default LeaveOrganization

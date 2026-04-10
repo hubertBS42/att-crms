@@ -5,9 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/utils'
 import { format } from 'date-fns'
-import DeleteOrganization from './_components/delete-organization'
 import { prisma } from '@att-crms/db'
-import LeaveOrganization from '../members/_components/member-actions/leave-organization'
+import OrganizationActions from './_components/organization-actions'
 
 export const dynamic = 'force-dynamic'
 
@@ -27,63 +26,56 @@ const OrganizationOverviewPage = async () => {
 	const isPlatformStaff = session.user.role === 'superAdmin' || session.user.role === 'admin'
 
 	return (
-		<div className='grid items-start gap-4 lg:grid-cols-3'>
-			{/* Left column */}
-			<div className='lg:col-span-2'>
-				<Card>
-					<CardHeader>
-						<CardTitle>Organization Details</CardTitle>
-						<CardDescription>General information about this organization</CardDescription>
-					</CardHeader>
-					<CardContent className='grid gap-4'>
-						<div className='grid grid-cols-2 gap-4'>
-							<div className='grid gap-1'>
-								<p className='text-xs text-muted-foreground'>Name</p>
-								<p className='text-sm font-medium'>{organization.name}</p>
-							</div>
-							<div className='grid gap-1'>
-								<p className='text-xs text-muted-foreground'>Slug</p>
-								<p className='text-sm font-medium font-mono'>{organization.slug}</p>
-							</div>
-							<div className='grid gap-1'>
-								<p className='text-xs text-muted-foreground'>Plan</p>
-								<div>
-									<Badge variant='secondary'>{capitalizeFirstLetter(organization.plan ?? 'N/A')}</Badge>
-								</div>
-							</div>
-							<div className='grid gap-1'>
-								<p className='text-xs text-muted-foreground'>Status</p>
-								<div>
-									<Badge variant={organization.status === 'ACTIVE' ? 'default' : organization.status === 'SUSPENDED' ? 'destructive' : 'outline'}>
-										{capitalizeFirstLetter(organization.status?.toLowerCase() ?? 'N/A')}
-									</Badge>
-								</div>
-							</div>
-							<div className='grid gap-1'>
-								<p className='text-xs text-muted-foreground'>Created on</p>
-								<p className='text-sm font-medium'>{format(new Date(organization.createdAt), 'LLL dd, y')}</p>
-							</div>
-							{organization.retentionDays && (
-								<div className='grid gap-1'>
-									<p className='text-xs text-muted-foreground'>Recording Retention</p>
-									<p className='text-sm font-medium'>
-										{organization.retentionDays === 365 ? '1 year' : organization.retentionDays === 730 ? '2 years' : `${organization.retentionDays} days`}
-									</p>
-								</div>
-							)}
-						</div>
-					</CardContent>
-				</Card>
-			</div>
-
-			{/* Right column */}
-			<Card className='border-destructive'>
+		<div className='grid gap-4'>
+			<Card>
 				<CardHeader>
-					<CardTitle>Danger Zone</CardTitle>
-					<CardDescription>{isPlatformStaff ? 'Permanently delete this organization and all its data.' : 'Leave this organization.'}</CardDescription>
+					<CardTitle>Organization Details</CardTitle>
+					<CardDescription>General information about this organization</CardDescription>
 				</CardHeader>
-				<CardContent>{isPlatformStaff ? <DeleteOrganization organization={organization} /> : <LeaveOrganization />} </CardContent>
+				<CardContent className='grid gap-4'>
+					<div className='grid grid-cols-2 gap-4'>
+						<div className='grid gap-1'>
+							<p className='text-xs text-muted-foreground'>Name</p>
+							<p className='text-sm font-medium'>{organization.name}</p>
+						</div>
+						<div className='grid gap-1'>
+							<p className='text-xs text-muted-foreground'>Slug</p>
+							<p className='text-sm font-medium font-mono'>{organization.slug}</p>
+						</div>
+						<div className='grid gap-1'>
+							<p className='text-xs text-muted-foreground'>Plan</p>
+							<div>
+								<Badge variant='secondary'>{capitalizeFirstLetter(organization.plan ?? 'N/A')}</Badge>
+							</div>
+						</div>
+						<div className='grid gap-1'>
+							<p className='text-xs text-muted-foreground'>Status</p>
+							<div>
+								<Badge variant={organization.status === 'ACTIVE' ? 'default' : organization.status === 'SUSPENDED' ? 'destructive' : 'outline'}>
+									{capitalizeFirstLetter(organization.status?.toLowerCase() ?? 'N/A')}
+								</Badge>
+							</div>
+						</div>
+						<div className='grid gap-1'>
+							<p className='text-xs text-muted-foreground'>Created on</p>
+							<p className='text-sm font-medium'>{format(new Date(organization.createdAt), 'LLL dd, y')}</p>
+						</div>
+						{organization.retentionDays && (
+							<div className='grid gap-1'>
+								<p className='text-xs text-muted-foreground'>Recording Retention</p>
+								<p className='text-sm font-medium'>
+									{organization.retentionDays === 365 ? '1 year' : organization.retentionDays === 730 ? '2 years' : `${organization.retentionDays} days`}
+								</p>
+							</div>
+						)}
+					</div>
+				</CardContent>
 			</Card>
+
+			<OrganizationActions
+				organization={organization}
+				isPlatformStaff={isPlatformStaff}
+			/>
 		</div>
 	)
 }

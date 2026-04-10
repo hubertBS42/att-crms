@@ -9,8 +9,6 @@ import { abbreviateName, capitalizeFirstLetter } from '@/lib/utils'
 import { UserIcon, KeyRoundIcon, MonitorIcon, ArrowRightIcon } from 'lucide-react'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
-
 const overviewLinks = [
 	{
 		href: '/account/profile',

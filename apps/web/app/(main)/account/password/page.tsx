@@ -1,8 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import UpdatePasswordForm from './_components/update-password-form'
 
-export const dynamic = 'force-dynamic'
-
 const PasswordPage = () => {
 	return (
 		<Card>

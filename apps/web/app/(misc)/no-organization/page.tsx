@@ -1,6 +1,11 @@
 import { APP_NAME } from '@/constants'
 import { Building2 } from 'lucide-react'
 import SignOutButton from '@/components/sign-out-button'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+	title: 'No Organizations Found',
+}
 
 const NoOrganizationPage = () => {
 	return (
@@ -10,7 +15,7 @@ const NoOrganizationPage = () => {
 					<Building2 className='size-16 text-muted-foreground' />
 				</div>
 				<div className='grid gap-2'>
-					<h1 className='text-2xl font-bold'>No Organization</h1>
+					<h1 className='text-2xl font-bold'>No Organizations Found</h1>
 					<p className='text-muted-foreground text-sm'>
 						You are not a member of any organization on {APP_NAME}. Please contact your administrator to be added to an organization.
 					</p>

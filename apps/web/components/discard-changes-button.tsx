@@ -14,7 +14,7 @@ import {
 } from './ui/alert-dialog'
 import { Button } from './ui/button'
 
-const DiscardButton = ({ isLoading, isDisabled, handleDiscard }: { isLoading?: boolean; isDisabled?: boolean; handleDiscard: () => Promise<void> }) => {
+const DiscardChangesButton = ({ isLoading, isDisabled, handleDiscard }: { isLoading?: boolean; isDisabled?: boolean; handleDiscard: () => Promise<void> }) => {
 	return (
 		<AlertDialog>
 			<AlertDialogTrigger asChild>
@@ -24,7 +24,7 @@ const DiscardButton = ({ isLoading, isDisabled, handleDiscard }: { isLoading?: b
 					disabled={isLoading || isDisabled}
 					type='button'
 				>
-					<Trash /> Discard
+					<Trash /> Discard Changes
 				</Button>
 			</AlertDialogTrigger>
 			<AlertDialogContent>
@@ -41,4 +41,4 @@ const DiscardButton = ({ isLoading, isDisabled, handleDiscard }: { isLoading?: b
 	)
 }
 
-export default DiscardButton
+export default DiscardChangesButton

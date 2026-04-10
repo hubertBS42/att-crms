@@ -3,7 +3,7 @@ import { SetPasswordForm } from './_components/set-password-form'
 import TokenError from './_components/token-error'
 
 export const metadata: Metadata = {
-	title: 'Set a new password',
+	title: 'Set A New Password',
 }
 const SetPasswordPage = async ({ searchParams }: { searchParams: Promise<{ token: string; action: string }> }) => {
 	const { token, action } = await searchParams

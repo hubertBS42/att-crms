@@ -235,6 +235,7 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 						</div>
 					</div>
 					<ResourceFormFooter
+						backTo='/orgnizations'
 						isPending={isPending}
 						isDirty={form.formState.isDirty}
 						handleDiscard={handleDiscard}

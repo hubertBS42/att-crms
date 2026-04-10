@@ -25,19 +25,19 @@ export const OrganizationSwitcherSkeleton = () => {
 
 const OrganizationSwitcher = () => {
 	const { isMobile } = useSidebar()
-	const { switchOrganization } = useOrganizationSwitcher()
+	const { switchOrganization, isSwitching } = useOrganizationSwitcher()
 	const { data: organizations, isPending: isOrganizationsLoading } = authClient.useListOrganizations()
 	const { data: session, isPending: isSessionLoading } = authClient.useSession()
 
 	const isLoading = isOrganizationsLoading || isSessionLoading
 
-	if (isLoading) return <OrganizationSwitcherSkeleton />
+	if (isLoading || isSwitching) return <OrganizationSwitcherSkeleton />
 
 	if (!session) return null
 
 	const isAdmin = session.user.role === 'admin' || session.user.role === 'superAdmin'
 	const activeOrganization = organizations?.find(org => org.id === session.session.activeOrganizationId)
-	const clientOrganizations = organizations?.filter(org => org.slug !== 'global') ?? []
+	const clientOrganizations = organizations?.filter(org => org.slug !== 'global').sort((a, b) => a.name.localeCompare(b.name)) ?? []
 
 	return (
 		<SidebarMenu>

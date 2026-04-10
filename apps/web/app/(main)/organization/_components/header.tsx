@@ -11,7 +11,7 @@ const links = [
 	{ href: '/organization/logs', label: 'Logs' },
 ]
 
-const OrganizationHeader = () => {
+const Header = () => {
 	const pathname = usePathname()
 	const { data: activeOrganization, isPending } = authClient.useActiveOrganization()
 	return (
@@ -40,4 +40,4 @@ const OrganizationHeader = () => {
 		</div>
 	)
 }
-export default OrganizationHeader
+export default Header

@@ -1,5 +1,5 @@
 import { Metadata } from 'next'
-import OrganizationHeader from './_components/organization-header'
+import Header from './_components/header'
 
 export const metadata: Metadata = {
 	title: 'Organization Overview',
@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 const OrganizationLayout = ({ children }: { children: React.ReactNode }) => {
 	return (
 		<main className='flex flex-col gap-y-6'>
-			<OrganizationHeader />
+			<Header />
 			{children}
 		</main>
 	)

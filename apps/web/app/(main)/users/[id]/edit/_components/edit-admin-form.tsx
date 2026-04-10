@@ -69,6 +69,7 @@ const EditAdminForm = ({ user }: { user: UserWithSessionsAndMemberships }) => {
 					/>
 
 					<ResourceFormFooter
+						backTo='/users'
 						isPending={isPending}
 						isDirty={form.formState.isDirty}
 						handleDiscard={handleDiscard}
