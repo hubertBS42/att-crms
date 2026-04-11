@@ -8,13 +8,13 @@ import { requestPasswordResetAction } from '@/lib/actions/user.actions'
 import { resetPasswordFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import React from 'react'
+import React, { useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { z } from 'zod'
 
 export function ResetPasswordForm() {
-	const [isPending, startTransition] = React.useTransition()
-	const [isComplete, setIsComplete] = React.useState(false)
+	const [isPending, startTransition] = useTransition()
+	const [isComplete, setIsComplete] = useState(false)
 
 	const form = useForm<z.infer<typeof resetPasswordFormSchema>>({
 		resolver: zodResolver(resetPasswordFormSchema),

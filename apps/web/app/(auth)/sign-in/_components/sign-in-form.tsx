@@ -3,9 +3,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { FieldGroup } from '@/components/ui/field'
 import { signInFormSchema } from '@/lib/zod'
-import React from 'react'
+import { useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { authClient } from '@/lib/auth-client'
 import { APP_URL } from '@/constants'
@@ -15,7 +15,7 @@ import InputField from '@/components/input-field'
 import PasswordField from '@/components/password-field'
 
 export function SignInForm({ callbackURL }: { callbackURL: string }) {
-	const [isPending, startTransition] = React.useTransition()
+	const [isPending, startTransition] = useTransition()
 
 	const form = useForm<z.infer<typeof signInFormSchema>>({
 		resolver: zodResolver(signInFormSchema),

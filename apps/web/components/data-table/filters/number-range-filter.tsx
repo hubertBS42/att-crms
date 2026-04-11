@@ -2,15 +2,15 @@
 
 import { Input } from '@/components/ui/input'
 import { Column } from '@tanstack/react-table'
-import React from 'react'
+import { useState } from 'react'
 
 interface NumberRangeFilterProps<TData> {
 	column: Column<TData, unknown>
 }
 
 const NumberRangeFilter = <TData,>({ column }: NumberRangeFilterProps<TData>) => {
-	const [min, setMin] = React.useState('')
-	const [max, setMax] = React.useState('')
+	const [min, setMin] = useState('')
+	const [max, setMax] = useState('')
 
 	const handleMinChange = (value: string) => {
 		setMin(value)

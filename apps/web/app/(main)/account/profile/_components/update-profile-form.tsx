@@ -1,4 +1,3 @@
-// app/(pages)/account/_components/update-profile-form.tsx
 'use client'
 
 import { Button } from '@/components/ui/button'

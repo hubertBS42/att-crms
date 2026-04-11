@@ -12,11 +12,11 @@ import {
 	SortingState,
 	useReactTable,
 } from '@tanstack/react-table'
-import React from 'react'
 import FiltersToolbar from './filters-toolbar'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table'
 import { cn } from '@/lib/utils'
 import Pagination from './pagination'
+import { useState } from 'react'
 
 export type FilterType = 'text' | 'select' | 'date' | 'dateRange' | 'number' | 'numberRange' | 'boolean'
 
@@ -83,8 +83,8 @@ export const dateRangeFilterFn: FilterFn<any> = (row, columnId, filterValue) => 
 }
 
 export function DataTable<TData, TValue>({ columns, data, filters = [], defaultSorting = [], onRowClick, enablePagination = true }: DataTableProps<TData, TValue>) {
-	const [sorting, setSorting] = React.useState<SortingState>(defaultSorting)
-	const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+	const [sorting, setSorting] = useState<SortingState>(defaultSorting)
+	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
 
 	const table = useReactTable({
 		data,

@@ -9,7 +9,6 @@ import { OrganizationPlan, OrganizationStatus } from '@att-crms/db/enums'
 import { addOrganizationFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import slugify from 'slugify'
@@ -17,11 +16,12 @@ import { toast } from 'sonner'
 import { Checkbox } from '@/components/ui/checkbox'
 import ResourceFormHeader from '@/components/resource-form-header'
 import ResourceFormFooter from '@/components/resource-form-footer'
+import { useEffect, useState, useTransition } from 'react'
 
 const AddOrganizationForm = () => {
 	const router = useRouter()
-	const [isPending, startTransition] = React.useTransition()
-	const [autoGenSlug, setAutoGenSlug] = React.useState(true)
+	const [isPending, startTransition] = useTransition()
+	const [autoGenSlug, setAutoGenSlug] = useState(true)
 
 	const form = useForm<z.infer<typeof addOrganizationFormSchema>>({
 		resolver: zodResolver(addOrganizationFormSchema),
@@ -36,7 +36,7 @@ const AddOrganizationForm = () => {
 
 	const nameValue = form.watch('name')
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!autoGenSlug) return
 
 		const slugified = slugify(nameValue, { lower: true, strict: true, remove: /\./g })

@@ -8,8 +8,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import InvitationsTable from './_components/invitations-table'
 import SuccessToast from '@/components/success-toast'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
 	title: 'Manage Members',
 }

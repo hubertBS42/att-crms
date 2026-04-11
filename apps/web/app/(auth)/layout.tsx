@@ -1,9 +1,10 @@
 import { APP_NAME } from '@/constants'
+import { ReactNode } from 'react'
 
 export default function AuthLayout({
 	children,
 }: Readonly<{
-	children: React.ReactNode
+	children: ReactNode
 }>) {
 	return (
 		<div className='flex min-h-svh flex-col items-center justify-center gap-6 bg-muted p-6 md:p-10'>

@@ -8,13 +8,13 @@ import { authClient } from '@/lib/auth-client'
 import { setPasswordFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Link from 'next/link'
-import React from 'react'
+import { useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import * as z from 'zod'
+import { z } from 'zod'
 
 export function SetPasswordForm({ token, action }: { token: string; action: string }) {
-	const [isPending, startTransition] = React.useTransition()
-	const [isComplete, setIsComplete] = React.useState(false)
+	const [isPending, startTransition] = useTransition()
+	const [isComplete, setIsComplete] = useState(false)
 
 	const form = useForm<z.infer<typeof setPasswordFormSchema>>({
 		resolver: zodResolver(setPasswordFormSchema),

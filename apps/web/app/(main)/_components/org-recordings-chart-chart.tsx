@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,6 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } f
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DataResponse, OrgRecordingsOverTimeData } from '@/interfaces'
+import { use, useEffect, useMemo, useState } from 'react'
 
 interface OrgRecordingsChartProps {
 	data: Promise<DataResponse<OrgRecordingsOverTimeData[]>>
@@ -21,21 +21,21 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const OrgRecordingsChart = ({ data }: OrgRecordingsChartProps) => {
-	const response = React.use(data)
+	const response = use(data)
 	const isMobile = useIsMobile()
-	const [timeRange, setTimeRange] = React.useState('90d')
+	const [timeRange, setTimeRange] = useState('90d')
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (isMobile) {
 			setTimeRange('7d')
 		}
 	}, [isMobile])
 
-	const recordingsData = React.useMemo(() => {
+	const recordingsData = useMemo(() => {
 		return response.success ? response.data : []
 	}, [response])
 
-	const filteredData = React.useMemo(() => {
+	const filteredData = useMemo(() => {
 		const referenceDate = new Date()
 		let daysToSubtract = 90
 		if (timeRange === '30d') daysToSubtract = 30

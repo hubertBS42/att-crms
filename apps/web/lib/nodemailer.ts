@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import { render } from '@react-email/render'
 import { APP_NAME } from '@/constants'
+import { ReactElement } from 'react'
 
 // Create a transporter object
 export const transporter = nodemailer.createTransport({
@@ -13,7 +14,7 @@ export const transporter = nodemailer.createTransport({
 })
 
 // Helper function to send emails
-export async function sendEmail({ to, subject, reactTemplate }: { to: string; subject: string; reactTemplate: React.ReactElement }) {
+export async function sendEmail({ to, subject, reactTemplate }: { to: string; subject: string; reactTemplate: ReactElement }) {
 	try {
 		// Render React component to HTML
 		const html = await render(reactTemplate)

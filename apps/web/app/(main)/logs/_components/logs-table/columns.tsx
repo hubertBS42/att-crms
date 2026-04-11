@@ -1,4 +1,3 @@
-// app/(pages)/logs/_components/logs-columns.tsx
 'use client'
 
 import { ColumnDef } from '@tanstack/react-table'

@@ -1,10 +1,10 @@
 'use client'
 import { Control, Controller, FieldValues, Path } from 'react-hook-form'
 import { Field, FieldDescription, FieldError, FieldLabel } from './ui/field'
-import React from 'react'
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from './ui/input-group'
 import { Eye, EyeClosed } from 'lucide-react'
 import Link from 'next/link'
+import { useState } from 'react'
 
 interface PasswordFieldProps<T extends FieldValues> extends React.InputHTMLAttributes<HTMLInputElement> {
 	control: Control<T>
@@ -15,7 +15,7 @@ interface PasswordFieldProps<T extends FieldValues> extends React.InputHTMLAttri
 }
 
 const PasswordField = <T extends FieldValues>({ control, name, description, label, resetPassword = false, ...inputProps }: PasswordFieldProps<T>) => {
-	const [showPassword, setShowPassword] = React.useState(false)
+	const [showPassword, setShowPassword] = useState(false)
 
 	return (
 		<Controller

@@ -1,11 +1,12 @@
 import { Metadata } from 'next'
 import AccountNav from './_components/account-nav'
+import { ReactNode } from 'react'
 
 export const metadata: Metadata = {
 	title: 'Account',
 }
 
-const AccountLayout = ({ children }: { children: React.ReactNode }) => {
+const AccountLayout = ({ children }: { children: ReactNode }) => {
 	return (
 		<main className='flex flex-col gap-y-6'>
 			<div className='grid'>

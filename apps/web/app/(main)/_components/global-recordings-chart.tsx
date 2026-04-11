@@ -1,6 +1,5 @@
 'use client'
 
-import * as React from 'react'
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -8,6 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLe
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DataResponse, GlobalRecordingsOverTimeData } from '@/interfaces'
+import { use, useEffect, useMemo, useState } from 'react'
 
 interface GlobalRecordingsChartProps {
 	data: Promise<DataResponse<GlobalRecordingsOverTimeData>>
@@ -16,24 +16,24 @@ interface GlobalRecordingsChartProps {
 const COLORS = ['var(--chart-1)', 'var(--chart-2)', 'var(--chart-3)', 'var(--chart-4)', 'var(--chart-5)']
 
 const GlobalRecordingsChart = ({ data }: GlobalRecordingsChartProps) => {
-	const response = React.use(data)
+	const response = use(data)
 
 	const isMobile = useIsMobile()
-	const [timeRange, setTimeRange] = React.useState('90d')
+	const [timeRange, setTimeRange] = useState('90d')
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (isMobile) setTimeRange('7d')
 	}, [isMobile])
 
-	const chartData = React.useMemo(() => {
+	const chartData = useMemo(() => {
 		return response.success ? response.data.chartData : []
 	}, [response])
 
-	const organizations = React.useMemo(() => {
+	const organizations = useMemo(() => {
 		return response.success ? response.data.organizations : []
 	}, [response])
 
-	const filteredData = React.useMemo(() => {
+	const filteredData = useMemo(() => {
 		const referenceDate = new Date()
 		let daysToSubtract = 90
 		if (timeRange === '30d') daysToSubtract = 30
@@ -44,7 +44,7 @@ const GlobalRecordingsChart = ({ data }: GlobalRecordingsChartProps) => {
 		return chartData.filter(item => new Date(item.date) >= startDate)
 	}, [chartData, timeRange])
 
-	const chartConfig = React.useMemo(() => {
+	const chartConfig = useMemo(() => {
 		return organizations.reduce<ChartConfig>((acc, org, index) => {
 			acc[org.slug] = {
 				label: org.name,

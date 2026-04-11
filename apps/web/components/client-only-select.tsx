@@ -1,10 +1,10 @@
 'use client'
 
 import { ChevronDownIcon } from 'lucide-react'
-import React from 'react'
 import { Select as SelectPrimitive } from 'radix-ui'
 import { Select, SelectTrigger, SelectContent, SelectValue, SelectItem } from './ui/select'
 import { PrimitiveOption, SelectOption } from '@/interfaces'
+import { useEffect, useState } from 'react'
 
 const LoadingComponent = ({ loadingPlaceholder }: { loadingPlaceholder?: string }) => {
 	return (
@@ -25,9 +25,9 @@ interface ClientOnlySelectProps extends Omit<React.ComponentProps<typeof SelectP
 }
 
 const ClientOnlySelect = ({ value, options, size = 'default', placeholder, loadingPlaceholder, side = 'top', id, ...props }: ClientOnlySelectProps) => {
-	const [isMounted, setIsMounted] = React.useState(false)
+	const [isMounted, setIsMounted] = useState(false)
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setIsMounted(true)
 	}, [isMounted])
 

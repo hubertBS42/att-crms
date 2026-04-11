@@ -11,7 +11,7 @@ import { OrganizationPlan, OrganizationStatus } from '@att-crms/db/enums'
 import { updateOrganizationFormSchema } from '@/lib/zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { notFound, useRouter } from 'next/navigation'
-import React from 'react'
+import { use, useEffect, useState, useTransition } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import slugify from 'slugify'
 import { toast } from 'sonner'
@@ -23,15 +23,15 @@ import ResourceFormHeader from '@/components/resource-form-header'
 import ResourceFormFooter from '@/components/resource-form-footer'
 
 const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organization | null>> }) => {
-	const response = React.use(data)
+	const response = use(data)
 	if (!response.success) throw new Error(response.error)
 	if (!response.data) notFound()
 
 	const organization = response.data
 
 	const router = useRouter()
-	const [isPending, startTransition] = React.useTransition()
-	const [autoGenSlug, setAutoGenSlug] = React.useState(false)
+	const [isPending, startTransition] = useTransition()
+	const [autoGenSlug, setAutoGenSlug] = useState(false)
 
 	const form = useForm<z.infer<typeof updateOrganizationFormSchema>>({
 		resolver: zodResolver(updateOrganizationFormSchema),
@@ -48,7 +48,7 @@ const EditOrganizationForm = ({ data }: { data: Promise<DataResponse<Organizatio
 
 	const nameValue = form.watch('name')
 
-	React.useEffect(() => {
+	useEffect(() => {
 		if (!autoGenSlug) return
 
 		const slugified = slugify(nameValue, { lower: true, strict: true, remove: /\./g })

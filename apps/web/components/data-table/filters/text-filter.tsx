@@ -1,7 +1,7 @@
 'use client'
 import { Input } from '@/components/ui/input'
 import { Column } from '@tanstack/react-table'
-import React from 'react'
+import { useState } from 'react'
 
 interface TextFilterProps<TData> {
 	column: Column<TData, unknown>
@@ -14,7 +14,7 @@ const TextFilter = <TData,>({ column, placeholder, id }: TextFilterProps<TData>)
 
 	// Use local state for input value (for immediate UI feedback)
 	// but derive initial value from column filter
-	const [value, setValue] = React.useState((columnFilterValue ?? '') as string)
+	const [value, setValue] = useState((columnFilterValue ?? '') as string)
 
 	const handleChange = (newValue: string) => {
 		setValue(newValue)

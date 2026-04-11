@@ -4,8 +4,6 @@ import LogsTable from '../../logs/_components/logs-table'
 import { auth } from '@/lib/auth'
 import { headers } from 'next/headers'
 
-export const dynamic = 'force-dynamic'
-
 export const metadata: Metadata = {
 	title: 'Activity Logs',
 }

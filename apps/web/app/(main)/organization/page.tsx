@@ -8,8 +8,6 @@ import { format } from 'date-fns'
 import { prisma } from '@att-crms/db'
 import OrganizationActions from './_components/organization-actions'
 
-export const dynamic = 'force-dynamic'
-
 const OrganizationOverviewPage = async () => {
 	const session = await auth.api.getSession({ headers: await headers() })
 	if (!session) redirect('/sign-in')

@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectVa
 import { Field, FieldDescription, FieldError, FieldLabel } from './ui/field'
 import { ChevronDownIcon } from 'lucide-react'
 import { PrimitiveOption, SelectOption } from '@/interfaces'
-import React from 'react'
+import { useEffect, useState } from 'react'
 
 interface SelectFieldProps<T extends FieldValues> {
 	control: Control<T>
@@ -44,9 +44,9 @@ const SelectField = <T extends FieldValues>({
 	options,
 	...selectProps
 }: SelectFieldProps<T>) => {
-	const [isMounted, setIsMounted] = React.useState(false)
+	const [isMounted, setIsMounted] = useState(false)
 
-	React.useEffect(() => {
+	useEffect(() => {
 		setIsMounted(true)
 	}, [isMounted])
 
