@@ -1,4 +1,4 @@
-import { Invitation, Member, Organization, Session, User } from '@att-crms/db/client'
+import { Activity, ActivityResource, ActivityType, Invitation, Member, Organization, Recording, Session, User } from '@att-crms/db/client'
 import { type LucideIcon } from 'lucide-react'
 
 export interface NavSubItem {
@@ -68,3 +68,106 @@ export interface GlobalRecordingsOverTimeData {
 }
 
 export type InvitationWithUser = Invitation & { user: User }
+
+export interface RecordingsFilters {
+	caller?: string
+	calledNumber?: string
+	answeredBy?: string
+	startDate?: Date
+	endDate?: Date
+	page?: number
+	pageSize?: number
+	sort?: string
+	order?: string
+}
+
+export interface RecordingsData {
+	recordings: Recording[]
+	total: number
+	page: number
+	pageSize: number
+	totalPages: number
+}
+
+export interface LogsFilters {
+	target?: string
+	actorName?: string
+	type?: ActivityType
+	resource?: ActivityResource
+	startDate?: Date
+	endDate?: Date
+	page?: number
+	pageSize?: number
+	organizationId?: string | null
+	sort?: string
+	order?: string
+}
+
+export interface LogsData {
+	activities: Activity[]
+	total: number
+	page: number
+	pageSize: number
+	totalPages: number
+}
+
+export interface OrganizationsFilters {
+	name?: string
+	page?: number
+	pageSize?: number
+	sort?: string
+	order?: string
+}
+
+export interface OrganizationsData {
+	organizations: Organization[]
+	total: number
+	page: number
+	pageSize: number
+	totalPages: number
+}
+export interface UsersFilters {
+	name?: string
+	page?: number
+	pageSize?: number
+	sort?: string
+	order?: string
+}
+
+export interface UsersData {
+	users: User[]
+	total: number
+	page: number
+	pageSize: number
+	totalPages: number
+}
+export interface InvitationsFilters {
+	email?: string
+	page?: number
+	pageSize?: number
+	sort?: string
+	order?: string
+}
+
+export interface InvitationsData {
+	invitations: InvitationWithUser[]
+	total: number
+	page: number
+	pageSize: number
+	totalPages: number
+}
+export interface MembersFilters {
+	name?: string
+	page?: number
+	pageSize?: number
+	sort?: string
+	order?: string
+}
+
+export interface MembersData {
+	members: MemberWithUser[]
+	total: number
+	page: number
+	pageSize: number
+	totalPages: number
+}

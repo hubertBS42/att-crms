@@ -1,21 +1,19 @@
 'use client'
+
 import { DataTable } from '@/components/data-table'
-import { UsersData } from '@/interfaces'
 import { columns } from './columns'
-import { useRouter } from 'next/navigation'
+import { LogsData } from '@/interfaces'
 import { filters } from './filters'
 
-interface UsersTableProps {
-	data: UsersData
+interface LogsTableProps {
+	data: LogsData
 }
 
-const UsersTable = ({ data }: UsersTableProps) => {
-	const router = useRouter()
+const LogsTable = ({ data }: LogsTableProps) => {
 	return (
 		<DataTable
 			columns={columns}
-			data={data.users}
-			onRowClick={user => router.push(`/users/${user.id}/edit`)}
+			data={data.activities}
 			filters={filters}
 			pagination={{
 				total: data.total,
@@ -27,4 +25,4 @@ const UsersTable = ({ data }: UsersTableProps) => {
 	)
 }
 
-export default UsersTable
+export default LogsTable

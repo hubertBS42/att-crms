@@ -3,12 +3,11 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Activity, ActivityResource, ActivityType } from '@att-crms/db/client'
 import { Badge } from '@/components/ui/badge'
-import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
 import { capitalizeFirstLetter } from '@/lib/utils'
 import { BuildingIcon, MicIcon, UserIcon, MailIcon } from 'lucide-react'
-import { dateRangeFilterFn } from '@/components/data-table'
 import { Checkbox } from '@/components/ui/checkbox'
+import ColumnHeader from '@/components/data-table/column-header'
 
 const TYPE_BADGE_CLASSES: Record<ActivityType, string> = {
 	CREATE: 'text-emerald-500 bg-emerald-500/10 border-emerald-500/20',
@@ -48,10 +47,10 @@ export const columns: ColumnDef<Activity>[] = [
 	},
 	{
 		accessorKey: 'targetName',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Target'
+				sortKey='targetName'
 			/>
 		),
 		cell: ({ row }) => {
@@ -71,10 +70,10 @@ export const columns: ColumnDef<Activity>[] = [
 	},
 	{
 		accessorKey: 'type',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Type'
+				sortKey='type'
 			/>
 		),
 		cell: ({ row }) => (
@@ -82,55 +81,45 @@ export const columns: ColumnDef<Activity>[] = [
 				{capitalizeFirstLetter(row.original.type)}
 			</span>
 		),
-		filterFn: (row, columnId, filterValue) => {
-			if (!filterValue) return true
-			return row.original.type === filterValue
-		},
 	},
 	{
 		accessorKey: 'resource',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Resource'
+				sortKey='resource'
 			/>
 		),
 		cell: ({ row }) => <Badge variant='outline'>{capitalizeFirstLetter(row.original.resource)}</Badge>,
-		filterFn: (row, columnId, filterValue) => {
-			if (!filterValue) return true
-			return row.original.resource === filterValue
-		},
 	},
 	{
 		accessorKey: 'actorName',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Actor'
+				sortKey='actorName'
 			/>
 		),
 		cell: ({ row }) => <p className='text-sm'>{row.original.actorName ?? '—'}</p>,
 	},
 	{
 		accessorKey: 'organizationName',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Organization'
+				sortKey='organizationName'
 			/>
 		),
 		cell: ({ row }) => <p className='text-sm'>{row.original.organizationName ?? '—'}</p>,
-		enableSorting: false,
 	},
 	{
 		accessorKey: 'createdAt',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Date'
+				sortKey='createdAt'
 			/>
 		),
 		cell: ({ row }) => <p className='text-sm text-muted-foreground whitespace-nowrap'>{format(new Date(row.original.createdAt), 'LLL dd, y HH:mm')}</p>,
-		filterFn: dateRangeFilterFn,
 	},
 ]

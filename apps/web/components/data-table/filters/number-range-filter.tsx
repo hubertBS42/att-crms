@@ -1,46 +1,39 @@
-'use client'
-
 import { Input } from '@/components/ui/input'
-import { Column } from '@tanstack/react-table'
-import { useState } from 'react'
 
-interface NumberRangeFilterProps<TData> {
-	column: Column<TData, unknown>
-}
-
-const NumberRangeFilter = <TData,>({ column }: NumberRangeFilterProps<TData>) => {
-	const [min, setMin] = useState('')
-	const [max, setMax] = useState('')
-
-	const handleMinChange = (value: string) => {
-		setMin(value)
-		const minNum = value ? parseFloat(value) : undefined
-		const maxNum = max ? parseFloat(max) : undefined
-		column.setFilterValue(minNum !== undefined || maxNum !== undefined ? [minNum, maxNum] : undefined)
-	}
-
-	const handleMaxChange = (value: string) => {
-		setMax(value)
-		const minNum = min ? parseFloat(min) : undefined
-		const maxNum = value ? parseFloat(value) : undefined
-		column.setFilterValue(minNum !== undefined || maxNum !== undefined ? [min, maxNum] : undefined)
-	}
-
+const NumberRangeFilter = ({
+	minKey,
+	maxKey,
+	values,
+	setValues,
+	applyFilters,
+	isPending,
+}: {
+	minKey: string
+	maxKey: string
+	values: Record<string, string>
+	setValues: (v: Record<string, string>) => void
+	applyFilters: (overrides?: Record<string, string>) => void
+	isPending: boolean
+}) => {
 	return (
 		<div className='flex gap-2'>
 			<Input
 				type='number'
 				placeholder='Min'
-				value={min}
-				onChange={e => handleMinChange(e.target.value)}
+				value={values[minKey] ?? ''}
 				className='h-8'
+				onChange={e => setValues({ ...values, [minKey]: e.target.value })}
+				onKeyDown={e => e.key === 'Enter' && applyFilters()}
+				disabled={isPending}
 			/>
 			<Input
 				type='number'
 				placeholder='Max'
-				value={max}
-				onChange={e => handleMaxChange(e.target.value)}
+				value={values[maxKey] ?? ''}
 				className='h-8'
+				onChange={e => setValues({ ...values, [maxKey]: e.target.value })}
+				onKeyDown={e => e.key === 'Enter' && applyFilters()}
+				disabled={isPending}
 			/>
 		</div>
 	)

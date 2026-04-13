@@ -4,40 +4,53 @@ import { auth } from '../auth'
 import { headers } from 'next/headers'
 import { prisma } from '@att-crms/db'
 import { formatError } from '../utils'
-import { ActivityResource, ActivityType, Activity } from '@att-crms/db/client'
-import { DataResponse } from '@/interfaces'
+import { DataResponse, LogsData, LogsFilters } from '@/interfaces'
 
-export interface LogsFilters {
-	actorName?: string
-	type?: ActivityType
-	resource?: ActivityResource
-	startDate?: Date
-	endDate?: Date
-	page?: number
-	pageSize?: number
-	organizationId?: string | null
-}
-
-export interface LogsData {
-	activities: Activity[]
-	total: number
-	page: number
-	pageSize: number
-	totalPages: number
-}
-
-export const fetchLogs = async (organizationId?: string | null): Promise<DataResponse<{ activities: Activity[] }>> => {
+export const fetchLogs = async (filters: LogsFilters = {}): Promise<DataResponse<LogsData>> => {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		if (!session) return { success: false, error: 'Unauthorized' }
 
-		const activities = await prisma.activity.findMany({
-			where: {
-				...(organizationId !== undefined && { organizationId }),
-			},
-		})
+		const { target, actorName, type, resource, startDate, endDate, page = 1, pageSize = 10, organizationId, sort, order } = filters
 
-		return { success: true, data: { activities } }
+		const where = {
+			...(organizationId !== undefined && { organizationId }),
+			...(actorName && { actorName: { contains: actorName, mode: 'insensitive' as const } }),
+			...(target && { targetName: { contains: target, mode: 'insensitive' as const } }),
+			...(type && { type }),
+			...(resource && { resource }),
+			...(startDate || endDate
+				? {
+						createdAt: {
+							...(startDate && { gte: startDate }),
+							...(endDate && { lte: endDate }),
+						},
+					}
+				: {}),
+		}
+
+		const orderBy = sort ? { [sort]: order ?? 'asc' } : { createdAt: 'desc' as const }
+
+		const [activities, total] = await Promise.all([
+			prisma.activity.findMany({
+				where,
+				orderBy,
+				skip: (page - 1) * pageSize,
+				take: pageSize,
+			}),
+			prisma.activity.count({ where }),
+		])
+
+		return {
+			success: true,
+			data: {
+				activities,
+				total,
+				page,
+				pageSize,
+				totalPages: Math.ceil(total / pageSize),
+			},
+		}
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}

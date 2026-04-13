@@ -1,12 +1,11 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Checkbox } from '@/components/ui/checkbox'
-import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/utils'
 import { User } from '@att-crms/db/client'
 import { SystemLevelRole } from '@/lib/permissions/system-permissions'
-import { dateRangeFilterFn } from '@/components/data-table'
+import ColumnHeader from '@/components/data-table/column-header'
 
 const genRoleBadge = (role: SystemLevelRole) => {
 	const roleConfig = {
@@ -42,53 +41,51 @@ export const columns: ColumnDef<User>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Name'
+				sortKey='name'
 			/>
 		),
 	},
 	{
 		accessorKey: 'email',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Email'
+				sortKey='email'
 			/>
 		),
 	},
 	{
 		accessorKey: 'role',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Role'
+				sortKey='role'
 			/>
 		),
 		cell: ({ row }) => genRoleBadge(row.original.role as SystemLevelRole),
-		filterFn: 'equals',
 	},
 	{
 		accessorKey: 'banned',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Status'
+				sortKey='banned'
 			/>
 		),
 		cell: ({ row }) => {
 			const isBanned = row.getValue('banned') as boolean
 			return <Badge variant={isBanned ? 'destructive' : 'default'}>{isBanned ? 'Banned' : 'Active'}</Badge>
 		},
-		filterFn: 'equals',
 	},
 	{
 		accessorKey: 'createdAt',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
-				title='Created On'
+				title='Created on'
+				sortKey='createdAt'
 			/>
 		),
 		cell: ({ row }) => {
@@ -96,7 +93,5 @@ export const columns: ColumnDef<User>[] = [
 			const formatted = format(dateTime, 'LLL dd, y')
 			return <div className='text-sm'>{formatted}</div>
 		},
-		sortingFn: 'datetime',
-		filterFn: dateRangeFilterFn,
 	},
 ]

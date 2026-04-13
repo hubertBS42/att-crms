@@ -1,24 +1,40 @@
 import { Metadata } from 'next'
 import OrganizationsTable from './_components/organizations-table'
-import { Suspense } from 'react'
-import Loader from '@/components/loader'
 import { fetchOrganizations } from '@/lib/data/organizations.data'
 import AddButton from '@/components/add-button'
 import SuccessToast from '@/components/success-toast'
+import { OrganizationsFilters } from '@/interfaces'
 
 export const metadata: Metadata = {
 	title: 'Manage Organizations',
 }
 
-interface OrganizationsPageProps {
-	searchParams: Promise<{ success?: string }>
+type OrganizationsPageProps = {
+	searchParams: Promise<{
+		success?: string
+		name?: string
+		pageSize?: string
+		page?: string
+		sort?: string
+		order?: string
+	}>
 }
 const OrganizationsPage = async ({ searchParams }: OrganizationsPageProps) => {
-	const { success } = await searchParams
-	const data = fetchOrganizations()
+	const params = await searchParams
+
+	const filters: OrganizationsFilters = {
+		name: params.name,
+		page: params.page ? parseInt(params.page) : 1,
+		pageSize: params.pageSize ? parseInt(params.pageSize) : 10,
+		sort: params.sort,
+		order: params.order as 'asc' | 'desc' | undefined,
+	}
+
+	const result = await fetchOrganizations(filters)
+	if (!result.success) throw new Error(result.error)
 	return (
 		<main className='flex flex-col gap-y-6'>
-			{success && <SuccessToast message={decodeURIComponent(success)} />}
+			{params.success && <SuccessToast message={decodeURIComponent(params.success)} />}
 			<div className='flex items-end justify-between'>
 				<div className='grid'>
 					<h1 className='text-xl md:text-2xl font-bold'>Manage Organizations</h1>
@@ -30,9 +46,7 @@ const OrganizationsPage = async ({ searchParams }: OrganizationsPageProps) => {
 					url='/organizations/add'
 				/>
 			</div>
-			<Suspense fallback={<Loader />}>
-				<OrganizationsTable data={data} />
-			</Suspense>
+			<OrganizationsTable data={result.data} />
 		</main>
 	)
 }

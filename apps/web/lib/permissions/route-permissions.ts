@@ -65,35 +65,42 @@ export const routePermissions: Record<string, RoutePermission> = {
 			order: 1,
 		},
 	},
-	'/members': {
-		role: ['superAdmin', 'admin', 'user'],
-		context: ['org'],
-		nav: {
-			title: 'Members',
-			icon: UsersIcon,
-			group: 'main',
-			order: 2,
-		},
-	},
+	// '/members': {
+	// 	role: ['superAdmin', 'admin', 'user'],
+	// 	context: ['org'],
+	// 	nav: {
+	// 		title: 'Members',
+	// 		icon: UsersIcon,
+	// 		group: 'main',
+	// 		order: 2,
+	// 	},
+	// },
 	'/organization': {
 		role: ['superAdmin', 'admin', 'user'],
 		context: ['org'],
 		nav: {
 			title: 'Organization',
 			icon: Building2,
-			group: 'secondary',
-			order: 1,
+			group: 'main',
+			order: 2,
+			items: [
+				{
+					title: 'Members',
+					url: '/organization/members',
+					context: ['org'],
+				},
+				{
+					title: 'Invitations',
+					url: '/organization/invitations',
+					context: ['org'],
+				},
+				{
+					title: 'Logs',
+					url: '/organization/logs',
+					context: ['org'],
+				},
+			],
 		},
-	},
-	'/organization/logs': {
-		role: ['superAdmin', 'admin', 'user'],
-		context: ['org'],
-		// nav: {
-		// 	title: 'Logs',
-		// 	icon: ScrollTextIcon,
-		// 	group: 'secondary',
-		// 	order: 3,
-		// },
 	},
 	'/account/profile': {
 		role: ['superAdmin', 'admin', 'user'],

@@ -106,6 +106,20 @@ export const BREADCRUMB_DATA: BreadcrumbConfig[] = [
 		],
 	},
 	{
+		pathname: '/organization/members',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Organization Members', href: '#' },
+		],
+	},
+	{
+		pathname: '/organization/invitations',
+		segments: [
+			{ text: 'Dashboard', href: '/' },
+			{ text: 'Organization Invitations', href: '#' },
+		],
+	},
+	{
 		pathname: '/account',
 		segments: [
 			{ text: 'Dashboard', href: '/' },

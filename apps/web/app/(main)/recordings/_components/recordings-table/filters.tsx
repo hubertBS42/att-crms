@@ -1,28 +1,8 @@
 import { FilterConfig } from '@/components/data-table'
-import { Recording } from '@att-crms/db/client'
 
-export const filters: FilterConfig<Recording>[] = [
-	{
-		columnId: 'callDate',
-		label: 'Call Date',
-		type: 'dateRange',
-	},
-	{
-		columnId: 'caller',
-		label: 'Caller',
-		type: 'text',
-		placeholder: 'Search by caller',
-	},
-	{
-		columnId: 'calledNumber',
-		label: 'Number Called',
-		type: 'text',
-		placeholder: 'Search by number called',
-	},
-	{
-		columnId: 'answeredBy',
-		label: 'Answered By',
-		type: 'text',
-		placeholder: 'Search by answered by',
-	},
+export const filters: FilterConfig[] = [
+	{ key: 'callDate', label: 'Call Date', type: 'dateRange' },
+	{ key: 'caller', label: 'Caller', type: 'text', placeholder: 'Search caller...' },
+	{ key: 'calledNumber', label: 'Number Called', type: 'text', placeholder: 'Search number called...' },
+	{ key: 'answeredBy', label: 'Answered By', type: 'text', placeholder: 'Search answered by...' },
 ]

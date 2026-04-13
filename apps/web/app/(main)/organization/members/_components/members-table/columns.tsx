@@ -1,11 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
 import dynamic from 'next/dynamic'
 import { Checkbox } from '@/components/ui/checkbox'
-import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
 import { MemberWithUser } from '@/interfaces'
 import { RollCellSkeleton } from './role-cell'
-import { dateRangeFilterFn } from '@/components/data-table'
+import ColumnHeader from '@/components/data-table/column-header'
 
 const RoleCell = dynamic(() => import('./role-cell'), { ssr: false, loading: () => <RollCellSkeleton /> })
 
@@ -32,44 +31,41 @@ export const columns: ColumnDef<MemberWithUser>[] = [
 	{
 		id: 'name',
 		accessorFn: row => row.user.name,
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Name'
+				sortKey='name'
 			/>
 		),
-		// cell: ({ row }) => row.original.user.name,
 	},
 	{
 		id: 'email',
 		accessorFn: row => row.user.email,
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Email'
+				sortKey='email'
 			/>
 		),
-		// cell: ({ row }) => row.original.user.email,
 	},
 	{
 		accessorKey: 'role',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Role'
+				sortKey='role'
 			/>
 		),
 		cell: ({ row }) => <RoleCell member={row.original} />,
-		filterFn: 'equals',
 	},
 
 	{
 		id: 'createdAt',
 		accessorFn: row => row.user.createdAt,
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
-				title='Joined On'
+				title='Joined on'
+				sortKey='createdAt'
 			/>
 		),
 		cell: ({ row }) => {
@@ -77,7 +73,5 @@ export const columns: ColumnDef<MemberWithUser>[] = [
 			const formatted = format(dateTime, 'LLL dd, y')
 			return <div className='text-sm'>{formatted}</div>
 		},
-		sortingFn: 'datetime',
-		filterFn: dateRangeFilterFn,
 	},
 ]

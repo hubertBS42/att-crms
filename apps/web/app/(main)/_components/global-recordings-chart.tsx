@@ -3,7 +3,7 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent, type ChartConfig } from '@/components/ui/chart'
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from '@/components/ui/chart'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { DataResponse, GlobalRecordingsOverTimeData } from '@/interfaces'
@@ -157,7 +157,7 @@ const GlobalRecordingsChart = ({ data }: GlobalRecordingsChartProps) => {
 								/>
 							}
 						/>
-						<ChartLegend content={<ChartLegendContent />} />
+						{/* <ChartLegend content={<ChartLegendContent />} /> */}
 						{organizations.map((org, index) => (
 							<Bar
 								key={org.slug}

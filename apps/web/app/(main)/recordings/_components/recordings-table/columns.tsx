@@ -1,10 +1,9 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Checkbox } from '@/components/ui/checkbox'
-import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
 import { Recording } from '@att-crms/db/client'
 import { formatDuration } from '@/lib/utils'
-import { dateRangeFilterFn } from '@/components/data-table'
+import ColumnHeader from '@/components/data-table/column-header'
 
 export const columns: ColumnDef<Recording>[] = [
 	{
@@ -29,61 +28,52 @@ export const columns: ColumnDef<Recording>[] = [
 	},
 	{
 		accessorKey: 'callDate',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Call Date'
+				sortKey='datetime'
 			/>
 		),
-		cell: ({ row }) => <div className='text-sm'>{format(new Date(row.original.callDate), 'LLL dd, y')}</div>,
-		filterFn: dateRangeFilterFn,
-	},
-	{
-		accessorKey: 'callTime',
-		header: ({ column }) => (
-			<ColumnHeader
-				column={column}
-				title='Call Time'
-			/>
-		),
-		cell: ({ row }) => <div className='text-sm font-mono'>{row.original.callTime}</div>,
-		enableSorting: false,
+		cell: ({ row }) => <span>{format(new Date(row.original.datetime), 'MMMM d yyyy HH:mm:ss')}</span>,
 	},
 	{
 		accessorKey: 'caller',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Caller'
+				sortKey='caller'
+				enableSorting={false}
 			/>
 		),
 	},
 	{
 		accessorKey: 'calledNumber',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Number Called'
+				sortKey='calledNumber'
+				enableSorting={false}
 			/>
 		),
 	},
 	{
 		accessorKey: 'answeredBy',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Answered By'
+				sortKey='answeredBy'
+				enableSorting={false}
 			/>
 		),
 	},
 	{
 		accessorKey: 'duration',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Duration'
+				sortKey='duration'
 			/>
 		),
-		cell: ({ row }) => <div className='text-sm font-mono'>{formatDuration(row.original.duration, 'timestamp')}</div>,
+		cell: ({ row }) => <span>{formatDuration(row.original.duration, 'timestamp')}</span>,
 	},
 ]

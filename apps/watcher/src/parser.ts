@@ -26,7 +26,11 @@ export async function parseRecording(filePath: string): Promise<ParsedRecording 
 	const answeredBy = parts[5] ?? ''
 
 	const time = rawTime?.replace(/-/g, ':')
-	const datetime = new Date(`${date}T${time}`)
+
+	// Parse as local time to avoid timezone shifts
+	const [year, month, day] = date.split('-').map(Number)
+	const [hours, minutes, seconds] = time.split(':').map(Number)
+	const datetime = new Date(year ?? 0, (month ?? 1) - 1, day ?? 0, hours ?? 0, minutes ?? 0, seconds ?? 0)
 
 	if (isNaN(datetime.getTime())) {
 		console.error(`Invalid datetime for file: ${filename}`)

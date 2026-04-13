@@ -1,28 +1,48 @@
 'server-only'
-import { DataResponse } from '@/interfaces'
+import { DataResponse, OrganizationsData, OrganizationsFilters } from '@/interfaces'
 import { Organization } from '@att-crms/db/client'
 import { formatError } from '../utils'
 import { auth } from '../auth'
 import { headers } from 'next/headers'
 import { prisma } from '@att-crms/db'
 
-export const fetchOrganizations = async (): Promise<DataResponse<Organization[]>> => {
+export const fetchOrganizations = async (filters: OrganizationsFilters = {}): Promise<DataResponse<OrganizationsData>> => {
 	try {
 		const session = await auth.api.getSession({ headers: await headers() })
 		if (!session) return { success: false, error: 'Unauthorized' }
 
+		const { name, page = 1, pageSize = 10, sort, order } = filters
+
 		const { role } = session.user
 		const isSystemAdmin = role === 'superAdmin' || role === 'admin'
 
-		const data = await prisma.organization.findMany({
-			where: isSystemAdmin
-				? undefined
-				: {
-						members: { some: { userId: session.user.id } },
-					},
-			orderBy: { name: 'asc' },
-		})
-		return { success: true, data }
+		const where = {
+			...(isSystemAdmin ? undefined : { members: { some: { userId: session.user.id } } }),
+			...(name && { name: { contains: name, mode: 'insensitive' as const } }),
+		}
+
+		const orderBy = sort ? { [sort]: order ?? 'asc' } : { name: 'asc' as const }
+
+		const [organizations, total] = await Promise.all([
+			prisma.organization.findMany({
+				where,
+				orderBy,
+				skip: (page - 1) * pageSize,
+				take: pageSize,
+			}),
+			prisma.organization.count({ where }),
+		])
+
+		return {
+			success: true,
+			data: {
+				organizations,
+				total,
+				page,
+				pageSize,
+				totalPages: Math.ceil(total / pageSize),
+			},
+		}
 	} catch (error) {
 		return { success: false, error: formatError(error) }
 	}

@@ -1,15 +1,10 @@
 import { FilterConfig } from '@/components/data-table'
-import { Activity } from '@att-crms/db/client'
 
-export const filters: FilterConfig<Activity>[] = [
+export const filters: FilterConfig[] = [
+	{ key: 'target', label: 'Target', type: 'text', placeholder: 'Search target...' },
+	{ key: 'actorName', label: 'Actor', type: 'text', placeholder: 'Search actor...' },
 	{
-		columnId: 'actorName',
-		label: 'Actor',
-		type: 'text',
-		placeholder: 'Search by actor...',
-	},
-	{
-		columnId: 'type',
+		key: 'type',
 		label: 'Type',
 		type: 'select',
 		options: [
@@ -21,7 +16,7 @@ export const filters: FilterConfig<Activity>[] = [
 		],
 	},
 	{
-		columnId: 'resource',
+		key: 'resource',
 		label: 'Resource',
 		type: 'select',
 		options: [
@@ -33,9 +28,5 @@ export const filters: FilterConfig<Activity>[] = [
 			{ label: 'User', value: 'USER' },
 		],
 	},
-	{
-		columnId: 'createdAt',
-		label: 'Date',
-		type: 'dateRange',
-	},
+	{ key: 'createdAt', label: 'Date', type: 'dateRange' },
 ]

@@ -9,7 +9,7 @@ import InvitationActions from './actions'
 import { InvitationWithUser } from '@/interfaces'
 import { Checkbox } from '@/components/ui/checkbox'
 
-export const invitationColumns: ColumnDef<InvitationWithUser>[] = [
+export const columns: ColumnDef<InvitationWithUser>[] = [
 	{
 		id: 'select',
 		header: ({ table }) => (
@@ -31,39 +31,38 @@ export const invitationColumns: ColumnDef<InvitationWithUser>[] = [
 	},
 	{
 		accessorKey: 'email',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Email'
+				sortKey='email'
 			/>
 		),
 	},
 	{
 		accessorKey: 'role',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Role'
+				sortKey='role'
 			/>
 		),
 		cell: ({ row }) => <Badge variant='outline'>{capitalizeFirstLetter(row.original.role as string)}</Badge>,
 	},
 	{
 		id: 'inviter',
-		accessorFn: row => row.user.name,
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Invited by'
+				sortKey='inviterId'
 			/>
 		),
 	},
 	{
 		accessorKey: 'expiresAt',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Expires'
+				sortKey='expiresAt'
 			/>
 		),
 		cell: ({ row }) => {

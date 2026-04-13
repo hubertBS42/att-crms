@@ -1,11 +1,10 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Organization, OrganizationPlan, OrganizationStatus } from '@att-crms/db/client'
 import { Checkbox } from '@/components/ui/checkbox'
-import ColumnHeader from '@/components/data-table/column-header'
 import { format } from 'date-fns'
 import { Badge } from '@/components/ui/badge'
 import { capitalizeFirstLetter } from '@/lib/utils'
-import { dateRangeFilterFn } from '@/components/data-table'
+import ColumnHeader from '@/components/data-table/column-header'
 
 const genStatusBadge = (status: OrganizationStatus) => {
 	const statusConfig = {
@@ -51,50 +50,49 @@ export const columns: ColumnDef<Organization>[] = [
 	},
 	{
 		accessorKey: 'name',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Name'
+				sortKey='name'
 			/>
 		),
 	},
 	{
 		accessorKey: 'slug',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Slug'
+				sortKey='name'
+				enableSorting={false}
 			/>
 		),
 	},
 	{
 		accessorKey: 'plan',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Plan'
+				sortKey='plan'
 			/>
 		),
 		cell: ({ row }) => genPlanBadge(row.original.plan),
-		filterFn: 'equals',
 	},
 	{
 		accessorKey: 'status',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
 				title='Status'
+				sortKey='status'
 			/>
 		),
 		cell: ({ row }) => genStatusBadge(row.original.status),
-		filterFn: 'equals',
 	},
 	{
 		accessorKey: 'createdAt',
-		header: ({ column }) => (
+		header: () => (
 			<ColumnHeader
-				column={column}
-				title='Created On'
+				title='Created on'
+				sortKey='createdAt'
 			/>
 		),
 		cell: ({ row }) => {
@@ -102,7 +100,5 @@ export const columns: ColumnDef<Organization>[] = [
 			const formatted = format(dateTime, 'LLL dd, y')
 			return <div className='text-sm'>{formatted}</div>
 		},
-		sortingFn: 'datetime',
-		filterFn: dateRangeFilterFn,
 	},
 ]

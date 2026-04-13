@@ -1,24 +1,29 @@
 'use client'
 import { DataTable } from '@/components/data-table'
-import { DataResponse } from '@/interfaces'
-import { Organization } from '@att-crms/db/client'
-import { use } from 'react'
+import { OrganizationsData } from '@/interfaces'
 import { columns } from './columns'
-import { filters } from './filters'
 import { useRouter } from 'next/navigation'
+import { filters } from './filters'
 
-const OrganizationsTable = ({ data }: { data: Promise<DataResponse<Organization[]>> }) => {
+interface OrganizationsTableProps {
+	data: OrganizationsData
+}
+
+const OrganizationsTable = ({ data }: OrganizationsTableProps) => {
 	const router = useRouter()
-	const response = use(data)
-	if (!response.success) throw new Error(response.error)
-	const filteredOrgs = response.data.filter(org => org.slug !== 'global')
+	const filteredOrgs = data.organizations.filter(org => org.slug !== 'global')
 	return (
 		<DataTable
 			columns={columns}
-			data={filteredOrgs}
 			filters={filters}
-			defaultSorting={[{ id: 'createdAt', desc: true }]}
+			data={filteredOrgs}
 			onRowClick={organization => router.push(`/organizations/${organization.id}/edit`)}
+			pagination={{
+				total: data.total,
+				page: data.page,
+				pageSize: data.pageSize,
+				totalPages: data.totalPages,
+			}}
 		/>
 	)
 }

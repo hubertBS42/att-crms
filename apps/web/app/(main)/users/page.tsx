@@ -1,23 +1,39 @@
-import Loader from '@/components/loader'
 import { Metadata } from 'next'
-import { Suspense } from 'react'
 import UsersTable from './_components/users-table'
 import { fetchAllUsers } from '@/lib/data/users.data'
 import AddButton from '@/components/add-button'
 import SuccessToast from '@/components/success-toast'
+import { UsersFilters } from '@/interfaces'
 
 export const metadata: Metadata = {
 	title: 'Manage Users',
 }
 interface UsersPageProps {
-	searchParams: Promise<{ success?: string }>
+	searchParams: Promise<{
+		success?: string
+		name?: string
+		pageSize?: string
+		page?: string
+		sort?: string
+		order?: string
+	}>
 }
 const UsersPage = async ({ searchParams }: UsersPageProps) => {
-	const { success } = await searchParams
-	const data = fetchAllUsers()
+	const params = await searchParams
+
+	const filters: UsersFilters = {
+		name: params.name,
+		page: params.page ? parseInt(params.page) : 1,
+		pageSize: params.pageSize ? parseInt(params.pageSize) : 10,
+		sort: params.sort,
+		order: params.order as 'asc' | 'desc' | undefined,
+	}
+
+	const result = await fetchAllUsers(filters)
+	if (!result.success) throw new Error(result.error)
 	return (
 		<main className='flex flex-col gap-y-6'>
-			{success && <SuccessToast message={decodeURIComponent(success)} />}
+			{params.success && <SuccessToast message={decodeURIComponent(params.success)} />}
 			<div className='flex items-end justify-between'>
 				<div className='grid'>
 					<h1 className='text-xl md:text-2xl font-bold'>Manage Users</h1>
@@ -29,9 +45,7 @@ const UsersPage = async ({ searchParams }: UsersPageProps) => {
 					url='/users/add'
 				/>
 			</div>
-			<Suspense fallback={<Loader />}>
-				<UsersTable data={data} />
-			</Suspense>
+			<UsersTable data={result.data} />
 		</main>
 	)
 }
