@@ -1,4 +1,4 @@
-import { APP_LOGO, APP_NAME, INVITATION_EXPIRATON } from '@/constants'
+import { APP_NAME, APP_LOGO, INVITATION_EXPIRATON } from '@/constants'
 import { formatDuration } from '@/lib/utils'
 import { Body, Button, Container, Head, Heading, Hr, Html, Img, Preview, Section, Tailwind, Text } from '@react-email/components'
 
@@ -23,7 +23,7 @@ const InviteMemberEmail = ({ name, inviterName, organizationName, role, url }: I
 						{/* Header */}
 						<Section className='bg-[#18181b] rounded-t-xl px-10 py-8 text-center'>
 							<Img
-								src={APP_LOGO}
+								src={APP_LOGO.url}
 								width='48'
 								height='48'
 								alt={APP_NAME}

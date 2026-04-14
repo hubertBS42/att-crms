@@ -3,10 +3,15 @@ import path from 'path'
 import { BreadcrumbConfig } from './interfaces'
 import { OrganizationPlan, OrganizationStatus } from '@att-crms/db/enums'
 import { capitalizeFirstLetter } from './lib/utils'
-export const APP_NAME = 'ATT CRMS'
+import StaticLogo from '@/public/images/logo.png'
+
+export const APP_NAME = 'Call Recording Management System'
 export const APP_DESCRIPTION = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
 export const APP_URL = process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
-export const APP_LOGO = 'https://attdata.co.uk/resources/images/logo.png'
+export const APP_LOGO = {
+	static: StaticLogo,
+	url: `${APP_URL}/images/logo.png`,
+}
 export const RECORDINGS_PATH = process.env.RECORDINGS_PATH ?? path.join(os.homedir(), 'call_recordings')
 
 export const RESET_PASSWORD_TOKEN_EXPIRATON = 1800 // 30 minutes

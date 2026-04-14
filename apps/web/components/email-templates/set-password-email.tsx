@@ -19,7 +19,7 @@ const SetPasswordEmail = ({ name, url }: SetPasswordEmailProps) => {
 						{/* Header */}
 						<Section className='bg-[#18181b] rounded-t-xl px-10 py-8 text-center'>
 							<Img
-								src={APP_LOGO}
+								src={APP_LOGO.url}
 								width='48'
 								height='48'
 								alt={APP_NAME}
