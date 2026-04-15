@@ -69,7 +69,7 @@ export const columns: ColumnDef<InvitationWithUser>[] = [
 			const expiresAt = new Date(row.original.expiresAt)
 			const isExpired = expiresAt < new Date()
 			return (
-				<span className={`text-sm ${isExpired ? 'text-destructive' : 'text-muted-foreground'}`}>
+				<span className={`${isExpired ? 'text-destructive' : 'text-muted-foreground'}`}>
 					{isExpired ? `Expired ${formatDistanceToNow(expiresAt, { addSuffix: true })}` : formatDistanceToNow(expiresAt, { addSuffix: true })}
 				</span>
 			)

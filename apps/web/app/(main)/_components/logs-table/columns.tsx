@@ -100,7 +100,7 @@ export const columns: ColumnDef<Activity>[] = [
 				sortKey='actorName'
 			/>
 		),
-		cell: ({ row }) => <p className='text-sm'>{row.original.actorName ?? '—'}</p>,
+		cell: ({ row }) => <span>{row.original.actorName ?? '—'}</span>,
 	},
 	{
 		accessorKey: 'organizationName',
@@ -110,7 +110,7 @@ export const columns: ColumnDef<Activity>[] = [
 				sortKey='organizationName'
 			/>
 		),
-		cell: ({ row }) => <p className='text-sm'>{row.original.organizationName ?? '—'}</p>,
+		cell: ({ row }) => <span>{row.original.organizationName ?? '—'}</span>,
 	},
 	{
 		accessorKey: 'createdAt',
@@ -120,6 +120,6 @@ export const columns: ColumnDef<Activity>[] = [
 				sortKey='createdAt'
 			/>
 		),
-		cell: ({ row }) => <p className='text-sm text-muted-foreground whitespace-nowrap'>{format(new Date(row.original.createdAt), 'LLL dd, y HH:mm')}</p>,
+		cell: ({ row }) => <span>{format(new Date(row.original.createdAt), 'MMM d, yyyy, h:mm a')}</span>,
 	},
 ]

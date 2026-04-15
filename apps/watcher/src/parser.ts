@@ -27,10 +27,12 @@ export async function parseRecording(filePath: string): Promise<ParsedRecording 
 
 	const time = rawTime?.replace(/-/g, ':')
 
-	// Parse as local time to avoid timezone shifts
+	// Parse as UTC to ensure consistency across all environments
 	const [year, month, day] = date.split('-').map(Number)
 	const [hours, minutes, seconds] = time.split(':').map(Number)
-	const datetime = new Date(year ?? 0, (month ?? 1) - 1, day ?? 0, hours ?? 0, minutes ?? 0, seconds ?? 0)
+
+	// Create date using UTC - this treats the input as UTC, not local time
+	const datetime = new Date(Date.UTC(year ?? 0, (month ?? 1) - 1, day ?? 0, hours ?? 0, minutes ?? 0, seconds ?? 0))
 
 	if (isNaN(datetime.getTime())) {
 		console.error(`Invalid datetime for file: ${filename}`)

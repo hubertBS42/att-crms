@@ -70,8 +70,8 @@ export const columns: ColumnDef<MemberWithUser>[] = [
 		),
 		cell: ({ row }) => {
 			const dateTime: Date = row.original.user.createdAt
-			const formatted = format(dateTime, 'LLL dd, y')
-			return <div className='text-sm'>{formatted}</div>
+			const formatted = format(dateTime, 'MMM d, yyyy, h:mm a')
+			return <span>{formatted}</span>
 		},
 	},
 ]

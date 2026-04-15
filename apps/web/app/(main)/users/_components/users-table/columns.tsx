@@ -84,14 +84,14 @@ export const columns: ColumnDef<User>[] = [
 		accessorKey: 'createdAt',
 		header: () => (
 			<ColumnHeader
-				title='Created on'
+				title='Created On'
 				sortKey='createdAt'
 			/>
 		),
 		cell: ({ row }) => {
 			const dateTime: Date = row.original.createdAt
-			const formatted = format(dateTime, 'LLL dd, y')
-			return <div className='text-sm'>{formatted}</div>
+			const formatted = format(dateTime, 'MMM d, yyyy, h:mm a')
+			return <span>{formatted}</span>
 		},
 	},
 ]

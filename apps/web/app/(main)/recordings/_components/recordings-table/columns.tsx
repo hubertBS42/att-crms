@@ -1,6 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { Checkbox } from '@/components/ui/checkbox'
-import { format } from 'date-fns'
+import { format } from 'date-fns-tz'
 import { Recording } from '@att-crms/db/client'
 import { formatDuration } from '@/lib/utils'
 import ColumnHeader from '@/components/data-table/column-header'
@@ -34,7 +34,18 @@ export const columns: ColumnDef<Recording>[] = [
 				sortKey='datetime'
 			/>
 		),
-		cell: ({ row }) => <span>{format(new Date(row.original.datetime), 'MMMM d yyyy HH:mm:ss')}</span>,
+		cell: ({ row }) => <span>{format(new Date(row.original.datetime), 'MMM d, yyyy', { timeZone: 'UTC' })}</span>,
+	},
+	{
+		accessorKey: 'callTime',
+		header: () => (
+			<ColumnHeader
+				title='Call Time'
+				sortKey='callTime'
+				enableSorting={false}
+			/>
+		),
+		cell: ({ row }) => <span className='font-mono'>{format(new Date(row.original.datetime), 'HH:mm:ss', { timeZone: 'UTC' })}</span>,
 	},
 	{
 		accessorKey: 'caller',
@@ -74,6 +85,6 @@ export const columns: ColumnDef<Recording>[] = [
 				sortKey='duration'
 			/>
 		),
-		cell: ({ row }) => <span>{formatDuration(row.original.duration, 'timestamp')}</span>,
+		cell: ({ row }) => <span className='font-mono'>{formatDuration(row.original.duration, 'timestamp')}</span>,
 	},
 ]
